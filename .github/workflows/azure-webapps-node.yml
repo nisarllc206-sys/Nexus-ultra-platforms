@@ -105,4 +105,1023 @@ Minimum 1 day. Maximum 90 days unless changed from the repository settings page.
 
     archive: # optional, default is true
           
-        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>NEXUS WALLS — GitHub Integration</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#050810;--surface:#0a0f1e;--card:#0d1428;--border:#1a2444;--cyan:#00f5ff;--cyan-dim:#00b8c4;--gold:#ffd700;--purple:#7b2fff;--green:#00ff88;--red:#ff3366;--text:#e0e8ff;--dim:#5a6a8a;--glow-c:0 0 20px rgba(0,245,255,.4);--glow-g:0 0 20px rgba(255,215,0,.3);--glow-n:0 0 20px rgba(0,255,136,.3)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:linear-gradient(rgba(0,245,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,245,255,.025) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.hdr{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:rgba(5,8,16,.93);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);gap:12px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-box{width:38px;height:38px;border:2px solid var(--cyan);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:var(--cyan);box-shadow:var(--glow-c);background:rgba(0,245,255,.06);flex-shrink:0}
+.logo-name{font-family:'Orbitron',sans-serif;font-size:14px;font-weight:700;letter-spacing:3px;color:var(--cyan);line-height:1.1}
+.logo-sub{font-size:9px;color:var(--dim);letter-spacing:3px;font-family:'Share Tech Mono',monospace}
+.hdr-r{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.cbadge{display:flex;align-items:center;gap:6px;font-family:'Share Tech Mono',monospace;font-size:10px;padding:5px 11px;border-radius:20px;transition:.3s}
+.cbadge.on{border:1px solid rgba(0,255,136,.25);background:rgba(0,255,136,.07);color:var(--green)}
+.cbadge.off{border:1px solid rgba(255,51,102,.25);background:rgba(255,51,102,.07);color:var(--red)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:blink 2s infinite;flex-shrink:0}
+.dot.off{background:var(--red);box-shadow:0 0 6px var(--red);animation:none}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.hdr-clk{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--dim)}
+.burger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none}
+.burger span{display:block;width:22px;height:2px;background:var(--cyan);border-radius:2px;transition:.3s}
+.burger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.burger.open span:nth-child(2){opacity:0}
+.burger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+.nav{position:sticky;top:67px;z-index:90;display:flex;gap:2px;padding:8px 20px;background:rgba(5,8,16,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);overflow-x:auto}
+.nav::-webkit-scrollbar{height:0}
+.nbtn{flex-shrink:0;display:flex;align-items:center;gap:7px;padding:8px 15px;background:transparent;border:1px solid transparent;border-radius:8px;cursor:pointer;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;color:var(--dim);transition:.2s;white-space:nowrap}
+.nbtn.on{color:var(--cyan);background:rgba(0,245,255,.07);border-color:rgba(0,245,255,.22)}
+.nbtn:hover:not(.on){color:var(--text);background:rgba(255,255,255,.03)}
+.nbtn .nb{min-width:17px;height:17px;border-radius:10px;background:rgba(0,245,255,.13);border:1px solid rgba(0,245,255,.25);color:var(--cyan);font-size:9px;display:flex;align-items:center;justify-content:center;padding:0 3px}
+.main{position:relative;z-index:5;padding:20px;max-width:1400px;margin:0 auto}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px 17px;position:relative;overflow:hidden;cursor:default;transition:.25s}
+.sc::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px}
+.sc.c::after{background:linear-gradient(90deg,var(--cyan),transparent)}
+.sc.g::after{background:linear-gradient(90deg,var(--gold),transparent)}
+.sc.n::after{background:linear-gradient(90deg,var(--green),transparent)}
+.sc.p::after{background:linear-gradient(90deg,#7b2fff,transparent)}
+.sc:hover{transform:translateY(-2px);border-color:rgba(0,245,255,.18)}
+.sc-n{font-family:'Orbitron',sans-serif;font-size:24px;font-weight:900;line-height:1;margin-bottom:3px}
+.sc.c .sc-n{color:var(--cyan)}.sc.g .sc-n{color:var(--gold)}.sc.n .sc-n{color:var(--green)}.sc.p .sc-n{color:#a070ff}
+.sc-l{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--dim);letter-spacing:2px;text-transform:uppercase}
+.sc-d{position:absolute;top:11px;right:11px;font-size:9px;font-family:'Share Tech Mono',monospace}
+.sc.c .sc-d{color:var(--cyan)}.sc.g .sc-d{color:var(--gold)}.sc.n .sc-d{color:var(--green)}.sc.p .sc-d{color:#a070ff}
+.panel{display:none;animation:fu .3s ease}
+.panel.on{display:block}
+@keyframes fu{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.sp2{grid-column:span 2}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;position:relative;overflow:hidden;transition:.25s}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,245,255,.25),transparent)}
+.card:hover{border-color:rgba(0,245,255,.15)}
+.ct{font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;color:var(--cyan);margin-bottom:3px;text-transform:uppercase}
+.cd{font-size:12px;color:var(--dim);margin-bottom:15px;line-height:1.5}
+.lbl{display:block;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--dim);letter-spacing:2px;margin-bottom:5px;text-transform:uppercase}
+.inp{width:100%;background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:7px;padding:9px 12px;color:var(--text);font-family:'Share Tech Mono',monospace;font-size:12px;outline:none;transition:.2s;margin-bottom:12px}
+.inp:focus{border-color:var(--cyan);box-shadow:0 0 0 2px rgba(0,245,255,.08)}
+.inp::placeholder{color:var(--dim)}
+select.inp{cursor:pointer;appearance:none}
+textarea.inp{resize:vertical;min-height:68px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 17px;border-radius:7px;border:1px solid;cursor:pointer;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;transition:.2s;white-space:nowrap;position:relative;overflow:hidden}
+.btn:active{transform:scale(.96)}
+.btn:disabled{opacity:.4;cursor:not-allowed;pointer-events:none}
+.bc{color:var(--cyan);border-color:rgba(0,245,255,.32);background:rgba(0,245,255,.07)}
+.bc:hover{border-color:var(--cyan);box-shadow:var(--glow-c)}
+.bg{color:var(--gold);border-color:rgba(255,215,0,.32);background:rgba(255,215,0,.07)}
+.bg:hover{border-color:var(--gold);box-shadow:var(--glow-g)}
+.bn{color:var(--green);border-color:rgba(0,255,136,.32);background:rgba(0,255,136,.07)}
+.bn:hover{border-color:var(--green);box-shadow:var(--glow-n)}
+.br{color:var(--red);border-color:rgba(255,51,102,.32);background:rgba(255,51,102,.07)}
+.br:hover{border-color:var(--red);box-shadow:0 0 14px rgba(255,51,102,.3)}
+.brow{display:flex;gap:8px;flex-wrap:wrap}
+.btn.ld::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent);background-size:200% 100%;animation:shim .8s infinite}
+@keyframes shim{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.ibtn{width:30px;height:30px;border:1px solid var(--border);border-radius:6px;background:rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--dim);font-size:13px;transition:.2s;flex-shrink:0;user-select:none}
+.ibtn:hover{border-color:var(--cyan);color:var(--cyan)}
+.ibtn:active{transform:scale(.9)}
+.bdg{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;white-space:nowrap}
+.bc2{background:rgba(0,245,255,.07);color:var(--cyan);border:1px solid rgba(0,245,255,.18)}
+.bg2{background:rgba(255,215,0,.07);color:var(--gold);border:1px solid rgba(255,215,0,.18)}
+.bn2{background:rgba(0,255,136,.07);color:var(--green);border:1px solid rgba(0,255,136,.18)}
+.br2{background:rgba(255,51,102,.07);color:var(--red);border:1px solid rgba(255,51,102,.18)}
+.bp2{background:rgba(123,47,255,.07);color:#a070ff;border:1px solid rgba(123,47,255,.18)}
+.trow{display:flex;align-items:center;gap:10px;padding:6px 0;cursor:pointer;user-select:none}
+.tgl{width:38px;height:20px;border-radius:10px;border:1px solid var(--border);background:rgba(0,0,0,.4);position:relative;flex-shrink:0;transition:.2s}
+.tgl::after{content:'';position:absolute;width:14px;height:14px;border-radius:50%;background:var(--dim);top:2px;left:2px;transition:.25s}
+.tgl.on{border-color:rgba(0,255,136,.4);background:rgba(0,255,136,.15)}
+.tgl.on::after{transform:translateX(18px);background:var(--green)}
+.trow span{font-size:13px}
+.sep{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:16px 0}
+.rlist{display:flex;flex-direction:column;gap:8px}
+.ritem{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.22);border:1px solid var(--border);border-radius:8px;padding:11px 13px;cursor:pointer;transition:.2s}
+.ritem:hover,.ritem.sel{border-color:rgba(0,245,255,.28);background:rgba(0,245,255,.025)}
+.rname{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--cyan);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rmeta{font-size:11px;color:var(--dim);display:flex;gap:10px;flex-wrap:wrap}
+.rinfo{flex:1;min-width:0}
+.racts{display:flex;gap:5px;flex-shrink:0}
+.clog{display:flex;flex-direction:column}
+.ci{display:flex;gap:11px;padding:9px 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.ci:last-child{border-bottom:none}
+.cdw{display:flex;flex-direction:column;align-items:center;padding-top:3px;flex-shrink:0;width:10px}
+.cdot{width:10px;height:10px;border-radius:50%;background:var(--cyan);box-shadow:0 0 5px var(--cyan)}
+.cdot.m{background:var(--purple);box-shadow:0 0 5px var(--purple)}
+.cdot.f{background:var(--red);box-shadow:0 0 5px var(--red)}
+.cline{width:1px;flex:1;background:var(--border);margin-top:4px;min-height:16px}
+.cbody{flex:1;min-width:0}
+.chash{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--gold);margin-bottom:2px}
+.cmsg{font-size:12px;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cmeta{font-size:10px;color:var(--dim);display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.pipe{display:flex;align-items:center;overflow-x:auto;padding:10px 0 6px;gap:0}
+.pipe::-webkit-scrollbar{height:3px}
+.pstep{display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;min-width:66px}
+.pc{width:44px;height:44px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:15px;background:var(--surface);transition:.4s}
+.pc.done{border-color:var(--green);background:rgba(0,255,136,.07);box-shadow:0 0 10px rgba(0,255,136,.2)}
+.pc.run{border-color:var(--cyan);background:rgba(0,245,255,.07);animation:pglow 1.2s ease-in-out infinite}
+.pc.fail{border-color:var(--red);background:rgba(255,51,102,.07)}
+.pc.idle{opacity:.32}
+@keyframes pglow{0%,100%{box-shadow:0 0 6px rgba(0,245,255,.2)}50%{box-shadow:0 0 18px rgba(0,245,255,.6)}}
+.plbl{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--dim);letter-spacing:1px}
+.pconn{height:2px;width:34px;background:var(--border);flex-shrink:0;margin-bottom:20px;transition:.5s}
+.pconn.done{background:var(--green);box-shadow:0 0 4px rgba(0,255,136,.35)}
+.pw{margin-bottom:12px}
+.pl{display:flex;justify-content:space-between;margin-bottom:5px;font-size:11px}
+.pb{height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.pf{height:100%;border-radius:3px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.pf-c{background:linear-gradient(90deg,var(--cyan-dim),var(--cyan));box-shadow:0 0 5px var(--cyan)}
+.pf-n{background:linear-gradient(90deg,#00b860,var(--green));box-shadow:0 0 5px var(--green)}
+.pf-g{background:linear-gradient(90deg,#c4a800,var(--gold));box-shadow:0 0 5px var(--gold)}
+.con{background:rgba(0,0,0,.55);border:1px solid var(--border);border-radius:8px;padding:13px;font-family:'Share Tech Mono',monospace;font-size:11px;line-height:1.9;max-height:220px;overflow-y:auto}
+.ll{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lt{color:var(--dim);margin-right:6px}
+.lok{color:var(--green)}.linf{color:var(--cyan)}.lwrn{color:var(--gold)}.lerr{color:var(--red)}.lcmd{color:#a070ff}
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--dim);padding:9px 10px;text-align:left;border-bottom:1px solid var(--border);text-transform:uppercase}
+.tbl td{padding:10px;font-size:12px;border-bottom:1px solid rgba(26,36,68,.35);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(0,245,255,.012)}
+.mono{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--dim)}
+.ecard{background:rgba(0,0,0,.22);border:1px solid var(--border);border-radius:10px;padding:13px;transition:.2s}
+.ecard:hover{border-color:rgba(0,245,255,.18)}
+.ename{font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;margin-bottom:9px;display:flex;align-items:center;justify-content:space-between}
+.erow{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.ek{color:var(--dim);font-family:'Share Tech Mono',monospace;font-size:10px}
+.ev{color:var(--text);font-family:'Share Tech Mono',monospace;font-size:10px}
+.tokbox{display:flex;align-items:center;gap:7px;background:rgba(0,0,0,.35);border:1px solid var(--border);border-radius:7px;padding:9px 11px;margin-bottom:12px}
+.tokval{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--dim);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:1px}
+.barchart{display:flex;gap:4px;align-items:flex-end;height:56px;margin-bottom:4px}
+.bar{flex:1;border-radius:3px 3px 0 0;transition:.3s;cursor:pointer}
+.bar:hover{filter:brightness(1.4)}
+.blbl{display:flex;justify-content:space-between;margin-top:4px}
+.blbl span{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--dim);flex:1;text-align:center}
+.ohero{text-align:center;padding:30px 14px}
+.oicon{width:66px;height:66px;border-radius:50%;border:2px solid rgba(0,245,255,.35);background:linear-gradient(135deg,rgba(0,245,255,.07),rgba(123,47,255,.07));display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 16px;box-shadow:var(--glow-c)}
+.otitle{font-family:'Orbitron',sans-serif;font-size:17px;font-weight:700;margin-bottom:7px}
+.osub{font-size:12px;color:var(--dim);max-width:360px;margin:0 auto 20px;line-height:1.6}
+.perms{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:22px}
+.perm{display:flex;align-items:center;gap:4px;padding:4px 11px;background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:20px;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--dim)}
+.perm em{color:var(--green);font-style:normal}
+.ghbtn{display:inline-flex;align-items:center;gap:9px;padding:12px 28px;background:linear-gradient(135deg,rgba(0,245,255,.1),rgba(123,47,255,.1));border:1px solid rgba(0,245,255,.38);border-radius:10px;cursor:pointer;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;color:var(--cyan);transition:.3s}
+.ghbtn:hover{border-color:var(--cyan);box-shadow:var(--glow-c);transform:translateY(-2px)}
+.ghbtn:active{transform:scale(.97)}
+.ucard{display:flex;align-items:center;gap:13px;padding:13px;background:rgba(0,255,136,.04);border:1px solid rgba(0,255,136,.16);border-radius:10px;margin-bottom:15px}
+.uav{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--purple));display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;color:var(--bg);flex-shrink:0}
+.uname{font-family:'Orbitron',sans-serif;font-size:12px;font-weight:700;margin-bottom:2px}
+.uhandle{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--green)}
+.toast{position:fixed;bottom:18px;right:18px;max-width:270px;background:var(--card);border-radius:10px;padding:11px 16px;font-family:'Share Tech Mono',monospace;font-size:11px;z-index:9999;transform:translateX(310px);transition:transform .35s cubic-bezier(.4,0,.2,1);display:flex;align-items:center;gap:7px;pointer-events:none}
+.toast.ok{border:1px solid rgba(0,255,136,.32);color:var(--green);box-shadow:var(--glow-n)}
+.toast.err{border:1px solid rgba(255,51,102,.32);color:var(--red)}
+.toast.inf{border:1px solid rgba(0,245,255,.32);color:var(--cyan);box-shadow:var(--glow-c)}
+.toast.warn{border:1px solid rgba(255,215,0,.32);color:var(--gold)}
+.toast.show{transform:translateX(0)}
+.mbg{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.mbg.show{display:flex}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;max-width:420px;width:100%;position:relative;animation:fu .25s ease}
+.mclose{position:absolute;top:13px;right:13px;cursor:pointer;color:var(--dim);font-size:17px;line-height:1;transition:.2s;background:none;border:none}
+.mclose:hover{color:var(--red)}
+.mtitle{font-family:'Orbitron',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;margin-bottom:4px;color:var(--cyan)}
+.msub{font-size:12px;color:var(--dim);margin-bottom:16px;line-height:1.5}
+.json-k{color:var(--cyan)}.json-s{color:var(--green)}.json-n{color:var(--gold)}.json-b{color:#a070ff}
+@media(max-width:900px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .g2,.g3{grid-template-columns:1fr}
+  .sp2{grid-column:span 1}
+  .hdr-clk{display:none}
+  .burger{display:flex}
+  .nav{flex-direction:column;top:55px;max-height:0;overflow:hidden;padding:0 20px;transition:.3s}
+  .nav.open{max-height:300px;padding:8px 20px}
+  .nbtn{width:100%}
+}
+@media(max-width:480px){
+  .stats{grid-template-columns:1fr 1fr}
+  .sc-n{font-size:20px}
+  .main{padding:12px}
+  .card{padding:14px}
+  .ohero{padding:18px 6px}
+  .perms{display:none}
+  .brow{gap:6px}
+  .btn{padding:8px 12px;font-size:8px}
+  .pipe{gap:0}
+  .pstep{min-width:56px}
+  .pc{width:38px;height:38px;font-size:13px}
+  .pconn{width:24px}
+}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="logo">
+    <div class="logo-box">NW</div>
+    <div>
+      <div class="logo-name">NEXUS WALLS</div>
+      <div class="logo-sub">GITHUB INTEGRATION</div>
+    </div>
+  </div>
+  <div class="hdr-r">
+    <div class="hdr-clk" id="clock"></div>
+    <div class="cbadge on" id="cbadge"><div class="dot" id="cdot"></div><span id="ctxt">CONNECTED</span></div>
+    <button class="burger" id="burger" onclick="toggleNav()"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<nav class="nav" id="nav">
+  <button class="nbtn on" data-tab="oauth" onclick="switchTab(this)">⌥ OAUTH</button>
+  <button class="nbtn" data-tab="repos" onclick="switchTab(this)">⊞ REPOS <span class="nb" id="nbrepos">5</span></button>
+  <button class="nbtn" data-tab="deploy" onclick="switchTab(this)">⇪ AUTO DEPLOY</button>
+  <button class="nbtn" data-tab="api" onclick="switchTab(this)">⬡ API DASHBOARD</button>
+</nav>
+
+<main class="main">
+
+<div class="stats">
+  <div class="sc c"><div class="sc-n" id="s-repos">5</div><div class="sc-l">Repos Linked</div><div class="sc-d" id="sd-repos">+1 today</div></div>
+  <div class="sc g"><div class="sc-n" id="s-commits">247</div><div class="sc-l">Total Commits</div><div class="sc-d">+14 today</div></div>
+  <div class="sc n"><div class="sc-n" id="s-deploys">38</div><div class="sc-l">Deployments</div><div class="sc-d" id="sd-dep">+0 today</div></div>
+  <div class="sc p"><div class="sc-n">5</div><div class="sc-l">Webhooks</div><div class="sc-d">all active</div></div>
+</div>
+
+<!-- ══════ OAUTH ══════ -->
+<div class="panel on" id="panel-oauth">
+  <div class="g2">
+    <div class="card">
+      <div id="vDisc">
+        <div class="ohero">
+          <div class="oicon">⌥</div>
+          <div class="otitle">Connect GitHub</div>
+          <div class="osub">Authorize NEXUS WALLS to access repositories and manage deployments via OAuth 2.0.</div>
+          <div class="perms">
+            <div class="perm"><em>✓</em> repo</div>
+            <div class="perm"><em>✓</em> workflow</div>
+            <div class="perm"><em>✓</em> read:user</div>
+            <div class="perm"><em>✓</em> admin:repo_hook</div>
+            <div class="perm"><em>✓</em> deployments</div>
+          </div>
+          <button class="ghbtn" id="ghBtn" onclick="doConnect()">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            AUTHORIZE WITH GITHUB
+          </button>
+        </div>
+      </div>
+      <div id="vConn" style="display:none">
+        <div class="ct">Connected Account</div>
+        <div class="cd">GitHub OAuth active. Token refreshes every 8h.</div>
+        <div class="ucard">
+          <div class="uav">N</div>
+          <div><div class="uname">Nisar LLC</div><div class="uhandle">@nisarllc206-sys</div></div>
+          <div style="margin-left:auto"><div class="bdg bn2">● ACTIVE</div></div>
+        </div>
+        <label class="lbl">Access Token</label>
+        <div class="tokbox">
+          <div class="tokval" id="tokv">ghp_••••••••••••••••••••••••••••••••</div>
+          <div class="ibtn" onclick="toggleTok()" title="Show">👁</div>
+          <div class="ibtn" onclick="copyTok()" title="Copy">⎘</div>
+        </div>
+        <label class="lbl">Active Scopes</label>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:16px">
+          <div class="bdg bc2">repo</div><div class="bdg bc2">workflow</div><div class="bdg bc2">read:user</div><div class="bdg bc2">admin:repo_hook</div><div class="bdg bc2">deployments</div>
+        </div>
+        <div class="brow">
+          <button class="btn bc" onclick="refreshTok()">↻ REFRESH TOKEN</button>
+          <button class="btn br" onclick="doDisconnect()">⊗ DISCONNECT</button>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">OAuth App Config</div>
+      <div class="cd">Configure GitHub OAuth App credentials for NEXUS WALLS.</div>
+      <label class="lbl">App Name</label><input class="inp" value="NEXUS-WALLS-APP">
+      <label class="lbl">Client ID</label><input class="inp" value="Iv1.a8f2c3d4e5f6g7h8">
+      <label class="lbl">Client Secret</label><input class="inp" type="password" value="nexus_oauth_secret_2024">
+      <label class="lbl">Callback URL</label><input class="inp" value="https://nexuswalls.com/auth/github/callback">
+      <div class="brow" style="margin-bottom:16px">
+        <button class="btn bg" onclick="toast('OAuth config saved!','ok','⬡')">⬡ SAVE CONFIG</button>
+        <button class="btn bc" onclick="testConn()">⬡ TEST</button>
+      </div>
+      <div class="sep"></div>
+      <div class="ct" style="margin-bottom:10px">Session Settings</div>
+      <div class="trow" onclick="this.querySelector('.tgl').classList.toggle('on')"><div class="tgl on"></div><span>Remember session (30 days)</span></div>
+      <div class="trow" onclick="this.querySelector('.tgl').classList.toggle('on')"><div class="tgl on"></div><span>Auto-refresh token on expiry</span></div>
+      <div class="trow" onclick="this.querySelector('.tgl').classList.toggle('on')"><div class="tgl"></div><span>Require 2FA</span></div>
+      <div class="trow" onclick="this.querySelector('.tgl').classList.toggle('on')"><div class="tgl on"></div><span>Notify on new device login</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ REPOS ══════ -->
+<div class="panel" id="panel-repos">
+  <div class="g2">
+    <div class="card sp2">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;flex-wrap:wrap;gap:10px">
+        <div><div class="ct">Linked Repositories</div><div style="font-size:11px;color:var(--dim)">Push, pull and manage repos directly from NEXUS WALLS</div></div>
+        <div class="brow">
+          <button class="btn bc" id="syncBtn" onclick="syncRepos()">↻ SYNC</button>
+          <button class="btn bg" onclick="openAddRepo()">+ ADD REPO</button>
+        </div>
+      </div>
+      <div class="rlist" id="repoList"></div>
+    </div>
+    <div class="card">
+      <div class="ct">Push to GitHub</div>
+      <div class="cd">Commit and push changes from NEXUS WALLS.</div>
+      <label class="lbl">Repository</label><select class="inp" id="push-repo"></select>
+      <label class="lbl">Branch</label>
+      <select class="inp" id="push-branch"><option>main</option><option>dev</option><option>feature/github-integration</option></select>
+      <label class="lbl">Commit Message</label>
+      <input class="inp" id="push-msg" value="feat: add GitHub integration panel">
+      <div class="brow">
+        <button class="btn bc" id="pushBtn" onclick="doPush()">↑ PUSH</button>
+        <button class="btn bg" id="commitBtn" onclick="doCommit()">⬡ COMMIT</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">Pull from GitHub</div>
+      <div class="cd">Fetch latest changes from remote repository.</div>
+      <label class="lbl">Repository</label><select class="inp" id="pull-repo"></select>
+      <label class="lbl">Strategy</label>
+      <select class="inp"><option>Merge (default)</option><option>Rebase</option><option>Fast-forward only</option></select>
+      <label class="lbl">Target Branch</label>
+      <input class="inp" value="main">
+      <div class="brow" style="margin-bottom:16px">
+        <button class="btn bn" id="pullBtn" onclick="doPull()">↓ PULL</button>
+        <button class="btn bc" onclick="toast('Fetched remote metadata.','ok','⬡')">⬡ FETCH</button>
+      </div>
+      <div class="sep" style="margin:12px 0"></div>
+      <div class="ct" style="margin-bottom:10px">Recent Commits</div>
+      <div class="clog" id="commitLog"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ DEPLOY ══════ -->
+<div class="panel" id="panel-deploy">
+  <div class="g2">
+    <div class="card sp2">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:12px">
+        <div><div class="ct">Deployment Pipeline</div><div style="font-size:11px;color:var(--dim)" id="pSub">nexus-walls-frontend → main → Production</div></div>
+        <div class="bdg bc2" id="pStatus">◎ IDLE</div>
+      </div>
+      <div class="pipe" id="pipeEl"></div>
+      <div class="sep" style="margin:12px 0"></div>
+      <div class="g3" style="gap:10px">
+        <div class="pw"><div class="pl"><span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--dim)">BUILD</span><span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--cyan)" id="bpct">0%</span></div><div class="pb"><div class="pf pf-c" id="bbar" style="width:0%"></div></div></div>
+        <div class="pw"><div class="pl"><span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--dim)">DEPLOY</span><span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--green)" id="dpct">0%</span></div><div class="pb"><div class="pf pf-n" id="dbar" style="width:0%"></div></div></div>
+        <div class="pw"><div class="pl"><span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--dim)">TESTS</span><span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--gold)" id="tpct">0%</span></div><div class="pb"><div class="pf pf-g" id="tbar" style="width:0%"></div></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">Auto-Deploy Config</div>
+      <div class="cd">Trigger deployments automatically on GitHub events.</div>
+      <label class="lbl">Repository</label><select class="inp" id="dep-repo"></select>
+      <label class="lbl">Trigger Branch</label><input class="inp" value="main">
+      <label class="lbl">Target Environment</label>
+      <select class="inp"><option>Production (nexuswalls.com)</option><option>Staging</option><option>Preview (PR)</option></select>
+      <div class="ct" style="margin-bottom:8px;margin-top:4px">Trigger On</div>
+      <div class="trow" onclick="this.querySelector('.tgl').classList.toggle('on')"><div class="tgl on"></div><span>Push to main</span></div>
+      <div class="trow" onclick="this.querySelector('.tgl').classList.toggle('on')"><div class="tgl on"></div><span>PR merged to main</span></div>
+      <div class="trow" onclick="this.querySelector('.tgl').classList.toggle('on')"><div class="tgl"></div><span>New release tag</span></div>
+      <div class="trow" onclick="this.querySelector('.tgl').classList.toggle('on')"><div class="tgl"></div><span>Manual trigger only</span></div>
+      <div class="sep" style="margin:14px 0"></div>
+      <div class="brow">
+        <button class="btn bc" onclick="toast('Config saved!','ok','⬡')">⬡ SAVE</button>
+        <button class="btn bn" id="trigBtn" onclick="triggerDeploy()">▶ TRIGGER NOW</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct" style="margin-bottom:10px">Live Deploy Log</div>
+      <div class="con" id="deployLog"></div>
+      <div class="sep" style="margin:13px 0"></div>
+      <div class="ct" style="margin-bottom:10px">Webhook Events</div>
+      <table class="tbl">
+        <thead><tr><th>Event</th><th>Status</th><th>Last</th></tr></thead>
+        <tbody id="wTbl"></tbody>
+      </table>
+    </div>
+    <div class="card sp2">
+      <div class="ct" style="margin-bottom:13px">Deployment Environments</div>
+      <div class="g3">
+        <div class="ecard"><div class="ename"><span style="color:var(--green)">PRODUCTION</span><div class="bdg bn2">LIVE</div></div><div class="erow"><span class="ek">URL</span><span class="ev">nexuswalls.com</span></div><div class="erow"><span class="ek">Branch</span><span class="ev">main</span></div><div class="erow"><span class="ek">Last Deploy</span><span class="ev" id="eprod">2h ago</span></div><div class="erow"><span class="ek">Build</span><span class="ev" id="epbld">#38</span></div></div>
+        <div class="ecard"><div class="ename"><span style="color:var(--gold)">STAGING</span><div class="bdg bg2">IDLE</div></div><div class="erow"><span class="ek">URL</span><span class="ev">staging.nexuswalls.com</span></div><div class="erow"><span class="ek">Branch</span><span class="ev">dev</span></div><div class="erow"><span class="ek">Last Deploy</span><span class="ev">1d ago</span></div><div class="erow"><span class="ek">Build</span><span class="ev">#35</span></div></div>
+        <div class="ecard"><div class="ename"><span style="color:#a070ff">PREVIEW</span><div class="bdg bp2">PR #8</div></div><div class="erow"><span class="ek">URL</span><span class="ev">pr-8.nexuswalls.com</span></div><div class="erow"><span class="ek">Branch</span><span class="ev">feature/github-int</span></div><div class="erow"><span class="ek">Last Deploy</span><span class="ev">3h ago</span></div><div class="erow"><span class="ek">Build</span><span class="ev">#37</span></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ API ══════ -->
+<div class="panel" id="panel-api">
+  <div class="g2">
+    <div class="card">
+      <div class="ct">GitHub API Query</div>
+      <div class="cd">Direct REST v3 / GraphQL v4 queries via OAuth token.</div>
+      <label class="lbl">API Type</label>
+      <select class="inp" id="apiType" onchange="onApiType()"><option value="rest">REST API v3</option><option value="graphql">GraphQL v4</option></select>
+      <label class="lbl">Endpoint</label>
+      <input class="inp" id="apiEp" value="/user/repos?per_page=5&sort=updated">
+      <label class="lbl">Method</label>
+      <select class="inp" id="apiMeth"><option>GET</option><option>POST</option><option>PATCH</option><option>DELETE</option></select>
+      <label class="lbl">Request Body</label>
+      <textarea class="inp" id="apiBody" placeholder='{"key":"value"}'></textarea>
+      <div class="brow" style="margin-bottom:16px">
+        <button class="btn bc" id="runBtn" onclick="runQuery()">▶ RUN (Ctrl+Enter)</button>
+        <button class="btn bg" onclick="clearResp()">⊗ CLEAR</button>
+      </div>
+      <div class="sep"></div>
+      <div class="ct" style="margin-bottom:10px">Quick Presets</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <button class="btn bc" style="justify-content:flex-start" onclick="setPreset('/user')">GET /user — profile</button>
+        <button class="btn bc" style="justify-content:flex-start" onclick="setPreset('/user/repos?per_page=5&sort=updated')">GET /user/repos — list</button>
+        <button class="btn bc" style="justify-content:flex-start" onclick="setPreset('/repos/nisarllc206-sys/nexus-walls-frontend/branches')">GET /branches</button>
+        <button class="btn bc" style="justify-content:flex-start" onclick="setPreset('/repos/nisarllc206-sys/nexus-walls-frontend/commits?per_page=5')">GET /commits</button>
+        <button class="btn bc" style="justify-content:flex-start" onclick="setPreset('/repos/nisarllc206-sys/nexus-walls-frontend/deployments')">GET /deployments</button>
+      </div>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;flex-wrap:wrap;gap:8px">
+        <div class="ct">API Response</div>
+        <div class="bdg" id="apiBadge" style="display:none"></div>
+      </div>
+      <div class="cd">Live response from GitHub API.</div>
+      <div class="con" id="apiResp" style="flex:1;max-height:380px">
+        <div class="ll"><span class="linf">// Select a preset or enter endpoint → RUN</span></div>
+      </div>
+      <div class="sep" style="margin:12px 0"></div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <button class="btn bc" onclick="copyResp()">⎘ COPY JSON</button>
+        <button class="btn bg" onclick="dlResp()">↓ DOWNLOAD</button>
+        <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--dim)" id="apiMeta"></span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct" style="margin-bottom:13px">Repo Insights</div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--dim);letter-spacing:2px;margin-bottom:8px">COMMIT ACTIVITY (7D)</div>
+      <div class="barchart" id="barChart"></div>
+      <div class="blbl"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+      <div class="sep"></div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--dim);letter-spacing:2px;margin-bottom:10px">LANGUAGES</div>
+      <div id="langBars"></div>
+    </div>
+    <div class="card">
+      <div class="ct">Webhook Manager</div>
+      <div class="cd">Configure incoming GitHub event webhooks.</div>
+      <label class="lbl">Webhook URL</label><input class="inp" value="https://nexuswalls.com/api/webhooks/github">
+      <label class="lbl">Secret Token</label><input class="inp" type="password" value="nxwalls_wh_secret_2024">
+      <label class="lbl">Content Type</label>
+      <select class="inp"><option>application/json</option><option>application/x-www-form-urlencoded</option></select>
+      <div class="ct" style="margin-bottom:8px">Subscribe to Events</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:14px">
+        <div class="trow" onclick="this.querySelector('.tgl').classList.toggle('on')"><div class="tgl on"></div><span style="font-size:12px">push</span></div>
+        <div class="trow" onclick="this.querySelector('.tgl').classList.toggle('on')"><div class="tgl on"></div><span style="font-size:12px">pull_request</span></div>
+        <div class="trow" onclick="this.querySelector('.tgl').classList.toggle('on')"><div class="tgl on"></div><span style="font-size:12px">deployment</span></div>
+        <div class="trow" onclick="this.querySelector('.tgl').classList.toggle('on')"><div class="tgl"></div><span style="font-size:12px">issues</span></div>
+        <div class="trow" onclick="this.querySelector('.tgl').classList.toggle('on')"><div class="tgl"></div><span style="font-size:12px">release</span></div>
+        <div class="trow" onclick="this.querySelector('.tgl').classList.toggle('on')"><div class="tgl on"></div><span style="font-size:12px">workflow_run</span></div>
+      </div>
+      <div class="brow">
+        <button class="btn bc" onclick="toast('Webhook saved!','ok','⬡')">⬡ SAVE</button>
+        <button class="btn bg" onclick="testWebhook()">⬡ TEST PING</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- ADD REPO MODAL -->
+<div class="mbg" id="modal">
+  <div class="modal">
+    <button class="mclose" onclick="closeModal()">✕</button>
+    <div class="mtitle">LINK REPOSITORY</div>
+    <div class="msub">Connect a GitHub repository to NEXUS WALLS.</div>
+    <label class="lbl">Repo URL or Name</label><input class="inp" id="newUrl" placeholder="nisarllc206-sys/my-repo">
+    <label class="lbl">Language</label>
+    <select class="inp" id="newLang"><option>JavaScript</option><option>Python</option><option>HTML/CSS</option><option>TypeScript</option></select>
+    <label class="lbl">Default Branch</label><input class="inp" id="newBranch" value="main">
+    <div class="brow">
+      <button class="btn bc" onclick="addRepo()">+ LINK REPO</button>
+      <button class="btn br" onclick="closeModal()">CANCEL</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span id="tIcon"></span><span id="tMsg"></span></div>
+
+<script>
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+const S = {
+  connected: true,
+  tokVis: false,
+  deploying: false,
+  deploys: 38,
+  commits: 247,
+  repos: [
+    {name:'nexus-walls-frontend',lang:'JavaScript',color:'#00f5ff',stars:24,branch:'main',status:'active',upd:'2h ago'},
+    {name:'nexus-walls-api',lang:'Node.js',color:'#00ff88',stars:18,branch:'main',status:'active',upd:'5h ago'},
+    {name:'nexus-walls-ai-generator',lang:'Python',color:'#ffd700',stars:31,branch:'dev',status:'dev',upd:'1d ago'},
+    {name:'nexus-walls-video-maker',lang:'Python',color:'#ffd700',stars:15,branch:'feature/moviepy-v2',status:'feature',upd:'3d ago'},
+    {name:'nexus-pod-studio',lang:'HTML/CSS',color:'#a070ff',stars:9,branch:'main',status:'linked',upd:'6d ago'},
+  ],
+  commitData: [
+    {hash:'a3f2c1d',msg:'feat: add wallpaper AI generator v2',by:'nisarllc206-sys',t:'2h ago',type:'',br:'main'},
+    {hash:'b9e7d4c',msg:'fix: moviepy video export quality',by:'nisarllc206-sys',t:'5h ago',type:'m',br:'merged'},
+    {hash:'c1a8b5e',msg:'chore: update torch/diffusers deps',by:'nisarllc206-sys',t:'1d ago',type:'',br:'main'},
+    {hash:'d4f3b8e',msg:'feat: responsive wallpaper grid',by:'nisarllc206-sys',t:'2d ago',type:'',br:'main'},
+  ],
+  webhooks:[
+    {ev:'push',code:200,lbl:'OK',cls:'bn2',t:'2m ago'},
+    {ev:'pull_request',code:200,lbl:'OK',cls:'bn2',t:'1h ago'},
+    {ev:'deployment',code:202,lbl:'ACCEPTED',cls:'bc2',t:'3h ago'},
+    {ev:'release',code:204,lbl:'NO CONTENT',cls:'bg2',t:'3d ago'},
+    {ev:'workflow_run',code:500,lbl:'ERR',cls:'br2',t:'2d ago'},
+  ],
+  pipeState:[0,0,0,0,0,0],
+  logLines:[],
+  apiData:null,
+};
+
+const MOCK={
+  '/user':{login:'nisarllc206-sys',id:187234561,name:'Nisar LLC',company:'Nexus Ultra Platforms',blog:'https://nexuswalls.com',location:'Pakistan',public_repos:12,followers:24,following:15},
+  '/user/repos?per_page=5&sort=updated':[
+    {id:1,name:'nexus-walls-frontend',language:'JavaScript',stargazers_count:24,default_branch:'main',private:false},
+    {id:2,name:'nexus-walls-api',language:'JavaScript',stargazers_count:18,default_branch:'main',private:false},
+    {id:3,name:'nexus-walls-ai-generator',language:'Python',stargazers_count:31,default_branch:'dev',private:false},
+  ],
+  '/repos/nisarllc206-sys/nexus-walls-frontend/branches':[
+    {name:'main',protected:true},{name:'dev',protected:false},{name:'feature/github-integration',protected:false}
+  ],
+  '/repos/nisarllc206-sys/nexus-walls-frontend/commits?per_page=5':[
+    {sha:'a3f2c1d',commit:{message:'feat: add wallpaper AI generator v2',author:{name:'Nisar LLC',date:'2026-03-12T10:00:00Z'}}},
+    {sha:'b9e7d4c',commit:{message:'fix: moviepy video export quality',author:{name:'Nisar LLC',date:'2026-03-12T05:00:00Z'}}},
+  ],
+  '/repos/nisarllc206-sys/nexus-walls-frontend/deployments':[
+    {id:38,environment:'production',created_at:'2026-03-12T08:00:00Z'}
+  ],
+};
+
+// ══════════════════════════════════════════
+// CLOCK
+// ══════════════════════════════════════════
+setInterval(()=>{
+  const n=new Date();
+  document.getElementById('clock').textContent=n.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'})+' PKT';
+},1000);
+
+// ══════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════
+let tTimer;
+function toast(msg,type='ok',icon=''){
+  const e=document.getElementById('toast');
+  const icons={ok:'✓',err:'✕',inf:'ℹ',warn:'⚠'};
+  e.className='toast '+type;
+  document.getElementById('tIcon').textContent=icon||icons[type];
+  document.getElementById('tMsg').textContent=msg;
+  e.classList.add('show');
+  clearTimeout(tTimer);
+  tTimer=setTimeout(()=>e.classList.remove('show'),3200);
+}
+
+// ══════════════════════════════════════════
+// NAV
+// ══════════════════════════════════════════
+function toggleNav(){
+  document.getElementById('burger').classList.toggle('open');
+  document.getElementById('nav').classList.toggle('open');
+}
+
+function switchTab(btn){
+  document.querySelectorAll('.nbtn').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('panel-'+btn.dataset.tab).classList.add('on');
+  document.getElementById('nav').classList.remove('open');
+  document.getElementById('burger').classList.remove('open');
+}
+
+// ══════════════════════════════════════════
+// COUNT ANIM
+// ══════════════════════════════════════════
+function countTo(id,target,ms=700){
+  const el=document.getElementById(id);
+  const start=parseInt(el.textContent)||0;
+  const step=(target-start)/(ms/16);
+  let cur=start;
+  const iv=setInterval(()=>{
+    cur+=step;
+    if((step>0&&cur>=target)||(step<0&&cur<=target)){cur=target;clearInterval(iv);}
+    el.textContent=Math.round(cur);
+  },16);
+}
+
+// ══════════════════════════════════════════
+// OAUTH
+// ══════════════════════════════════════════
+function updateBadge(){
+  const b=document.getElementById('cbadge');
+  const d=document.getElementById('cdot');
+  const t=document.getElementById('ctxt');
+  b.className='cbadge '+(S.connected?'on':'off');
+  d.className='dot '+(S.connected?'':'off');
+  t.textContent=S.connected?'CONNECTED':'DISCONNECTED';
+}
+
+function updateAuthView(){
+  document.getElementById('vDisc').style.display=S.connected?'none':'block';
+  document.getElementById('vConn').style.display=S.connected?'block':'none';
+}
+
+function doConnect(){
+  const btn=document.getElementById('ghBtn');
+  btn.textContent='  AUTHORIZING...';
+  btn.style.opacity='.65';
+  btn.style.pointerEvents='none';
+  setTimeout(()=>{
+    S.connected=true;
+    updateBadge();updateAuthView();
+    toast('GitHub connected! Welcome @nisarllc206-sys','ok');
+  },1600);
+}
+
+function doDisconnect(){
+  S.connected=false;
+  updateBadge();updateAuthView();
+  toast('Disconnected from GitHub.','warn','⊗');
+}
+
+function toggleTok(){
+  S.tokVis=!S.tokVis;
+  document.getElementById('tokv').textContent=S.tokVis?'ghp_xK7mNv2pQ4rY8sZ1bA3cE6fH9jL0mN5pQ':'ghp_••••••••••••••••••••••••••••••••';
+}
+
+function copyTok(){
+  navigator.clipboard.writeText('ghp_xK7mNv2pQ4rY8sZ1bA3cE6fH9jL0mN5pQ').catch(()=>{});
+  toast('Token copied!','inf','⎘');
+}
+
+function refreshTok(){
+  const el=document.getElementById('tokv');
+  el.textContent='Refreshing token...';
+  setTimeout(()=>{
+    el.textContent=S.tokVis?'ghp_xK7mNv2pQ4rY8sZ1bA3cE6fH9jL0mN5pQ':'ghp_••••••••••••••••••••••••••••••••';
+    toast('Token refreshed! Expires in 8h.','ok','↻');
+  },900);
+}
+
+function testConn(){
+  toast('Testing connection...','inf');
+  setTimeout(()=>toast('GitHub API OK ✓ — Rate: 4987/5000','ok'),1100);
+}
+
+// ══════════════════════════════════════════
+// REPOS
+// ══════════════════════════════════════════
+function renderRepos(){
+  const container=document.getElementById('repoList');
+  container.innerHTML='';
+  const selIds=['push-repo','pull-repo','dep-repo'];
+  selIds.forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='';});
+
+  S.repos.forEach((r,i)=>{
+    const sMap={active:'bn2',dev:'bg2',feature:'bp2',linked:'bc2'};
+    const sLbl={active:'ACTIVE',dev:'DEV',feature:'FEATURE',linked:'LINKED'};
+    const div=document.createElement('div');
+    div.className='ritem';
+    div.innerHTML=`
+      <div class="rinfo">
+        <div class="rname">${r.name}</div>
+        <div class="rmeta"><span style="color:${r.color}">● ${r.lang}</span><span>⭐ ${r.stars}</span><span>${r.upd}</span><span style="font-family:'Share Tech Mono',monospace;font-size:10px">${r.branch}</span></div>
+      </div>
+      <div class="bdg ${sMap[r.status]}">${sLbl[r.status]}</div>
+      <div class="racts">
+        <div class="ibtn" title="Pull" onclick="event.stopPropagation();quickPull('${r.name}')">↓</div>
+        <div class="ibtn" title="Push" onclick="event.stopPropagation();quickPush('${r.name}')">↑</div>
+        <div class="ibtn" title="GitHub" onclick="event.stopPropagation();toast('Opening ${r.name} on GitHub...','inf','↗')">↗</div>
+      </div>`;
+    div.onclick=()=>{document.querySelectorAll('.ritem').forEach(x=>x.classList.remove('sel'));div.classList.add('sel');};
+    container.appendChild(div);
+    selIds.forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML+=`<option>${r.name}</option>`;});
+  });
+  document.getElementById('nbrepos').textContent=S.repos.length;
+  document.getElementById('s-repos').textContent=S.repos.length;
+}
+
+function quickPull(n){toast('Pulling '+n+'...','inf','↓');setTimeout(()=>toast(n+' up to date!','ok'),1300);}
+function quickPush(n){toast('Pushing '+n+'...','inf','↑');setTimeout(()=>toast(n+' pushed ✓','ok'),1500);}
+
+function syncRepos(){
+  const btn=document.getElementById('syncBtn');
+  btn.classList.add('ld');btn.disabled=true;btn.textContent='↻ SYNCING...';
+  setTimeout(()=>{
+    btn.classList.remove('ld');btn.disabled=false;btn.textContent='↻ SYNC';
+    toast('Synced! '+S.repos.length+' repositories.','ok','↻');
+  },1400);
+}
+
+function openAddRepo(){document.getElementById('modal').classList.add('show');setTimeout(()=>document.getElementById('newUrl').focus(),100);}
+function closeModal(){document.getElementById('modal').classList.remove('show');}
+
+function addRepo(){
+  const url=document.getElementById('newUrl').value.trim();
+  if(!url){toast('Enter a repo name!','err');return;}
+  const name=url.includes('/')?url.split('/')[1]:url;
+  const lang=document.getElementById('newLang').value;
+  const branch=document.getElementById('newBranch').value||'main';
+  const colors={JavaScript:'#00f5ff',Python:'#ffd700','HTML/CSS':'#a070ff',TypeScript:'#00ff88'};
+  S.repos.unshift({name,lang,color:colors[lang]||'#a070ff',stars:0,branch,status:'linked',upd:'just now'});
+  renderRepos();closeModal();
+  toast('"'+name+'" linked!','ok','+');
+}
+
+function renderCommits(){
+  const el=document.getElementById('commitLog');
+  el.innerHTML='';
+  S.commitData.forEach((c,i)=>{
+    const div=document.createElement('div');
+    div.className='ci';
+    const bCls=c.type==='m'?'bp2':'bc2';
+    div.innerHTML=`
+      <div class="cdw">
+        <div class="cdot ${c.type}"></div>
+        ${i<S.commitData.length-1?'<div class="cline"></div>':''}
+      </div>
+      <div class="cbody">
+        <div class="chash">${c.hash}</div>
+        <div class="cmsg">${c.msg}</div>
+        <div class="cmeta"><span>${c.by}</span><span>${c.t}</span><div class="bdg ${bCls}" style="padding:1px 7px;font-size:9px">${c.br}</div></div>
+      </div>`;
+    el.appendChild(div);
+  });
+}
+
+function addCommit(msg){
+  const h=Math.random().toString(16).substr(2,7);
+  S.commitData.unshift({hash:h,msg,by:'nisarllc206-sys',t:'just now',type:'',br:'main'});
+  if(S.commitData.length>6)S.commitData.pop();
+  renderCommits();
+}
+
+function doPush(){
+  if(!S.connected){toast('Connect GitHub first!','err');return;}
+  const btn=document.getElementById('pushBtn');
+  const msg=document.getElementById('push-msg').value||'update';
+  const repo=document.getElementById('push-repo').value;
+  btn.classList.add('ld');btn.disabled=true;
+  toast('Pushing to '+repo+'...','inf','↑');
+  setTimeout(()=>{
+    btn.classList.remove('ld');btn.disabled=false;
+    addCommit(msg);
+    S.commits++;
+    countTo('s-commits',S.commits,400);
+    toast('Pushed to '+repo+' ✓','ok','↑');
+  },1800);
+}
+
+function doCommit(){
+  if(!S.connected){toast('Connect GitHub first!','err');return;}
+  const msg=document.getElementById('push-msg').value||'update';
+  addCommit(msg);
+  toast('Committed! Push when ready.','ok','⬡');
+}
+
+function doPull(){
+  if(!S.connected){toast('Connect GitHub first!','err');return;}
+  const btn=document.getElementById('pullBtn');
+  const repo=document.getElementById('pull-repo').value;
+  btn.classList.add('ld');btn.disabled=true;
+  toast('Pulling from '+repo+'...','inf','↓');
+  setTimeout(()=>{
+    btn.classList.remove('ld');btn.disabled=false;
+    toast(repo+' up to date!','ok','↓');
+  },1300);
+}
+
+// ══════════════════════════════════════════
+// DEPLOY
+// ══════════════════════════════════════════
+function renderPipeline(){
+  const el=document.getElementById('pipeEl');
+  const stages=['SOURCE','BUILD','TEST','DEPLOY','VERIFY','LIVE'];
+  const icons=['⧉','⛭','⬡','⇪','⊠','◉'];
+  el.innerHTML='';
+  stages.forEach((name,i)=>{
+    const st=S.pipeState[i];
+    const cls=st===1?'done':st===2?'run':st===3?'fail':'idle';
+    const icon=st===1?'✓':st===2?'⟳':st===3?'✕':icons[i];
+    el.innerHTML+=`<div class="pstep"><div class="pc ${cls}" id="pc${i}">${icon}</div><div class="plbl">${name}</div></div>`;
+    if(i<stages.length-1)el.innerHTML+=`<div class="pconn ${st===1?'done':''}" id="pl${i}"></div>`;
+  });
+}
+
+function setBar(barId,pctId,pct){
+  document.getElementById(barId).style.width=pct+'%';
+  document.getElementById(pctId).textContent=pct+'%';
+}
+
+function animBar(barId,pctId,from,to,ms){
+  const steps=ms/16;const step=(to-from)/steps;let cur=from;
+  const iv=setInterval(()=>{
+    cur=Math.min(cur+step,to);
+    document.getElementById(barId).style.width=Math.round(cur)+'%';
+    document.getElementById(pctId).textContent=Math.round(cur)+'%';
+    if(cur>=to)clearInterval(iv);
+  },16);
+}
+
+function addLog(type,msg){
+  const t=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  S.logLines.push({type,msg,t});
+  const el=document.getElementById('deployLog');
+  const cls={ok:'lok',inf:'linf',warn:'lwrn',err:'lerr',cmd:'lcmd'};
+  el.innerHTML+=`<div class="ll"><span class="lt">[${t}]</span><span class="${cls[type]||'linf'}">${msg}</span></div>`;
+  el.scrollTop=el.scrollHeight;
+}
+
+function clearLog(){
+  S.logLines=[];
+  document.getElementById('deployLog').innerHTML='';
+}
+
+function triggerDeploy(){
+  if(!S.connected){toast('Connect GitHub first!','err');return;}
+  if(S.deploying){toast('Deploy already running!','warn');return;}
+  S.deploying=true;
+  const btn=document.getElementById('trigBtn');
+  btn.classList.add('ld');btn.disabled=true;
+  S.pipeState=[0,0,0,0,0,0];
+  renderPipeline();clearLog();
+  setBar('bbar','bpct',0);setBar('dbar','dpct',0);setBar('tbar','tpct',0);
+  document.getElementById('pStatus').className='bdg bc2';
+  document.getElementById('pStatus').textContent='⟳ RUNNING';
+  S.deploys++;
+  countTo('s-deploys',S.deploys,400);
+
+  const seq=[
+    {d:200,fn:()=>{S.pipeState[0]=1;renderPipeline();animBar('bbar','bpct',0,100,600);addLog('ok','Source pulled: nexus-walls-frontend@'+Math.random().toString(16).substr(2,7));}},
+    {d:1000,fn:()=>{S.pipeState[1]=2;renderPipeline();addLog('inf','Installing dependencies...');}},
+    {d:2000,fn:()=>{S.pipeState[1]=1;renderPipeline();addLog('ok','npm install complete (234 packages)');animBar('tbar','tpct',0,94,700);addLog('ok','Tests passed: 47/50');addLog('warn','3 tests skipped (integration)');}},
+    {d:3000,fn:()=>{S.pipeState[2]=1;renderPipeline();addLog('ok','Build complete — 2.3MB gzipped');addLog('inf','Deploying to Netlify CDN...');}},
+    {d:3800,fn:()=>{S.pipeState[3]=2;renderPipeline();addLog('inf','Uploading assets...');animBar('dbar','dpct',0,100,2400);}},
+    {d:6300,fn:()=>{S.pipeState[3]=1;S.pipeState[4]=2;renderPipeline();addLog('ok','24/24 edge nodes updated');addLog('inf','Running health checks...');}},
+    {d:7200,fn:()=>{S.pipeState[4]=1;S.pipeState[5]=2;renderPipeline();addLog('ok','Health check passed');}},
+    {d:7900,fn:()=>{
+      S.pipeState[5]=1;renderPipeline();
+      addLog('ok','✓ DEPLOYMENT COMPLETE 🚀');
+      document.getElementById('pStatus').className='bdg bn2';
+      document.getElementById('pStatus').textContent='● LIVE';
+      document.getElementById('eprod').textContent='just now';
+      document.getElementById('epbld').textContent='#'+(38+S.deploys);
+      document.getElementById('sd-dep').textContent='+'+Math.min(S.deploys-38,9)+' today';
+      S.deploying=false;
+      btn.classList.remove('ld');btn.disabled=false;
+      toast('Deployment LIVE on nexuswalls.com 🚀','ok');
+    }},
+  ];
+  seq.forEach(s=>setTimeout(s.fn,s.d));
+}
+
+function renderWebhooks(){
+  document.getElementById('wTbl').innerHTML=S.webhooks.map(w=>
+    `<tr><td class="mono">${w.ev}</td><td><div class="bdg ${w.cls}">${w.code} ${w.lbl}</div></td><td class="mono">${w.t}</td></tr>`
+  ).join('');
+}
+
+function testWebhook(){
+  toast('Sending ping to webhook...','inf');
+  setTimeout(()=>toast('Ping: 200 OK ✓','ok'),900);
+}
+
+// ══════════════════════════════════════════
+// API
+// ══════════════════════════════════════════
+function setPreset(ep){
+  document.getElementById('apiEp').value=ep;
+  document.getElementById('apiType').value='rest';
+  document.getElementById('apiMeth').value='GET';
+}
+
+function onApiType(){
+  const t=document.getElementById('apiType').value;
+  document.getElementById('apiEp').value=t==='graphql'
+    ?'{ viewer { login repositories(first:5) { nodes { name } } } }'
+    :'/user/repos?per_page=5&sort=updated';
+}
+
+function runQuery(){
+  if(!S.connected){toast('Connect GitHub first!','err');return;}
+  const btn=document.getElementById('runBtn');
+  const ep=document.getElementById('apiEp').value.trim();
+  btn.classList.add('ld');btn.disabled=true;
+  document.getElementById('apiResp').innerHTML='<div class="ll"><span class="lwrn">// Fetching...</span></div>';
+  document.getElementById('apiBadge').style.display='none';
+  const t0=Date.now();
+  setTimeout(()=>{
+    btn.classList.remove('ld');btn.disabled=false;
+    const data=MOCK[ep]||{status:200,message:'OK',endpoint:ep,timestamp:new Date().toISOString()};
+    S.apiData=data;
+    const ms=Date.now()-t0;
+    renderJson(data);
+    const b=document.getElementById('apiBadge');
+    b.className='bdg bn2';b.textContent='200 OK';b.style.display='inline-flex';
+    document.getElementById('apiMeta').textContent=ms+'ms · '+JSON.stringify(data).length+' bytes';
+    toast('Query complete!','ok','▶');
+  },400+Math.random()*300);
+}
+
+function renderJson(data){
+  const json=JSON.stringify(data,null,2);
+  const h=json
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"([^"]+)":/g,'<span class="json-k">"$1"</span>:')
+    .replace(/: "([^"]*)"/g,': <span class="json-s">"$1"</span>')
+    .replace(/: (\d+\.?\d*)/g,': <span class="json-n">$1</span>')
+    .replace(/: (true|false|null)/g,': <span class="json-b">$1</span>');
+  document.getElementById('apiResp').innerHTML='<pre style="white-space:pre-wrap;word-break:break-all;font-family:\'Share Tech Mono\',monospace;font-size:11px">'+h+'</pre>';
+}
+
+function clearResp(){
+  S.apiData=null;
+  document.getElementById('apiResp').innerHTML='<div class="ll"><span class="linf">// Cleared.</span></div>';
+  document.getElementById('apiBadge').style.display='none';
+  document.getElementById('apiMeta').textContent='';
+}
+
+function copyResp(){
+  if(!S.apiData){toast('Nothing to copy!','warn');return;}
+  navigator.clipboard.writeText(JSON.stringify(S.apiData,null,2)).catch(()=>{});
+  toast('JSON copied!','inf','⎘');
+}
+
+function dlResp(){
+  if(!S.apiData){toast('Nothing to download!','warn');return;}
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(S.apiData,null,2)],{type:'application/json'}));
+  a.download='github-response.json';a.click();
+  toast('Downloading...','inf','↓');
+}
+
+// ══════════════════════════════════════════
+// CHARTS
+// ══════════════════════════════════════════
+function renderBarChart(){
+  const vals=[4,9,6,14,8,12,11];
+  const max=Math.max(...vals);
+  const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  document.getElementById('barChart').innerHTML=vals.map((v,i)=>{
+    const h=(v/max*100).toFixed(0);
+    const op=0.35+(v/max)*0.65;
+    return `<div class="bar" style="height:${h}%;background:rgba(0,245,255,${op})" onclick="toast('${days[i]}: ${v} commits','inf')"></div>`;
+  }).join('');
+}
+
+function renderLangBars(){
+  const langs=[{n:'JavaScript',p:42,cls:'pf-g'},{n:'Python',p:31,cls:'pf-c'},{n:'HTML/CSS',p:27,cls:'pf-n'}];
+  document.getElementById('langBars').innerHTML=langs.map(l=>`
+    <div class="pw">
+      <div class="pl"><span style="font-size:12px">${l.n}</span><span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--dim)">${l.p}%</span></div>
+      <div class="pb"><div class="pf ${l.cls}" style="width:${l.p}%"></div></div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════
+// KEYBOARD
+// ══════════════════════════════════════════
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')closeModal();
+  if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();runQuery();}
+});
+document.getElementById('modal').addEventListener('click',e=>{
+  if(e.target===document.getElementById('modal'))closeModal();
+});
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+renderRepos();
+renderCommits();
+renderPipeline();
+renderWebhooks();
+renderBarChart();
+renderLangBars();
+updateBadge();
+updateAuthView();
+addLog('cmd','$ nexus-walls --env=production --watch');
+addLog('ok','System ready. Waiting for trigger...');
+</script>
+</body>
+</html>
+
