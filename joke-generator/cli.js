@@ -40,7 +40,12 @@ function parseArgs(argv) {
     switch (argv[i]) {
       case '--category': args.category = argv[++i] || 'Any'; break;
       case '--type':     args.type     = argv[++i] || null;  break;
-      case '--count':    args.count    = Math.max(1, Math.min(10, parseInt(argv[++i], 10) || 1)); break;
+      case '--count': {
+        const n = parseInt(argv[++i], 10);
+        if (isNaN(n) || n < 1) { console.error(`✖  Error: --count must be a number between 1 and 10`); process.exit(1); }
+        args.count = Math.min(10, n);
+        break;
+      }
       case '--list-categories': args.listCategories = true; break;
       case '--help': printHelp(); process.exit(0); break;
     }
@@ -102,7 +107,7 @@ function fetchJson(url) {
     req.on('error', reject);
     req.setTimeout(10000, () => {
       req.destroy();
-      reject(new Error('Request timed out after 10 s'));
+      reject(new Error('Request timed out after 10s'));
     });
   });
 }
