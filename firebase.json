@@ -1,0 +1,86 @@
+{
+  "hosting": {
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/api/generate",
+        "function": "generateContent"
+      },
+      {
+        "source": "/api/payment/**",
+        "function": "paymentHandler"
+      },
+      {
+        "source": "/api/whatsapp/**",
+        "function": "whatsappBot"
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ],
+    "headers": [
+      {
+        "source": "**/*.@(js|css)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "max-age=31536000"
+          }
+        ]
+      },
+      {
+        "source": "**",
+        "headers": [
+          {
+            "key": "X-Frame-Options",
+            "value": "SAMEORIGIN"
+          },
+          {
+            "key": "X-Content-Type-Options",
+            "value": "nosniff"
+          },
+          {
+            "key": "X-XSS-Protection",
+            "value": "1; mode=block"
+          },
+          {
+            "key": "Referrer-Policy",
+            "value": "strict-origin-when-cross-origin"
+          }
+        ]
+      }
+    ]
+  },
+  "functions": {
+    "source": "src/backend",
+    "runtime": "nodejs18",
+    "predeploy": [
+      "npm --prefix src/backend run build"
+    ]
+  },
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "emulators": {
+    "functions": {
+      "port": 5001
+    },
+    "hosting": {
+      "port": 5000
+    },
+    "firestore": {
+      "port": 8080
+    },
+    "ui": {
+      "enabled": true,
+      "port": 4000
+    }
+  }
+}

@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Nexus Ultra — Build Your AI-Powered Creator Business. Access 50+ AI tools, generate content, and automate your workflow." />
+  <meta name="keywords" content="AI tools, content generator, AI creator, ChatGPT, Claude, Midjourney" />
+  <meta property="og:title" content="Nexus Ultra — AI Creator Platform" />
+  <meta property="og:description" content="50+ AI tools, content generation, and creator automation in one platform." />
+  <meta property="og:type" content="website" />
+  <title>Nexus Ultra — AI Creator Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-theme="dark">
+
+  <!-- ═══════════════════ NAVBAR ═══════════════════ -->
+  <nav class="navbar" id="navbar">
+    <div class="container navbar__inner">
+      <a href="index.html" class="navbar__logo">
+        <span class="logo-icon"><i class="fa-solid fa-bolt"></i></span>
+        <span class="logo-text">Nexus<span class="accent">Ultra</span></span>
+      </a>
+
+      <button class="navbar__toggle" id="navToggle" aria-label="Toggle navigation">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+
+      <ul class="navbar__links" id="navLinks">
+        <li><a href="tools.html" class="nav-link">AI Tools</a></li>
+        <li><a href="#features" class="nav-link">Features</a></li>
+        <li><a href="#pricing" class="nav-link">Pricing</a></li>
+        <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+      </ul>
+
+      <div class="navbar__actions">
+        <button class="btn btn-ghost" id="themeToggle" aria-label="Toggle theme">
+          <i class="fa-solid fa-moon" id="themeIcon"></i>
+        </button>
+        <a href="#" class="btn btn-outline btn-sm" id="loginBtn">Log In</a>
+        <a href="#" class="btn btn-primary btn-sm" id="signupBtn">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════ HERO ═══════════════════ -->
+  <section class="hero" id="hero">
+    <div class="hero__bg-gradient"></div>
+    <div class="hero__particles" id="particles"></div>
+    <div class="container hero__content">
+      <div class="hero__badge">
+        <i class="fa-solid fa-sparkles"></i>
+        <span>Powered by Claude, GPT-4 & Gemini</span>
+      </div>
+      <h1 class="hero__title">
+        Build Your <span class="gradient-text">AI-Powered</span><br />Creator Business
+      </h1>
+      <p class="hero__subtitle">
+        Access 50+ premium AI tools, generate content in seconds, automate your workflow, and scale your creator business — all from one powerful platform.
+      </p>
+      <div class="hero__cta">
+        <a href="dashboard.html" class="btn btn-primary btn-lg">
+          <i class="fa-solid fa-rocket"></i>
+          Get Started Free
+        </a>
+        <a href="tools.html" class="btn btn-outline btn-lg">
+          <i class="fa-solid fa-compass"></i>
+          Explore AI Tools
+        </a>
+      </div>
+      <p class="hero__note"><i class="fa-solid fa-lock"></i> No credit card required &nbsp;·&nbsp; Free forever plan</p>
+    </div>
+    <div class="hero__scroll-indicator">
+      <span></span>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ STATS BAR ═══════════════════ -->
+  <section class="stats-bar">
+    <div class="container stats-bar__grid">
+      <div class="stat-item">
+        <span class="stat-number" data-count="50">0</span><span class="stat-suffix">+</span>
+        <span class="stat-label">AI Tools</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-number" data-count="10000">0</span><span class="stat-suffix">+</span>
+        <span class="stat-label">Active Users</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-number" data-count="99">0</span><span class="stat-suffix">.9%</span>
+        <span class="stat-label">Uptime</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-number">$0</span>
+        <span class="stat-label">To Start</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ FEATURES ═══════════════════ -->
+  <section class="features section" id="features">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Why Nexus Ultra</span>
+        <h2 class="section-title">Everything You Need to <span class="gradient-text">Create at Scale</span></h2>
+        <p class="section-subtitle">One platform that replaces dozens of tools — built for serious creators and entrepreneurs.</p>
+      </div>
+      <div class="features__grid">
+        <div class="feature-card">
+          <div class="feature-card__icon" style="--icon-color: #6366f1;">
+            <i class="fa-solid fa-robot"></i>
+          </div>
+          <h3>AI Tools Directory</h3>
+          <p>Browse and compare 50+ curated AI tools across every category — from writing to video, music to code.</p>
+          <a href="tools.html" class="feature-card__link">Explore Tools <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card__icon" style="--icon-color: #8b5cf6;">
+            <i class="fa-solid fa-pen-nib"></i>
+          </div>
+          <h3>Content Generator</h3>
+          <p>Generate blog posts, social media content, emails, and scripts using Claude and GPT-4 with one click.</p>
+          <a href="dashboard.html" class="feature-card__link">Try Generator <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card__icon" style="--icon-color: #06b6d4;">
+            <i class="fa-solid fa-gauge-high"></i>
+          </div>
+          <h3>Creator Dashboard</h3>
+          <p>Track your content history, usage analytics, saved tools, and account status from a unified command center.</p>
+          <a href="dashboard.html" class="feature-card__link">Open Dashboard <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card__icon" style="--icon-color: #f59e0b;">
+            <i class="fa-solid fa-palette"></i>
+          </div>
+          <h3>Theme Customization</h3>
+          <p>Switch between light and dark modes, customize accent colors, and personalize your workspace experience.</p>
+          <a href="#" class="feature-card__link">Customize <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card__icon" style="--icon-color: #10b981;">
+            <i class="fa-brands fa-stripe-s"></i>
+          </div>
+          <h3>Payment Integration</h3>
+          <p>Seamless Stripe integration for subscriptions, one-time purchases, and revenue management for your business.</p>
+          <a href="#pricing" class="feature-card__link">View Plans <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card__icon" style="--icon-color: #22c55e;">
+            <i class="fa-brands fa-whatsapp"></i>
+          </div>
+          <h3>WhatsApp Automation</h3>
+          <p>Automate lead capture, send AI-crafted messages, and manage client communications via WhatsApp Business API.</p>
+          <a href="#" class="feature-card__link">Learn More <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ AI TOOLS PREVIEW ═══════════════════ -->
+  <section class="tools-preview section" id="tools-preview">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Top AI Tools</span>
+        <h2 class="section-title">Discover <span class="gradient-text">Powerful AI Tools</span></h2>
+        <p class="section-subtitle">Handpicked and rated by our community of 10,000+ creators.</p>
+      </div>
+      <div class="tools-preview__grid" id="toolsPreviewGrid">
+        <!-- Populated by JavaScript -->
+      </div>
+      <div class="tools-preview__cta">
+        <a href="tools.html" class="btn btn-primary btn-lg">
+          <i class="fa-solid fa-th-large"></i>
+          View All 50+ Tools
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ PRICING ═══════════════════ -->
+  <section class="pricing section" id="pricing">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Pricing</span>
+        <h2 class="section-title">Simple, <span class="gradient-text">Transparent Pricing</span></h2>
+        <p class="section-subtitle">Start free, upgrade when you're ready. No hidden fees.</p>
+      </div>
+      <div class="pricing__toggle">
+        <span>Monthly</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="billingToggle" />
+          <span class="toggle-slider"></span>
+        </label>
+        <span>Annual <span class="badge-save">Save 20%</span></span>
+      </div>
+      <div class="pricing__grid">
+        <!-- Free Plan -->
+        <div class="pricing-card">
+          <div class="pricing-card__header">
+            <span class="plan-icon"><i class="fa-solid fa-seedling"></i></span>
+            <h3 class="plan-name">Free</h3>
+            <div class="plan-price">
+              <span class="price-amount">$0</span>
+              <span class="price-period">/month</span>
+            </div>
+            <p class="plan-desc">Perfect for getting started with AI content creation.</p>
+          </div>
+          <ul class="pricing-card__features">
+            <li><i class="fa-solid fa-check"></i> 50 AI content generations/month</li>
+            <li><i class="fa-solid fa-check"></i> Access to 20 AI tools</li>
+            <li><i class="fa-solid fa-check"></i> Basic dashboard</li>
+            <li><i class="fa-solid fa-check"></i> Community support</li>
+            <li><i class="fa-solid fa-check"></i> 5 saved favorites</li>
+            <li class="disabled"><i class="fa-solid fa-times"></i> Advanced analytics</li>
+            <li class="disabled"><i class="fa-solid fa-times"></i> WhatsApp automation</li>
+            <li class="disabled"><i class="fa-solid fa-times"></i> API access</li>
+          </ul>
+          <a href="#" class="btn btn-outline btn-block" id="freePlanBtn">Get Started Free</a>
+        </div>
+
+        <!-- Pro Plan -->
+        <div class="pricing-card pricing-card--popular">
+          <div class="pricing-card__badge">Most Popular</div>
+          <div class="pricing-card__header">
+            <span class="plan-icon"><i class="fa-solid fa-bolt"></i></span>
+            <h3 class="plan-name">Pro</h3>
+            <div class="plan-price">
+              <span class="price-amount" data-monthly="29" data-annual="23">$29</span>
+              <span class="price-period">/month</span>
+            </div>
+            <p class="plan-desc">For serious creators and content entrepreneurs.</p>
+          </div>
+          <ul class="pricing-card__features">
+            <li><i class="fa-solid fa-check"></i> Unlimited AI generations</li>
+            <li><i class="fa-solid fa-check"></i> Access to all 50+ AI tools</li>
+            <li><i class="fa-solid fa-check"></i> Advanced dashboard & analytics</li>
+            <li><i class="fa-solid fa-check"></i> Priority support</li>
+            <li><i class="fa-solid fa-check"></i> Unlimited favorites</li>
+            <li><i class="fa-solid fa-check"></i> Advanced analytics</li>
+            <li><i class="fa-solid fa-check"></i> WhatsApp automation (500 msgs)</li>
+            <li><i class="fa-solid fa-check"></i> API access</li>
+          </ul>
+          <a href="#" class="btn btn-primary btn-block" id="proPlanBtn" data-plan="pro" data-price-id="price_pro_monthly">
+            <i class="fa-solid fa-bolt"></i> Start Pro Trial
+          </a>
+        </div>
+
+        <!-- Enterprise Plan -->
+        <div class="pricing-card">
+          <div class="pricing-card__header">
+            <span class="plan-icon"><i class="fa-solid fa-building"></i></span>
+            <h3 class="plan-name">Enterprise</h3>
+            <div class="plan-price">
+              <span class="price-amount" data-monthly="99" data-annual="79">$99</span>
+              <span class="price-period">/month</span>
+            </div>
+            <p class="plan-desc">For agencies and large-scale content operations.</p>
+          </div>
+          <ul class="pricing-card__features">
+            <li><i class="fa-solid fa-check"></i> Everything in Pro</li>
+            <li><i class="fa-solid fa-check"></i> 10 team seats</li>
+            <li><i class="fa-solid fa-check"></i> Custom AI model fine-tuning</li>
+            <li><i class="fa-solid fa-check"></i> Dedicated account manager</li>
+            <li><i class="fa-solid fa-check"></i> Custom integrations</li>
+            <li><i class="fa-solid fa-check"></i> SLA 99.99% uptime</li>
+            <li><i class="fa-solid fa-check"></i> Unlimited WhatsApp messages</li>
+            <li><i class="fa-solid fa-check"></i> White-label option</li>
+          </ul>
+          <a href="#" class="btn btn-outline btn-block" id="enterprisePlanBtn" data-plan="enterprise" data-price-id="price_enterprise_monthly">
+            Contact Sales
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ TESTIMONIALS ═══════════════════ -->
+  <section class="testimonials section" id="testimonials">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Testimonials</span>
+        <h2 class="section-title">Loved by <span class="gradient-text">Creators Worldwide</span></h2>
+      </div>
+      <div class="testimonials__grid">
+        <div class="testimonial-card">
+          <div class="testimonial-card__stars">
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+          </div>
+          <p class="testimonial-card__text">"Nexus Ultra completely transformed my content workflow. I used to spend hours writing blog posts — now I generate a full week of content in under 30 minutes. The AI tools directory alone is worth the subscription."</p>
+          <div class="testimonial-card__author">
+            <div class="author-avatar" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">SA</div>
+            <div>
+              <strong>Sarah Andersen</strong>
+              <span>Content Creator, 250K followers</span>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card testimonial-card--featured">
+          <div class="testimonial-card__stars">
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+          </div>
+          <p class="testimonial-card__text">"As a digital marketing agency, we manage content for 20+ clients. Nexus Ultra's dashboard and AI generation tools have cut our production time by 70%. The WhatsApp automation is a game-changer for lead nurturing."</p>
+          <div class="testimonial-card__author">
+            <div class="author-avatar" style="background: linear-gradient(135deg, #06b6d4, #3b82f6);">MR</div>
+            <div>
+              <strong>Marcus Rodriguez</strong>
+              <span>Founder, Digital Edge Agency</span>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-card__stars">
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            <i class="fa-regular fa-star-half-stroke"></i>
+          </div>
+          <p class="testimonial-card__text">"I found 5 AI tools I never knew existed through Nexus Ultra's directory that now power my entire business. The ratings and reviews helped me pick the right tools without wasting money on trials."</p>
+          <div class="testimonial-card__author">
+            <div class="author-avatar" style="background: linear-gradient(135deg, #f59e0b, #ef4444);">PK</div>
+            <div>
+              <strong>Priya Kapoor</strong>
+              <span>Freelance Copywriter</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ NEWSLETTER ═══════════════════ -->
+  <section class="newsletter section">
+    <div class="container">
+      <div class="newsletter__card">
+        <div class="newsletter__content">
+          <span class="section-tag">Stay Updated</span>
+          <h2>Get the Latest AI Tools <span class="gradient-text">Every Week</span></h2>
+          <p>Join 10,000+ creators getting our curated AI tool roundups, tutorials, and exclusive platform updates.</p>
+        </div>
+        <form class="newsletter__form" id="newsletterForm">
+          <div class="newsletter__input-group">
+            <input type="email" placeholder="Enter your email address" class="form-input" required />
+            <button type="submit" class="btn btn-primary">
+              <i class="fa-solid fa-paper-plane"></i>
+              Subscribe
+            </button>
+          </div>
+          <p class="newsletter__disclaimer">No spam. Unsubscribe anytime. We respect your privacy.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ FOOTER ═══════════════════ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <a href="index.html" class="navbar__logo">
+            <span class="logo-icon"><i class="fa-solid fa-bolt"></i></span>
+            <span class="logo-text">Nexus<span class="accent">Ultra</span></span>
+          </a>
+          <p>The all-in-one AI platform for creators and entrepreneurs who want to build faster and scale smarter.</p>
+          <div class="footer__social">
+            <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+            <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+            <a href="#" aria-label="Discord"><i class="fa-brands fa-discord"></i></a>
+          </div>
+        </div>
+        <div class="footer__links">
+          <h4>Platform</h4>
+          <ul>
+            <li><a href="tools.html">AI Tools Directory</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+          </ul>
+        </div>
+        <div class="footer__links">
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Tutorials</a></li>
+            <li><a href="#">API Docs</a></li>
+            <li><a href="#">Changelog</a></li>
+          </ul>
+        </div>
+        <div class="footer__links">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p>&copy; 2025 Nexus Ultra Platforms. All rights reserved.</p>
+        <p>Built with <i class="fa-solid fa-heart" style="color:#ef4444;"></i> for creators everywhere.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══════════════════ AUTH MODAL ═══════════════════ -->
+  <div class="modal-overlay" id="authModal">
+    <div class="modal">
+      <button class="modal__close" id="modalClose"><i class="fa-solid fa-times"></i></button>
+      <div class="modal__tabs">
+        <button class="modal-tab active" data-tab="login">Log In</button>
+        <button class="modal-tab" data-tab="signup">Sign Up</button>
+      </div>
+      <div class="modal__content" id="loginForm">
+        <h3>Welcome back</h3>
+        <form id="emailLoginForm">
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-input" id="loginEmail" placeholder="you@example.com" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-input" id="loginPassword" placeholder="••••••••" required />
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Log In</button>
+        </form>
+        <div class="auth-divider"><span>or continue with</span></div>
+        <button class="btn btn-google btn-block" id="googleLoginBtn">
+          <i class="fa-brands fa-google"></i> Continue with Google
+        </button>
+      </div>
+      <div class="modal__content hidden" id="signupForm">
+        <h3>Create your account</h3>
+        <form id="emailSignupForm">
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" class="form-input" id="signupName" placeholder="Your Name" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-input" id="signupEmail" placeholder="you@example.com" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-input" id="signupPassword" placeholder="Min 8 characters" required minlength="8" />
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+        </form>
+        <div class="auth-divider"><span>or continue with</span></div>
+        <button class="btn btn-google btn-block" id="googleSignupBtn">
+          <i class="fa-brands fa-google"></i> Continue with Google
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/auth.js" type="module"></script>
+  <script>
+    // Theme toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    const body = document.body;
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    body.setAttribute('data-theme', savedTheme);
+    themeIcon.className = savedTheme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+
+    themeToggle.addEventListener('click', () => {
+      const current = body.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      body.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      themeIcon.className = next === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    });
+
+    // Navbar scroll effect
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('navbar--scrolled', window.scrollY > 50);
+    });
+
+    // Mobile nav toggle
+    const navToggle = document.getElementById('navToggle');
+    const navLinks = document.getElementById('navLinks');
+    navToggle.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          navLinks.classList.remove('open');
+        }
+      });
+    });
+
+    // Stat counter animation
+    const counters = document.querySelectorAll('.stat-number[data-count]');
+    const observerOptions = { threshold: 0.5 };
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const target = parseInt(el.dataset.count);
+          const duration = 1500;
+          const step = target / (duration / 16);
+          let current = 0;
+          const timer = setInterval(() => {
+            current += step;
+            if (current >= target) {
+              el.textContent = target.toLocaleString();
+              clearInterval(timer);
+            } else {
+              el.textContent = Math.floor(current).toLocaleString();
+            }
+          }, 16);
+          counterObserver.unobserve(el);
+        }
+      });
+    }, observerOptions);
+    counters.forEach(c => counterObserver.observe(c));
+
+    // Load preview tools
+    fetch('data/ai-tools.json')
+      .then(r => r.json())
+      .then(tools => {
+        const grid = document.getElementById('toolsPreviewGrid');
+        const top6 = tools.sort((a, b) => b.rating - a.rating).slice(0, 6);
+        grid.innerHTML = top6.map(t => `
+          <div class="tool-preview-card">
+            <div class="tool-preview-card__header">
+              <div class="tool-avatar">${t.name.slice(0,2).toUpperCase()}</div>
+              <div>
+                <h4>${t.name}</h4>
+                <span class="badge badge--category">${t.category}</span>
+              </div>
+              ${t.free ? '<span class="badge badge--free">Free</span>' : '<span class="badge badge--paid">Paid</span>'}
+            </div>
+            <p class="tool-preview-card__desc">${t.description.slice(0, 100)}...</p>
+            <div class="tool-preview-card__footer">
+              <div class="rating">
+                ${'<i class="fa-solid fa-star"></i>'.repeat(Math.floor(t.rating))}
+                <span>${t.rating}</span>
+              </div>
+              <a href="${t.url}" target="_blank" rel="noopener" class="btn btn-sm btn-primary">
+                Visit <i class="fa-solid fa-external-link-alt"></i>
+              </a>
+            </div>
+          </div>
+        `).join('');
+      })
+      .catch(() => {});
+
+    // Billing toggle
+    const billingToggle = document.getElementById('billingToggle');
+    billingToggle.addEventListener('change', () => {
+      document.querySelectorAll('.price-amount[data-monthly]').forEach(el => {
+        el.textContent = '$' + (billingToggle.checked ? el.dataset.annual : el.dataset.monthly);
+      });
+      document.querySelectorAll('.price-period').forEach(el => {
+        el.textContent = billingToggle.checked ? '/month (billed annually)' : '/month';
+      });
+    });
+
+    // Auth modal
+    const authModal = document.getElementById('authModal');
+    const loginBtn = document.getElementById('loginBtn');
+    const signupBtn = document.getElementById('signupBtn');
+    const modalClose = document.getElementById('modalClose');
+    const modalTabs = document.querySelectorAll('.modal-tab');
+
+    loginBtn.addEventListener('click', (e) => { e.preventDefault(); showModal('login'); });
+    signupBtn.addEventListener('click', (e) => { e.preventDefault(); showModal('signup'); });
+    modalClose.addEventListener('click', () => authModal.classList.remove('active'));
+    authModal.addEventListener('click', (e) => { if (e.target === authModal) authModal.classList.remove('active'); });
+
+    function showModal(tab) {
+      authModal.classList.add('active');
+      document.querySelectorAll('.modal-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+      document.getElementById('loginForm').classList.toggle('hidden', tab !== 'login');
+      document.getElementById('signupForm').classList.toggle('hidden', tab !== 'signup');
+    }
+
+    modalTabs.forEach(tab => {
+      tab.addEventListener('click', () => showModal(tab.dataset.tab));
+    });
+
+    // Newsletter form
+    document.getElementById('newsletterForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type="submit"]');
+      btn.innerHTML = '<i class="fa-solid fa-check"></i> Subscribed!';
+      btn.disabled = true;
+      setTimeout(() => { btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Subscribe'; btn.disabled = false; e.target.reset(); }, 3000);
+    });
+  </script>
+</body>
+</html>

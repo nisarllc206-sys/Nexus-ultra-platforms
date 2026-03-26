@@ -1,0 +1,117 @@
+/* ═══════════════════════════════════════════════════════════════════
+   NEXUS ULTRA — LIGHT THEME OVERRIDES
+   ═══════════════════════════════════════════════════════════════════ */
+
+[data-theme="light"] {
+  /* Surfaces */
+  --bg-base:     #f4f4fc;
+  --bg-surface:  #ffffff;
+  --bg-elevated: #ebebf8;
+  --bg-card:     #ffffff;
+  --bg-input:    #f0f0fc;
+  --bg-overlay:  rgba(0,0,0,0.45);
+
+  /* Text */
+  --text-primary:   #0c0c20;
+  --text-secondary: #4c4c70;
+  --text-muted:     #9090b0;
+
+  /* Borders */
+  --border-color: rgba(0,0,0,0.09);
+
+  /* Shadows */
+  --shadow-sm:   0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md:   0 4px 16px rgba(0,0,0,0.1);
+  --shadow-lg:   0 8px 32px rgba(0,0,0,0.12);
+  --shadow-xl:   0 20px 64px rgba(0,0,0,0.16);
+  --shadow-card: 0 2px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-glow: 0 0 40px rgba(99,102,241,0.15);
+}
+
+/* Light-specific component tweaks */
+[data-theme="light"] .hero__bg-gradient {
+  background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(99,102,241,0.12) 0%, rgba(139,92,246,0.06) 50%, transparent 100%),
+              radial-gradient(ellipse 50% 40% at 85% 85%, rgba(6,182,212,0.07) 0%, transparent 60%),
+              #f4f4fc;
+}
+
+[data-theme="light"] .navbar--scrolled {
+  background: rgba(255,255,255,0.95);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.08);
+}
+
+[data-theme="light"] .stats-bar {
+  background: #ffffff;
+}
+
+[data-theme="light"] .sidebar {
+  background: #ffffff;
+  box-shadow: 4px 0 20px rgba(0,0,0,0.06);
+}
+
+[data-theme="light"] .dash-header {
+  background: rgba(255,255,255,0.97);
+}
+
+[data-theme="light"] .history-table th {
+  background: #f7f7fe;
+}
+
+[data-theme="light"] .modal {
+  background: #ffffff;
+  box-shadow: 0 20px 80px rgba(0,0,0,0.15);
+}
+
+[data-theme="light"] .newsletter__card {
+  background: linear-gradient(135deg, rgba(99,102,241,0.06) 0%, rgba(139,92,246,0.03) 50%, rgba(6,182,212,0.03) 100%);
+  border-color: rgba(99,102,241,0.15);
+}
+
+[data-theme="light"] .pricing-card--popular {
+  background: linear-gradient(135deg, rgba(99,102,241,0.06) 0%, rgba(139,92,246,0.04) 100%);
+}
+
+[data-theme="light"] .feature-card {
+  box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+}
+
+[data-theme="light"] .feature-card:hover {
+  box-shadow: 0 12px 40px rgba(99,102,241,0.12);
+}
+
+[data-theme="light"] .tool-card {
+  box-shadow: var(--shadow-card);
+}
+
+[data-theme="light"] .tool-card:hover {
+  box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+}
+
+[data-theme="light"] .btn-google {
+  background: #ffffff;
+  border-color: rgba(0,0,0,0.12);
+}
+
+[data-theme="light"] .btn-ghost:hover {
+  background: var(--bg-elevated);
+}
+
+[data-theme="light"] .cat-filter-btn {
+  background: #ffffff;
+}
+
+[data-theme="light"] .upgrade-card {
+  background: linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(139,92,246,0.05) 100%);
+}
+
+[data-theme="light"] .output-content pre {
+  color: #1a1a3a;
+}
+
+[data-theme="light"] .tools-page-header {
+  background: #ffffff;
+}
+
+[data-theme="light"] .footer {
+  background: #f0f0fc;
+}

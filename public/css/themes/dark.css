@@ -1,0 +1,91 @@
+/* ═══════════════════════════════════════════════════════════════════
+   NEXUS ULTRA — DARK THEME OVERRIDES
+   ═══════════════════════════════════════════════════════════════════ */
+
+[data-theme="dark"] {
+  /* Surfaces */
+  --bg-base:     #0a0a0f;
+  --bg-surface:  #111118;
+  --bg-elevated: #1a1a27;
+  --bg-card:     #16161f;
+  --bg-input:    #1e1e2e;
+
+  /* Text */
+  --text-primary:   #f0f0ff;
+  --text-secondary: #9898b8;
+  --text-muted:     #5a5a78;
+
+  /* Borders */
+  --border-color: rgba(255,255,255,0.07);
+
+  /* Shadows */
+  --shadow-sm:   0 1px 3px rgba(0,0,0,0.5);
+  --shadow-md:   0 4px 16px rgba(0,0,0,0.6);
+  --shadow-lg:   0 8px 32px rgba(0,0,0,0.7);
+  --shadow-xl:   0 20px 64px rgba(0,0,0,0.8);
+  --shadow-card: 0 4px 24px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.3);
+}
+
+/* Dark-specific component tweaks */
+[data-theme="dark"] .card {
+  background: #16161f;
+}
+
+[data-theme="dark"] .navbar--scrolled {
+  background: rgba(10,10,15,0.92);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+[data-theme="dark"] .hero__bg-gradient {
+  background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(99,102,241,0.25) 0%, rgba(139,92,246,0.12) 50%, transparent 100%),
+              radial-gradient(ellipse 50% 40% at 85% 85%, rgba(6,182,212,0.12) 0%, transparent 60%),
+              #0a0a0f;
+}
+
+[data-theme="dark"] .stat-card:hover {
+  box-shadow: 0 8px 32px rgba(99,102,241,0.15);
+}
+
+[data-theme="dark"] .feature-card:hover {
+  box-shadow: 0 12px 40px rgba(99,102,241,0.2);
+}
+
+[data-theme="dark"] .tool-card:hover {
+  box-shadow: 0 8px 32px rgba(99,102,241,0.2);
+}
+
+[data-theme="dark"] .sidebar {
+  background: #0d0d14;
+}
+
+[data-theme="dark"] .dash-header {
+  background: rgba(13,13,20,0.95);
+}
+
+[data-theme="dark"] pre {
+  color: #d4d4e8;
+}
+
+[data-theme="dark"] .history-table tbody tr:hover td {
+  background: rgba(255,255,255,0.03);
+}
+
+[data-theme="dark"] .upgrade-card {
+  background: linear-gradient(135deg, rgba(99,102,241,0.18) 0%, rgba(139,92,246,0.12) 100%);
+}
+
+[data-theme="dark"] .newsletter__card {
+  background: linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(139,92,246,0.08) 50%, rgba(6,182,212,0.05) 100%);
+}
+
+[data-theme="dark"] .tools-search-bar .search-input {
+  background: rgba(22,22,31,0.9);
+}
+
+[data-theme="dark"] .modal {
+  background: #16161f;
+}
+
+[data-theme="dark"] .btn-outline:hover {
+  background: rgba(99,102,241,0.12);
+}
