@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — Nexus Ultra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+</head>
+<body data-theme="dark" class="dashboard-body">
+
+  <!-- ═══════════════════ SIDEBAR ═══════════════════ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__header">
+      <a href="index.html" class="navbar__logo">
+        <span class="logo-icon"><i class="fa-solid fa-bolt"></i></span>
+        <span class="logo-text">Nexus<span class="accent">Ultra</span></span>
+      </a>
+      <button class="sidebar__close" id="sidebarClose"><i class="fa-solid fa-times"></i></button>
+    </div>
+
+    <nav class="sidebar__nav">
+      <ul>
+        <li>
+          <a href="#" class="sidebar-link active" data-panel="overview">
+            <i class="fa-solid fa-gauge-high"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="sidebar-link" data-panel="generator">
+            <i class="fa-solid fa-pen-nib"></i>
+            <span>Content Generator</span>
+            <span class="sidebar-badge">AI</span>
+          </a>
+        </li>
+        <li>
+          <a href="tools.html" class="sidebar-link">
+            <i class="fa-solid fa-robot"></i>
+            <span>AI Tools</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="sidebar-link" data-panel="analytics">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Analytics</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="sidebar-link" data-panel="favorites">
+            <i class="fa-solid fa-heart"></i>
+            <span>Favorites</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="sidebar-link" data-panel="history">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            <span>History</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="sidebar-link" data-panel="settings">
+            <i class="fa-solid fa-gear"></i>
+            <span>Settings</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="sidebar__upgrade">
+      <div class="upgrade-card">
+        <i class="fa-solid fa-bolt upgrade-card__icon"></i>
+        <h4>Upgrade to Pro</h4>
+        <p>Unlock unlimited AI generations and all premium tools.</p>
+        <a href="index.html#pricing" class="btn btn-primary btn-sm btn-block">Upgrade Now</a>
+      </div>
+    </div>
+
+    <div class="sidebar__footer">
+      <button class="sidebar-link" id="themeToggleSidebar">
+        <i class="fa-solid fa-moon" id="themeIconSidebar"></i>
+        <span>Dark Mode</span>
+        <div class="theme-toggle-mini" id="themeToggleMini"></div>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ═══════════════════ MAIN ═══════════════════ -->
+  <div class="dashboard-main" id="dashboardMain">
+
+    <!-- Top Header -->
+    <header class="dash-header">
+      <div class="dash-header__left">
+        <button class="dash-header__menu-btn" id="sidebarToggle">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="dash-header__breadcrumb">
+          <span id="breadcrumb">Dashboard</span>
+        </div>
+      </div>
+      <div class="dash-header__right">
+        <div class="dash-search">
+          <i class="fa-solid fa-search"></i>
+          <input type="text" placeholder="Search tools, content..." class="dash-search__input" />
+        </div>
+        <button class="dash-header__icon-btn" title="Notifications">
+          <i class="fa-solid fa-bell"></i>
+          <span class="notification-dot"></span>
+        </button>
+        <div class="dash-header__user" id="userMenuTrigger">
+          <div class="user-avatar" id="userAvatarHeader">G</div>
+          <div class="user-info">
+            <span class="user-name" id="userNameHeader">Guest User</span>
+            <span class="user-plan" id="userPlanHeader">Free Plan</span>
+          </div>
+          <i class="fa-solid fa-chevron-down"></i>
+        </div>
+      </div>
+    </header>
+
+    <!-- ═══════════ PANEL: OVERVIEW ═══════════ -->
+    <div class="panel active" id="panel-overview">
+      <div class="dash-content">
+        <div class="dash-welcome">
+          <h1>Welcome back, <span id="welcomeName">Creator</span> 👋</h1>
+          <p>Here's what's happening with your account today.</p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-card__icon" style="--c: #6366f1;">
+              <i class="fa-solid fa-file-lines"></i>
+            </div>
+            <div class="stat-card__info">
+              <span class="stat-card__label">Content Generated</span>
+              <span class="stat-card__value" id="statContent">0</span>
+              <span class="stat-card__change positive"><i class="fa-solid fa-arrow-up"></i> 12% this week</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__icon" style="--c: #8b5cf6;">
+              <i class="fa-solid fa-robot"></i>
+            </div>
+            <div class="stat-card__info">
+              <span class="stat-card__label">Tools Used</span>
+              <span class="stat-card__value" id="statTools">0</span>
+              <span class="stat-card__change positive"><i class="fa-solid fa-arrow-up"></i> 3 new this month</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__icon" style="--c: #06b6d4;">
+              <i class="fa-solid fa-calendar-check"></i>
+            </div>
+            <div class="stat-card__info">
+              <span class="stat-card__label">Monthly Usage</span>
+              <span class="stat-card__value" id="statMonthly">0/50</span>
+              <div class="stat-progress">
+                <div class="stat-progress__bar" id="usageBar" style="width: 0%;"></div>
+              </div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__icon" style="--c: #10b981;">
+              <i class="fa-solid fa-crown"></i>
+            </div>
+            <div class="stat-card__info">
+              <span class="stat-card__label">Account Status</span>
+              <span class="stat-card__value" id="statPlan">Free</span>
+              <a href="index.html#pricing" class="stat-card__action">Upgrade to Pro →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="dash-section">
+          <div class="dash-section__header">
+            <h2>Quick Actions</h2>
+          </div>
+          <div class="quick-actions">
+            <button class="quick-action-btn" data-panel="generator">
+              <i class="fa-solid fa-pen-nib"></i>
+              <span>Generate Content</span>
+            </button>
+            <a href="tools.html" class="quick-action-btn">
+              <i class="fa-solid fa-robot"></i>
+              <span>Browse AI Tools</span>
+            </a>
+            <button class="quick-action-btn" data-panel="analytics">
+              <i class="fa-solid fa-chart-bar"></i>
+              <span>View Analytics</span>
+            </button>
+            <button class="quick-action-btn" data-panel="favorites">
+              <i class="fa-solid fa-heart"></i>
+              <span>My Favorites</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Recent History -->
+        <div class="dash-section">
+          <div class="dash-section__header">
+            <h2>Recent Content</h2>
+            <a href="#" class="link-secondary" data-panel-link="history">View All</a>
+          </div>
+          <div class="history-table-wrapper">
+            <table class="history-table" id="overviewHistoryTable">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Prompt Preview</th>
+                  <th>Model</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="overviewHistoryBody">
+                <tr class="empty-row">
+                  <td colspan="5">
+                    <div class="empty-state">
+                      <i class="fa-solid fa-file-circle-plus"></i>
+                      <p>No content generated yet. <a href="#" data-panel-link="generator">Create your first one!</a></p>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ PANEL: CONTENT GENERATOR ═══════════ -->
+    <div class="panel" id="panel-generator">
+      <div class="dash-content">
+        <div class="dash-welcome">
+          <h1>Content Generator <span class="badge badge--ai">AI Powered</span></h1>
+          <p>Generate high-quality content in seconds using Claude, GPT-4, or Gemini.</p>
+        </div>
+
+        <div class="generator-layout">
+          <!-- Generator Form -->
+          <div class="generator-form-panel">
+            <div class="card">
+              <div class="card__header">
+                <h3><i class="fa-solid fa-sliders"></i> Configure</h3>
+              </div>
+              <div class="card__body">
+                <div class="form-group">
+                  <label class="form-label">Content Type</label>
+                  <div class="content-type-grid" id="contentTypeGrid">
+                    <button class="content-type-btn active" data-type="blog">
+                      <i class="fa-solid fa-blog"></i> Blog Post
+                    </button>
+                    <button class="content-type-btn" data-type="social">
+                      <i class="fa-brands fa-instagram"></i> Social Media
+                    </button>
+                    <button class="content-type-btn" data-type="email">
+                      <i class="fa-solid fa-envelope"></i> Email
+                    </button>
+                    <button class="content-type-btn" data-type="product">
+                      <i class="fa-solid fa-tag"></i> Product Desc
+                    </button>
+                    <button class="content-type-btn" data-type="youtube">
+                      <i class="fa-brands fa-youtube"></i> YT Script
+                    </button>
+                    <button class="content-type-btn" data-type="thread">
+                      <i class="fa-brands fa-x-twitter"></i> X Thread
+                    </button>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">AI Model</label>
+                  <select class="form-select" id="modelSelect">
+                    <option value="claude-3-5-sonnet-20241022">Claude 3.5 Sonnet (Recommended)</option>
+                    <option value="claude-3-haiku-20240307">Claude 3 Haiku (Fast)</option>
+                    <option value="claude-3-opus-20240229">Claude 3 Opus (Most Capable)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Tone</label>
+                  <select class="form-select" id="toneSelect">
+                    <option value="professional">Professional</option>
+                    <option value="casual">Casual & Friendly</option>
+                    <option value="persuasive">Persuasive</option>
+                    <option value="educational">Educational</option>
+                    <option value="humorous">Humorous</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Your Prompt <span class="form-required">*</span></label>
+                  <textarea class="form-textarea" id="promptInput" rows="5" placeholder="Describe what you want to create...
+
+Example: 'Write a blog post about the top 5 AI tools for content creators in 2025, include specific examples and actionable tips.'"></textarea>
+                  <div class="form-hint">
+                    <span id="charCount">0</span>/2000 characters
+                  </div>
+                </div>
+                <button class="btn btn-primary btn-block btn-lg" id="generateBtn">
+                  <i class="fa-solid fa-sparkles"></i>
+                  Generate Content
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Generator Output -->
+          <div class="generator-output-panel">
+            <div class="card">
+              <div class="card__header">
+                <h3><i class="fa-solid fa-file-lines"></i> Output</h3>
+                <div class="output-actions" id="outputActions" style="display:none;">
+                  <button class="btn btn-ghost btn-sm" id="copyBtn" title="Copy to clipboard">
+                    <i class="fa-solid fa-copy"></i> Copy
+                  </button>
+                  <button class="btn btn-ghost btn-sm" id="downloadBtn" title="Download as .txt">
+                    <i class="fa-solid fa-download"></i> Download
+                  </button>
+                  <button class="btn btn-ghost btn-sm" id="saveBtn" title="Save to history">
+                    <i class="fa-solid fa-bookmark"></i> Save
+                  </button>
+                </div>
+              </div>
+              <div class="card__body">
+                <div class="output-placeholder" id="outputPlaceholder">
+                  <i class="fa-solid fa-sparkles"></i>
+                  <p>Your generated content will appear here</p>
+                  <span>Configure your prompt and hit Generate</span>
+                </div>
+                <div class="output-loading" id="outputLoading" style="display:none;">
+                  <div class="ai-thinking">
+                    <div class="ai-dot"></div>
+                    <div class="ai-dot"></div>
+                    <div class="ai-dot"></div>
+                  </div>
+                  <p id="loadingText">AI is generating your content...</p>
+                </div>
+                <div class="output-content" id="outputContent" style="display:none;">
+                  <pre id="outputText"></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ PANEL: ANALYTICS ═══════════ -->
+    <div class="panel" id="panel-analytics">
+      <div class="dash-content">
+        <div class="dash-welcome">
+          <h1>Analytics</h1>
+          <p>Track your content creation activity and platform usage.</p>
+        </div>
+        <div class="analytics-grid">
+          <div class="card analytics-card">
+            <div class="card__header"><h3>Content by Type</h3></div>
+            <div class="card__body">
+              <div id="contentTypeChart" class="chart-placeholder">
+                <div class="chart-bar-group" id="contentBars"></div>
+              </div>
+            </div>
+          </div>
+          <div class="card analytics-card">
+            <div class="card__header"><h3>Weekly Activity</h3></div>
+            <div class="card__body">
+              <div class="weekly-chart" id="weeklyChart"></div>
+            </div>
+          </div>
+          <div class="card analytics-card--wide">
+            <div class="card__header"><h3>Usage Over Time</h3></div>
+            <div class="card__body">
+              <canvas id="usageChart" height="80"></canvas>
+              <div class="usage-summary" id="usageSummary"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ PANEL: FAVORITES ═══════════ -->
+    <div class="panel" id="panel-favorites">
+      <div class="dash-content">
+        <div class="dash-welcome">
+          <h1>Favorite Tools</h1>
+          <p>Your saved AI tools for quick access.</p>
+        </div>
+        <div class="favorites-grid" id="favoritesGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ PANEL: HISTORY ═══════════ -->
+    <div class="panel" id="panel-history">
+      <div class="dash-content">
+        <div class="dash-welcome">
+          <h1>Content History</h1>
+          <p>All your previously generated content.</p>
+        </div>
+        <div class="card">
+          <div class="card__header">
+            <div class="history-filters">
+              <select class="form-select form-select--sm" id="historyTypeFilter">
+                <option value="all">All Types</option>
+                <option value="blog">Blog Posts</option>
+                <option value="social">Social Media</option>
+                <option value="email">Emails</option>
+                <option value="product">Product Descriptions</option>
+                <option value="youtube">YouTube Scripts</option>
+                <option value="thread">X Threads</option>
+              </select>
+              <button class="btn btn-ghost btn-sm" id="clearHistoryBtn">
+                <i class="fa-solid fa-trash"></i> Clear All
+              </button>
+            </div>
+          </div>
+          <div class="card__body">
+            <div class="history-table-wrapper">
+              <table class="history-table">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Prompt Preview</th>
+                    <th>Model</th>
+                    <th>Words</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="historyTableBody">
+                  <tr class="empty-row">
+                    <td colspan="6">
+                      <div class="empty-state">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        <p>No content history yet.</p>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ PANEL: SETTINGS ═══════════ -->
+    <div class="panel" id="panel-settings">
+      <div class="dash-content">
+        <div class="dash-welcome">
+          <h1>Settings</h1>
+          <p>Manage your account and preferences.</p>
+        </div>
+        <div class="settings-grid">
+          <div class="card">
+            <div class="card__header"><h3><i class="fa-solid fa-user"></i> Profile</h3></div>
+            <div class="card__body">
+              <div class="form-group">
+                <label class="form-label">Display Name</label>
+                <input type="text" class="form-input" id="settingsName" placeholder="Your Name" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" id="settingsEmail" placeholder="you@example.com" disabled />
+              </div>
+              <button class="btn btn-primary" id="saveProfileBtn">Save Profile</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card__header"><h3><i class="fa-solid fa-palette"></i> Appearance</h3></div>
+            <div class="card__body">
+              <div class="setting-row">
+                <div>
+                  <strong>Dark Mode</strong>
+                  <p>Switch between light and dark theme</p>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="settingsThemeToggle" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card__header"><h3><i class="fa-solid fa-key"></i> API Keys</h3></div>
+            <div class="card__body">
+              <div class="form-group">
+                <label class="form-label">Anthropic API Key</label>
+                <div class="input-with-icon">
+                  <input type="password" class="form-input" id="anthropicKey" placeholder="sk-ant-..." />
+                  <button class="input-reveal-btn" data-target="anthropicKey"><i class="fa-solid fa-eye"></i></button>
+                </div>
+              </div>
+              <button class="btn btn-primary" id="saveApiKeysBtn">Save API Keys</button>
+              <p class="form-hint" style="margin-top:8px;">API keys are stored locally in your browser.</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card__header"><h3><i class="fa-solid fa-right-from-bracket"></i> Account</h3></div>
+            <div class="card__body">
+              <button class="btn btn-outline" id="signOutBtn">
+                <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /dashboard-main -->
+
+  <!-- Content Viewer Modal -->
+  <div class="modal-overlay" id="contentViewModal">
+    <div class="modal modal--large">
+      <div class="modal__header">
+        <h3 id="contentViewTitle">Content</h3>
+        <button class="modal__close" id="contentViewClose"><i class="fa-solid fa-times"></i></button>
+      </div>
+      <div class="modal__body">
+        <pre id="contentViewText" style="white-space:pre-wrap; word-break:break-word;"></pre>
+      </div>
+      <div class="modal__footer">
+        <button class="btn btn-primary" id="contentViewCopy"><i class="fa-solid fa-copy"></i> Copy</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/auth.js" type="module"></script>
+  <script src="js/content-generator.js" type="module"></script>
+  <script src="js/dashboard.js" type="module"></script>
+</body>
+</html>
