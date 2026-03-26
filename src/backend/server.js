@@ -105,10 +105,14 @@ app.get('*', (req, res) => {
 
 // ─── Error Handler ────────────────────────────────────────────────────────────
 app.use((err, req, res, next) => {
-  console.error('Unhandled error:', err);
-  res.status(500).json({
-    error:   process.env.NODE_ENV === 'production' ? 'Internal server error' : err.message,
+  console.error('Unhandled error:', {
+    method:  req.method,
+    path:    req.path,
     message: err.message,
+    stack:   err.stack,
+  });
+  res.status(err.status || 500).json({
+    error: process.env.NODE_ENV === 'production' ? 'Internal server error' : err.message,
   });
 });
 

@@ -105,7 +105,8 @@ async function handleWebhook(req, res) {
 
   let event;
   try {
-    event = stripe.webhooks.constructEvent(req.rawBody || req.body, sig, webhookSecret);
+    // req.body is the raw Buffer set by express.raw() on the /api/payment/webhook route
+    event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
   } catch (err) {
     console.error('Webhook signature verification failed:', err.message);
     return res.status(400).json({ error: `Webhook signature invalid: ${err.message}` });
