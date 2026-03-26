@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Random Joke Generator – Nexus Ultra Platforms</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0d1117;
+      --surface:  #161b22;
+      --border:   #30363d;
+      --cyan:     #00f5ff;
+      --purple:   #a78bfa;
+      --pink:     #f472b6;
+      --green:    #22c55e;
+      --yellow:   #f59e0b;
+      --red:      #ef4444;
+      --text:     #e6edf3;
+      --dim:      #8b949e;
+      --radius:   12px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem 4rem;
+    }
+
+    /* ── Header ── */
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    header h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      background: linear-gradient(135deg, var(--cyan), var(--purple), var(--pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.5px;
+    }
+    header p {
+      color: var(--dim);
+      margin-top: .5rem;
+      font-size: .95rem;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 680px;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--cyan), var(--purple), transparent);
+    }
+
+    /* ── Controls ── */
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem;
+      margin-bottom: 1.5rem;
+    }
+    .controls label {
+      font-size: .8rem;
+      color: var(--dim);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      display: block;
+      margin-bottom: .3rem;
+    }
+    .control-group { flex: 1; min-width: 140px; }
+
+    select {
+      width: 100%;
+      background: rgba(0,245,255,.04);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: .6rem .9rem;
+      color: var(--text);
+      font-size: .9rem;
+      cursor: pointer;
+      outline: none;
+      transition: border-color .2s;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238b949e' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right .8rem center;
+      padding-right: 2rem;
+    }
+    select:focus { border-color: var(--cyan); }
+    select option { background: var(--surface); }
+
+    /* ── Fetch button ── */
+    .btn-fetch {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      background: linear-gradient(135deg, var(--cyan), var(--purple));
+      border: none;
+      border-radius: 8px;
+      padding: .65rem 1.4rem;
+      color: #000;
+      font-weight: 700;
+      font-size: .95rem;
+      cursor: pointer;
+      transition: opacity .2s, transform .1s;
+      align-self: flex-end;
+      white-space: nowrap;
+    }
+    .btn-fetch:hover { opacity: .9; }
+    .btn-fetch:active { transform: scale(.97); }
+    .btn-fetch:disabled { opacity: .45; cursor: not-allowed; }
+
+    /* ── Joke display ── */
+    .joke-box {
+      min-height: 120px;
+      background: rgba(0,245,255,.03);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: .8rem;
+      transition: opacity .3s;
+    }
+    .joke-box.loading { opacity: .5; }
+
+    .joke-category {
+      font-size: .75rem;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      background: rgba(0,245,255,.1);
+      padding: .25rem .7rem;
+      border-radius: 20px;
+    }
+
+    .joke-setup {
+      font-size: 1.15rem;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+    .joke-divider {
+      color: var(--dim);
+      font-size: .85rem;
+      letter-spacing: .15em;
+    }
+    .joke-delivery {
+      font-size: 1.05rem;
+      color: var(--yellow);
+      line-height: 1.5;
+    }
+    .joke-single {
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+
+    .placeholder {
+      color: var(--dim);
+      font-size: .95rem;
+    }
+    .placeholder .icon { font-size: 2.2rem; display: block; margin-bottom: .5rem; }
+
+    /* ── Error ── */
+    .error-msg {
+      color: var(--red);
+      font-size: .9rem;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+    }
+
+    /* ── Spinner ── */
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid var(--border);
+      border-top-color: var(--cyan);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Copy button ── */
+    .joke-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 1rem;
+      gap: .6rem;
+    }
+    .btn-action {
+      background: rgba(255,255,255,.06);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: .4rem .85rem;
+      color: var(--dim);
+      font-size: .82rem;
+      cursor: pointer;
+      transition: color .2s, border-color .2s;
+    }
+    .btn-action:hover { color: var(--text); border-color: var(--cyan); }
+
+    /* ── Counter ── */
+    .counter {
+      text-align: center;
+      margin-top: 1.2rem;
+      font-size: .8rem;
+      color: var(--dim);
+    }
+    .counter span { color: var(--purple); font-weight: 600; }
+
+    /* ── Footer ── */
+    footer {
+      margin-top: 2.5rem;
+      text-align: center;
+      color: var(--dim);
+      font-size: .78rem;
+    }
+    footer a { color: var(--cyan); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 480px) {
+      .card { padding: 1.25rem; }
+      .btn-fetch { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>😂 Random Joke Generator</h1>
+    <p>Powered by <a href="https://jokeapi.dev" style="color:var(--cyan);text-decoration:none" target="_blank" rel="noopener">JokeAPI</a> · Nexus Ultra Platforms</p>
+  </header>
+
+  <div class="card">
+    <!-- Controls -->
+    <div class="controls">
+      <div class="control-group">
+        <label for="category">Category</label>
+        <select id="category">
+          <option value="Any">🎲 Any</option>
+          <option value="Programming">💻 Programming</option>
+          <option value="Misc">🎭 Miscellaneous</option>
+          <option value="Dark">🌑 Dark</option>
+          <option value="Pun">🥁 Pun</option>
+          <option value="Spooky">👻 Spooky</option>
+          <option value="Christmas">🎄 Christmas</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label for="joke-type">Type</label>
+        <select id="joke-type">
+          <option value="Any">Both</option>
+          <option value="single">Single</option>
+          <option value="twopart">Two-part (Q&A)</option>
+        </select>
+      </div>
+      <button class="btn-fetch" id="fetch-btn" onclick="fetchJoke()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-5.5"/></svg>
+        Get Joke
+      </button>
+    </div>
+
+    <!-- Joke display -->
+    <div class="joke-box" id="joke-box">
+      <span class="placeholder">
+        <span class="icon">🎤</span>
+        Hit <strong>Get Joke</strong> to fetch a random joke!
+      </span>
+    </div>
+
+    <!-- Actions -->
+    <div class="joke-actions" id="joke-actions" style="display:none">
+      <button class="btn-action" onclick="copyJoke()" id="copy-btn">📋 Copy</button>
+      <button class="btn-action" onclick="shareJoke()" id="share-btn">🔗 Share</button>
+    </div>
+
+    <!-- Counter -->
+    <div class="counter">Jokes fetched this session: <span id="counter">0</span></div>
+  </div>
+
+  <footer>
+    Jokes provided by <a href="https://jokeapi.dev" target="_blank" rel="noopener">JokeAPI v2</a> ·
+    Built with ❤️ by <a href="https://github.com/nisarllc206-sys" target="_blank" rel="noopener">Nexus Ultra Platforms</a>
+  </footer>
+
+  <script>
+    const API_BASE = 'https://v2.jokeapi.dev/joke';
+    let currentJokeText = '';
+    let fetchCount = 0;
+
+    /**
+     * Build the API URL based on user-selected filters.
+     * @returns {string} Constructed URL
+     */
+    function buildUrl() {
+      const category = document.getElementById('category').value;
+      const type     = document.getElementById('joke-type').value;
+      let url = `${API_BASE}/${encodeURIComponent(category)}?safe-mode`;
+      if (type !== 'Any') url += `&type=${type}`;
+      return url;
+    }
+
+    /**
+     * Fetch a joke from JokeAPI and display it.
+     */
+    async function fetchJoke() {
+      const btn  = document.getElementById('fetch-btn');
+      const box  = document.getElementById('joke-box');
+      const acts = document.getElementById('joke-actions');
+
+      btn.disabled = true;
+      acts.style.display = 'none';
+      box.className = 'joke-box loading';
+      box.innerHTML = '<div class="spinner"></div>';
+
+      try {
+        const response = await fetch(buildUrl());
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        if (data.error) throw new Error(data.message || 'API returned an error');
+        displayJoke(data);
+        acts.style.display = 'flex';
+        fetchCount++;
+        document.getElementById('counter').textContent = fetchCount;
+      } catch (err) {
+        box.className = 'joke-box';
+        box.innerHTML = `
+          <div class="error-msg">
+            <span>⚠️</span>
+            <span>Could not load joke: ${escapeHtml(err.message)}. Please try again.</span>
+          </div>`;
+      } finally {
+        btn.disabled = false;
+        box.classList.remove('loading');
+      }
+    }
+
+    /**
+     * Render a joke object into the display box.
+     * @param {object} joke - JokeAPI response object
+     */
+    function displayJoke(joke) {
+      const box = document.getElementById('joke-box');
+      box.className = 'joke-box';
+
+      if (joke.type === 'twopart') {
+        currentJokeText = `${joke.setup}\n\n${joke.delivery}`;
+        box.innerHTML = `
+          <span class="joke-category">${escapeHtml(joke.category)}</span>
+          <p class="joke-setup">${escapeHtml(joke.setup)}</p>
+          <p class="joke-divider">· · ·</p>
+          <p class="joke-delivery">${escapeHtml(joke.delivery)}</p>`;
+      } else {
+        currentJokeText = joke.joke;
+        box.innerHTML = `
+          <span class="joke-category">${escapeHtml(joke.category)}</span>
+          <p class="joke-single">${escapeHtml(joke.joke)}</p>`;
+      }
+    }
+
+    /** Copy the current joke text to the clipboard. */
+    async function copyJoke() {
+      if (!currentJokeText) return;
+      const btn = document.getElementById('copy-btn');
+      try {
+        await navigator.clipboard.writeText(currentJokeText);
+        btn.textContent = '✅ Copied!';
+        setTimeout(() => { btn.textContent = '📋 Copy'; }, 2000);
+      } catch {
+        btn.textContent = '❌ Failed';
+        setTimeout(() => { btn.textContent = '📋 Copy'; }, 2000);
+      }
+    }
+
+    /** Share the current joke via Web Share API or clipboard fallback. */
+    async function shareJoke() {
+      if (!currentJokeText) return;
+      const shareData = {
+        title: 'Random Joke – Nexus Ultra Platforms',
+        text: currentJokeText,
+      };
+      if (navigator.share) {
+        try { await navigator.share(shareData); } catch { /* user cancelled */ }
+      } else {
+        await copyJoke();
+      }
+    }
+
+    /** Escape HTML special characters to prevent XSS. */
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // Fetch a joke automatically on load
+    window.addEventListener('load', fetchJoke);
+  </script>
+</body>
+</html>
