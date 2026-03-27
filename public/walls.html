@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>NEXUS WALLS — AI Wallpaper Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cyan:#00f5ff;--purple:#bf00ff;--pink:#ff0080;--green:#00ff88;--gold:#ffd700;
+  --bg:#020408;--card:#060d14;--card2:#0a1520;--card3:#0d1828;
+  --border:rgba(0,245,255,0.18);--dim:#6b8fa8;--text:#e0f4ff;
+  --glow-c:0 0 20px rgba(0,245,255,0.4);--glow-p:0 0 20px rgba(191,0,255,0.4);
+  --glow-n:0 0 20px rgba(0,255,136,0.4);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(0,245,255,0.2);border-radius:2px}
+
+/* ─── BG CANVAS ─── */
+#bgCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.35}
+
+/* ─── NAVBAR ─── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 24px;
+  background:rgba(2,4,8,.88);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);gap:12px;
+}
+.nav-logo{
+  font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.15rem;
+  background:linear-gradient(90deg,var(--cyan),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  letter-spacing:2px;white-space:nowrap;
+}
+.nav-links{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.nav-links a{
+  color:var(--dim);text-decoration:none;font-size:.85rem;
+  font-weight:500;letter-spacing:1px;transition:.3s;
+  padding:6px 12px;border-radius:6px;
+}
+.nav-links a:hover,.nav-links a.active{color:var(--cyan);background:rgba(0,245,255,.06)}
+.nav-links a.active{border:1px solid rgba(0,245,255,.2)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.nav-cta{
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  border:none;padding:8px 18px;border-radius:4px;
+  color:#000;font-family:'Orbitron',sans-serif;
+  font-size:.72rem;font-weight:700;letter-spacing:1px;
+  cursor:pointer;transition:.3s;white-space:nowrap;
+}
+.nav-cta:hover{transform:scale(1.04);box-shadow:0 0 20px rgba(0,245,255,.5)}
+.gh-pill{
+  display:flex;align-items:center;gap:6px;
+  border:1px solid rgba(0,245,255,.25);border-radius:20px;
+  padding:5px 12px;font-family:'Share Tech Mono',monospace;font-size:.72rem;
+  color:var(--cyan);cursor:pointer;transition:.3s;background:rgba(0,245,255,.04);
+}
+.gh-pill:hover{border-color:var(--cyan);background:rgba(0,245,255,.08)}
+.gh-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:blink 2s infinite;flex-shrink:0}
+.burger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+.burger span{display:block;width:22px;height:2px;background:var(--cyan);border-radius:2px;transition:.3s}
+.burger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.burger.open span:nth-child(2){opacity:0}
+.burger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+.mobile-menu{
+  display:none;position:fixed;top:58px;left:0;right:0;z-index:999;
+  background:rgba(2,4,8,.97);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);padding:16px 24px;
+  flex-direction:column;gap:4px;
+}
+.mobile-menu.open{display:flex}
+.mobile-menu a{color:var(--dim);text-decoration:none;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.95rem}
+.mobile-menu a:hover{color:var(--cyan)}
+
+/* ─── PAGE VIEWS ─── */
+.page{display:none}
+.page.active{display:block}
+
+/* ─── HERO ─── */
+.hero{
+  position:relative;z-index:1;min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:100px 24px 60px;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  border:1px solid rgba(0,245,255,.3);border-radius:20px;
+  padding:6px 16px;margin-bottom:24px;
+  font-size:.73rem;letter-spacing:2px;color:var(--cyan);
+  animation:pulse-border 2s ease-in-out infinite;
+}
+.hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes pulse-border{0%,100%{border-color:rgba(0,245,255,.3)}50%{border-color:rgba(0,245,255,.7)}}
+.hero h1{
+  font-family:'Orbitron',sans-serif;
+  font-size:clamp(2.4rem,8vw,5.5rem);
+  font-weight:900;line-height:1.1;margin-bottom:16px;
+}
+.line1{background:linear-gradient(135deg,#fff 30%,var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.line2{background:linear-gradient(135deg,var(--purple),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:1.05rem;color:var(--dim);max-width:580px;line-height:1.7;margin-bottom:36px}
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.btn-primary{
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  border:none;padding:13px 30px;border-radius:4px;
+  color:#000;font-family:'Orbitron',sans-serif;font-size:.78rem;
+  font-weight:700;letter-spacing:2px;cursor:pointer;transition:.3s;text-transform:uppercase;
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,245,255,.4)}
+.btn-outline{
+  background:transparent;border:1px solid var(--border);
+  padding:13px 30px;border-radius:4px;color:var(--cyan);
+  font-family:'Orbitron',sans-serif;font-size:.78rem;
+  font-weight:600;letter-spacing:2px;cursor:pointer;transition:.3s;text-transform:uppercase;
+}
+.btn-outline:hover{border-color:var(--cyan);background:rgba(0,245,255,.05)}
+.hero-stats{display:flex;gap:40px;margin-top:56px;flex-wrap:wrap;justify-content:center}
+.stat{text-align:center}
+.stat-num{font-family:'Orbitron',sans-serif;font-size:1.7rem;font-weight:900;color:var(--cyan)}
+.stat-lbl{font-size:.72rem;color:var(--dim);letter-spacing:1px;text-transform:uppercase}
+
+/* ─── COMMON ─── */
+.wrap{position:relative;z-index:1;padding:0 24px 80px;max-width:1400px;margin:0 auto}
+.section-title{font-family:'Orbitron',sans-serif;font-size:1.35rem;font-weight:700;color:var(--text);margin-bottom:6px;letter-spacing:2px}
+.section-sub{color:var(--dim);font-size:.92rem;margin-bottom:28px}
+.sep{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:50px 0}
+
+/* ─── GENERATOR ─── */
+.gen-box{
+  background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:28px;margin-bottom:56px;position:relative;overflow:hidden;
+}
+.gen-box::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--cyan),var(--purple),transparent);
+  animation:scanline 3s linear infinite;
+}
+@keyframes scanline{0%{opacity:.3}50%{opacity:1}100%{opacity:.3}}
+.gen-row{display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.gen-input{
+  flex:1;min-width:200px;background:rgba(0,245,255,.04);
+  border:1px solid var(--border);border-radius:6px;padding:13px 16px;
+  color:var(--text);font-family:'Rajdhani',sans-serif;font-size:.95rem;
+  outline:none;transition:.3s;
+}
+.gen-input:focus{border-color:var(--cyan)}
+.gen-input::placeholder{color:var(--dim)}
+.gen-select{
+  background:rgba(0,245,255,.04);border:1px solid var(--border);
+  border-radius:6px;padding:13px 16px;color:var(--text);
+  font-family:'Rajdhani',sans-serif;font-size:.9rem;outline:none;cursor:pointer;
+}
+.gen-select option{background:#060d14}
+.gen-btn{
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  border:none;padding:13px 26px;border-radius:6px;
+  color:#000;font-family:'Orbitron',sans-serif;font-size:.76rem;
+  font-weight:700;letter-spacing:1px;cursor:pointer;transition:.3s;white-space:nowrap;
+}
+.gen-btn:hover{transform:scale(1.03);box-shadow:0 0 24px rgba(0,245,255,.4)}
+.gen-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{
+  padding:6px 14px;border-radius:20px;font-size:.76rem;
+  border:1px solid rgba(0,245,255,.18);color:var(--dim);
+  cursor:pointer;transition:.2s;letter-spacing:.5px;
+}
+.chip:hover,.chip.on{border-color:var(--cyan);color:var(--cyan);background:rgba(0,245,255,.07)}
+.ai-thinking{display:none;padding:38px;text-align:center;border:1px solid var(--border);border-radius:8px;margin-top:22px}
+.ai-thinking.show{display:block}
+.thinking-orb{
+  width:58px;height:58px;border-radius:50%;margin:0 auto 14px;
+  background:conic-gradient(var(--cyan),var(--purple),var(--pink),var(--cyan));
+  animation:spin 1s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.thinking-txt{color:var(--dim);font-size:.88rem}
+.thinking-desc{color:var(--cyan);font-size:.82rem;margin-top:7px;min-height:22px}
+.gen-result{display:none;margin-top:22px;border:1px solid rgba(0,245,255,.18);border-radius:8px;overflow:hidden}
+.gen-result.show{display:block}
+.result-hdr{
+  padding:11px 18px;background:rgba(0,245,255,.04);
+  display:flex;justify-content:space-between;align-items:center;
+  border-bottom:1px solid var(--border);
+}
+.result-title{font-family:'Orbitron',sans-serif;font-size:.77rem;color:var(--cyan)}
+#genCanvas{width:100%;height:300px;display:block}
+.result-actions{display:flex;gap:9px;padding:13px 18px;background:rgba(0,0,0,.3);flex-wrap:wrap}
+.r-btn{padding:7px 18px;border-radius:4px;font-size:.76rem;font-family:'Orbitron',sans-serif;cursor:pointer;transition:.2s;letter-spacing:.8px;border:none}
+.r-btn.dl{background:var(--green);color:#000;font-weight:700}
+.r-btn.dl:hover{box-shadow:var(--glow-n)}
+.r-btn.save{background:transparent;border:1px solid var(--purple);color:var(--purple)}
+.r-btn.save:hover{background:rgba(191,0,255,.1)}
+.r-btn.regen{background:transparent;border:1px solid var(--dim);color:var(--dim)}
+.r-btn.regen:hover{border-color:var(--cyan);color:var(--cyan)}
+
+/* ─── FILTER BAR ─── */
+.filter-bar{display:flex;align-items:center;gap:10px;margin-bottom:28px;flex-wrap:wrap}
+.f-btn{
+  padding:7px 18px;border-radius:4px;font-size:.76rem;
+  border:1px solid rgba(0,245,255,.18);color:var(--dim);
+  cursor:pointer;transition:.2s;background:transparent;
+  font-family:'Orbitron',sans-serif;letter-spacing:1px;
+}
+.f-btn.on,.f-btn:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(0,245,255,.06)}
+.search-wrap{margin-left:auto;position:relative}
+.search-inp{
+  background:rgba(0,245,255,.04);border:1px solid var(--border);
+  border-radius:6px;padding:8px 14px 8px 36px;
+  color:var(--text);font-family:'Rajdhani',sans-serif;font-size:.88rem;
+  outline:none;width:210px;transition:.3s;
+}
+.search-inp:focus{border-color:var(--cyan);width:260px}
+.search-ico{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--dim);font-size:.85rem}
+
+/* ─── WALLPAPER GRID ─── */
+.wall-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px}
+.wall-card{
+  border-radius:10px;overflow:hidden;position:relative;
+  cursor:pointer;transition:.3s;border:1px solid rgba(0,245,255,.08);
+  background:var(--card);aspect-ratio:16/10;
+}
+.wall-card:hover{transform:translateY(-4px);border-color:var(--cyan);box-shadow:0 8px 32px rgba(0,245,255,.18)}
+.wall-card canvas{width:100%;height:100%;display:block}
+.wall-ov{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,.9) 0%,transparent 60%);
+  opacity:0;transition:.3s;padding:14px;
+  display:flex;flex-direction:column;justify-content:flex-end;
+}
+.wall-card:hover .wall-ov{opacity:1}
+.wall-name{font-family:'Orbitron',sans-serif;font-size:.72rem;color:#fff;font-weight:700;margin-bottom:3px}
+.wall-tag{font-size:.67rem;color:var(--cyan);letter-spacing:1px;margin-bottom:9px}
+.wall-acts{display:flex;gap:7px}
+.w-btn{padding:5px 11px;border-radius:3px;font-size:.65rem;font-family:'Orbitron',sans-serif;cursor:pointer;transition:.2s;letter-spacing:.5px;border:none}
+.w-btn.dl{background:var(--cyan);color:#000;font-weight:700}
+.w-btn.prev{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2)}
+.wall-res{
+  position:absolute;top:9px;right:9px;background:rgba(0,0,0,.7);
+  border:1px solid rgba(0,245,255,.28);border-radius:3px;padding:2px 7px;
+  font-size:.62rem;color:var(--cyan);font-family:'Orbitron',sans-serif;
+}
+.wall-new{
+  position:absolute;top:9px;left:9px;background:var(--pink);color:#000;
+  border-radius:3px;padding:2px 7px;font-size:.62rem;font-weight:700;
+  font-family:'Orbitron',sans-serif;
+}
+
+/* ─── TRENDING ─── */
+.trending-scroll{display:flex;gap:14px;overflow-x:auto;padding-bottom:10px;scroll-snap-type:x mandatory;-ms-overflow-style:none;scrollbar-width:none}
+.trending-scroll::-webkit-scrollbar{display:none}
+.trend-card{flex:0 0 190px;border-radius:8px;overflow:hidden;position:relative;cursor:pointer;scroll-snap-align:start;transition:.3s;border:1px solid rgba(0,245,255,.08)}
+.trend-card:hover{border-color:var(--cyan);transform:scale(1.03)}
+.trend-card canvas{width:190px;height:125px;display:block}
+.trend-info{padding:9px 11px;background:var(--card2)}
+.trend-name{font-size:.75rem;color:var(--text);font-weight:600;margin-bottom:2px}
+.trend-count{font-size:.66rem;color:var(--dim)}
+
+/* ─── FEATURED ─── */
+.feat-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:56px}
+.feat-big{grid-row:span 2}
+.feat-card{border-radius:10px;overflow:hidden;position:relative;cursor:pointer;transition:.3s;border:1px solid rgba(0,245,255,.12)}
+.feat-card:hover{border-color:var(--purple);box-shadow:var(--glow-p)}
+.feat-card canvas{width:100%;display:block}
+.feat-big canvas{height:480px}
+.feat-card:not(.feat-big) canvas{height:232px}
+.feat-card .wall-ov{opacity:.4}
+.feat-card:hover .wall-ov{opacity:1}
+
+/* ─── MODAL ─── */
+.modal-bg{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.92);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px}
+.modal-bg.open{display:flex}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;max-width:900px;width:100%;animation:minIn .3s ease}
+@keyframes minIn{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-top{display:flex;justify-content:space-between;align-items:center;padding:15px 22px;border-bottom:1px solid var(--border)}
+.modal-title{font-family:'Orbitron',sans-serif;font-size:.85rem;color:var(--cyan)}
+.modal-close{background:none;border:none;color:var(--dim);font-size:1.3rem;cursor:pointer}
+.modal-close:hover{color:var(--pink)}
+#modalCanvas{width:100%;max-height:440px;display:block}
+.modal-info{padding:18px 22px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+.modal-name{font-family:'Orbitron',sans-serif;font-size:1rem;color:#fff;margin-bottom:4px}
+.modal-tags{display:flex;gap:7px;flex-wrap:wrap}
+.modal-tag{padding:3px 9px;border-radius:10px;font-size:.7rem;border:1px solid rgba(0,245,255,.28);color:var(--cyan)}
+.modal-dl{background:linear-gradient(135deg,var(--cyan),var(--green));border:none;padding:10px 22px;border-radius:4px;color:#000;font-family:'Orbitron',sans-serif;font-size:.75rem;font-weight:700;letter-spacing:1px;cursor:pointer;transition:.3s}
+.modal-dl:hover{box-shadow:var(--glow-n)}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:768px){
+  .nav-links{display:none}
+  .burger{display:flex}
+  .feat-row{grid-template-columns:1fr}
+  .feat-big{grid-row:span 1}
+  .feat-big canvas{height:200px}
+  .feat-card:not(.feat-big) canvas{height:160px}
+}
+</style>
+</head>
+<body>
+<canvas id="bgCanvas"></canvas>
+
+<!-- Navbar -->
+<nav>
+  <span class="nav-logo">⚡ NEXUS WALLS</span>
+  <div class="nav-links">
+    <a href="#" class="active" onclick="showPage('home',this)">Home</a>
+    <a href="#" onclick="showPage('browse',this)">Browse</a>
+    <a href="#" onclick="showPage('generate',this)">AI Generate</a>
+  </div>
+  <div class="nav-right">
+    <div class="gh-pill" onclick="window.open('https://github.com/nisarllc206-sys/Nexus-ultra-platforms','_blank')">
+      <span class="gh-dot"></span>GitHub
+    </div>
+    <button class="nav-cta" onclick="showPage('generate',null)">Generate Free</button>
+    <button class="burger" id="burger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#" onclick="showPage('home',null);toggleMenu()">Home</a>
+  <a href="#" onclick="showPage('browse',null);toggleMenu()">Browse</a>
+  <a href="#" onclick="showPage('generate',null);toggleMenu()">AI Generate</a>
+</div>
+
+<!-- HOME PAGE -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-badge"><span class="dot"></span>AI-POWERED · FREE FOREVER</div>
+    <h1>
+      <div class="line1">NEXUS</div>
+      <div class="line2">WALLS</div>
+    </h1>
+    <p class="hero-sub">
+      Generate stunning AI wallpapers for any device. Hundreds of styles — cyberpunk, abstract, space, nature — powered by generative art algorithms.
+    </p>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="showPage('generate',null)">✨ Generate Now</button>
+      <button class="btn-outline" onclick="showPage('browse',null)">Browse Gallery</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">50K+</div><div class="stat-lbl">Wallpapers</div></div>
+      <div class="stat"><div class="stat-num">12</div><div class="stat-lbl">AI Styles</div></div>
+      <div class="stat"><div class="stat-num">4K</div><div class="stat-lbl">Max Resolution</div></div>
+      <div class="stat"><div class="stat-num">Free</div><div class="stat-lbl">Forever</div></div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <p class="section-title">🔥 TRENDING NOW</p>
+    <p class="section-sub">Most downloaded this week</p>
+    <div class="trending-scroll" id="trendingScroll"></div>
+    <div class="sep"></div>
+    <p class="section-title">⭐ FEATURED</p>
+    <p class="section-sub">Hand-picked AI masterpieces</p>
+    <div class="feat-row" id="featuredRow"></div>
+  </div>
+</div>
+
+<!-- BROWSE PAGE -->
+<div class="page" id="page-browse">
+  <div style="position:relative;z-index:1;padding:90px 24px 0;max-width:1400px;margin:0 auto">
+    <div class="filter-bar">
+      <button class="f-btn on" onclick="filterWalls('All',this)">ALL</button>
+      <button class="f-btn" onclick="filterWalls('Cyberpunk',this)">CYBERPUNK</button>
+      <button class="f-btn" onclick="filterWalls('Abstract',this)">ABSTRACT</button>
+      <button class="f-btn" onclick="filterWalls('Space',this)">SPACE</button>
+      <button class="f-btn" onclick="filterWalls('Nature',this)">NATURE</button>
+      <button class="f-btn" onclick="filterWalls('Minimal',this)">MINIMAL</button>
+      <div class="search-wrap">
+        <span class="search-ico">🔍</span>
+        <input class="search-inp" id="searchInp" placeholder="Search wallpapers..." oninput="searchWalls(this.value)">
+      </div>
+    </div>
+    <div class="wall-grid" id="wallGrid"></div>
+  </div>
+</div>
+
+<!-- GENERATE PAGE -->
+<div class="page" id="page-generate">
+  <div style="position:relative;z-index:1;padding:90px 24px 0;max-width:900px;margin:0 auto">
+    <p class="section-title">✨ AI WALLPAPER GENERATOR</p>
+    <p class="section-sub">Create unique wallpapers powered by generative algorithms</p>
+    <div class="gen-box">
+      <div class="gen-row">
+        <input class="gen-input" id="promptInp" placeholder="Describe your wallpaper... e.g. neon city at night, purple galaxy, abstract geometric">
+        <select class="gen-select" id="styleSelect">
+          <option value="cyberpunk">Cyberpunk</option>
+          <option value="abstract">Abstract</option>
+          <option value="space">Space</option>
+          <option value="nature">Nature</option>
+          <option value="minimal">Minimal</option>
+          <option value="neon">Neon</option>
+          <option value="matrix">Matrix</option>
+        </select>
+        <select class="gen-select" id="resSelect">
+          <option value="1920x1080">1920×1080 (FHD)</option>
+          <option value="2560x1440">2560×1440 (QHD)</option>
+          <option value="3840x2160">3840×2160 (4K)</option>
+          <option value="1080x1920">1080×1920 (Mobile)</option>
+        </select>
+        <button class="gen-btn" id="genBtn" onclick="generateWallpaper()">⚡ GENERATE</button>
+      </div>
+      <div class="chips" id="styleChips">
+        <span class="chip on" onclick="setStyle('cyberpunk',this)">Cyberpunk</span>
+        <span class="chip" onclick="setStyle('abstract',this)">Abstract</span>
+        <span class="chip" onclick="setStyle('space',this)">Space</span>
+        <span class="chip" onclick="setStyle('nature',this)">Nature</span>
+        <span class="chip" onclick="setStyle('minimal',this)">Minimal</span>
+        <span class="chip" onclick="setStyle('neon',this)">Neon</span>
+        <span class="chip" onclick="setStyle('matrix',this)">Matrix</span>
+      </div>
+      <div class="ai-thinking" id="aiThinking">
+        <div class="thinking-orb"></div>
+        <div class="thinking-txt">Generating your wallpaper...</div>
+        <div class="thinking-desc" id="thinkingDesc">Initializing AI engine</div>
+      </div>
+      <div class="gen-result" id="genResult">
+        <div class="result-hdr">
+          <span class="result-title">✅ WALLPAPER GENERATED</span>
+          <span style="font-size:.72rem;color:var(--dim);font-family:'Share Tech Mono',monospace" id="resLabel">1920×1080</span>
+        </div>
+        <canvas id="genCanvas"></canvas>
+        <div class="result-actions">
+          <button class="r-btn dl" onclick="downloadWallpaper()">⬇ DOWNLOAD</button>
+          <button class="r-btn save" onclick="saveToCollection()">🔖 SAVE</button>
+          <button class="r-btn regen" onclick="generateWallpaper()">🔄 REGENERATE</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-bg" id="modalBg" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-top">
+      <span class="modal-title" id="modalTitle">WALLPAPER PREVIEW</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <canvas id="modalCanvas"></canvas>
+    <div class="modal-info">
+      <div>
+        <div class="modal-name" id="modalName">—</div>
+        <div class="modal-tags" id="modalTags"></div>
+      </div>
+      <button class="modal-dl" onclick="downloadModal()">⬇ DOWNLOAD FREE</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Navigation ──
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  if (el) {
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    el.classList.add('active');
+  }
+  if (id === 'browse') buildBrowseGrid();
+}
+function toggleMenu() {
+  document.getElementById('burger').classList.toggle('open');
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+
+// ── Generative Art Engine ──
+const PALETTES = {
+  cyberpunk: ['#00f5ff','#bf00ff','#ff0080','#ffd700','#00ff88'],
+  abstract:  ['#ff6b6b','#feca57','#48dbfb','#ff9ff3','#54a0ff'],
+  space:     ['#0a0a2e','#1a1a5e','#6c5ce7','#a29bfe','#fd79a8'],
+  nature:    ['#00b894','#00cec9','#55efc4','#81ecec','#ffeaa7'],
+  minimal:   ['#2d3436','#636e72','#b2bec3','#dfe6e9','#ffffff'],
+  neon:      ['#ff0090','#00ffcc','#7700ff','#ffee00','#00aaff'],
+  matrix:    ['#003300','#006600','#00cc00','#00ff00','#33ff33'],
+};
+
+function drawGenerative(canvas, style = 'cyberpunk', seed = Math.random()) {
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const pal = PALETTES[style] || PALETTES.cyberpunk;
+  let s = seed * 1e9;
+  const rng = () => { s = (s * 9301 + 49297) % 233280; return s / 233280; };
+
+  // Background gradient
+  const bg = ctx.createLinearGradient(0, 0, W, H);
+  bg.addColorStop(0, style === 'space' ? '#020212' : style === 'matrix' ? '#001100' : '#020408');
+  bg.addColorStop(1, style === 'space' ? '#0d0d3b' : style === 'matrix' ? '#002200' : '#060d14');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  if (style === 'matrix') {
+    ctx.font = `${Math.floor(H * 0.022)}px 'Share Tech Mono', monospace`;
+    const cols = Math.floor(W / (H * 0.022));
+    for (let c = 0; c < cols; c++) {
+      const rows = Math.floor(H / (H * 0.022));
+      for (let r = 0; r < rows; r++) {
+        if (rng() > 0.6) {
+          const alpha = rng() * 0.9 + 0.1;
+          ctx.fillStyle = `rgba(0,${Math.floor(rng()*100+155)},0,${alpha})`;
+          ctx.fillText(String.fromCharCode(0x30A0 + Math.floor(rng() * 96)), c * (H * 0.022), r * (H * 0.022));
+        }
+      }
+    }
+    return;
+  }
+
+  // Orbs / circles
+  for (let i = 0; i < 8; i++) {
+    const x = rng() * W, y = rng() * H, r = rng() * W * 0.4 + W * 0.05;
+    const grd = ctx.createRadialGradient(x, y, 0, x, y, r);
+    const c = pal[Math.floor(rng() * pal.length)];
+    grd.addColorStop(0, c + '33');
+    grd.addColorStop(1, 'transparent');
+    ctx.fillStyle = grd;
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  // Grid lines (cyberpunk/neon)
+  if (['cyberpunk','neon','minimal'].includes(style)) {
+    ctx.strokeStyle = pal[0] + '18';
+    ctx.lineWidth = 0.5;
+    const step = W / 20;
+    for (let x = 0; x < W; x += step) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+    }
+    for (let y = 0; y < H; y += step) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+    }
+  }
+
+  // Particles / dots
+  for (let i = 0; i < 120; i++) {
+    const x = rng() * W, y = rng() * H, r = rng() * 2 + 0.5;
+    ctx.fillStyle = pal[Math.floor(rng() * pal.length)] + 'cc';
+    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
+  }
+
+  // Lines
+  for (let i = 0; i < 12; i++) {
+    ctx.strokeStyle = pal[Math.floor(rng() * pal.length)] + '55';
+    ctx.lineWidth = rng() * 1.5 + 0.3;
+    ctx.beginPath();
+    ctx.moveTo(rng() * W, rng() * H);
+    ctx.lineTo(rng() * W, rng() * H);
+    ctx.stroke();
+  }
+
+  // Geometric shapes
+  for (let i = 0; i < 5; i++) {
+    const x = rng() * W, y = rng() * H, sz = rng() * W * 0.12 + W * 0.02;
+    const c = pal[Math.floor(rng() * pal.length)];
+    ctx.strokeStyle = c + '44';
+    ctx.lineWidth = 0.8;
+    ctx.beginPath();
+    const sides = [3, 4, 6][Math.floor(rng() * 3)];
+    for (let s2 = 0; s2 <= sides; s2++) {
+      const a = (s2 / sides) * Math.PI * 2 - Math.PI / 2;
+      s2 === 0 ? ctx.moveTo(x + Math.cos(a) * sz, y + Math.sin(a) * sz) : ctx.lineTo(x + Math.cos(a) * sz, y + Math.sin(a) * sz);
+    }
+    ctx.stroke();
+  }
+}
+
+// ── Wallpaper Catalogue ──
+const WALLS = Array.from({length: 30}, (_, i) => ({
+  id: i,
+  name: ['Neon Drift','Cyber City','Void Matrix','Aurora','Deep Space','Crystal Mind','Photon Wave','Circuit Board','Quantum Field','Nova Burst','Dark Horizon','Electric Dreams','Plasma Core','Stellar Map','Grid Runner','Cosmic Dust','Binary Rain','Void Rift','Hyper Arc','Shadow Realm','Prism Break','Flux Wave','Code Stream','Star Forge','Neon Grid','Quantum Dream','Dark Matter','Cyber Pulse','Light Year','Data Storm'][i],
+  style: ['cyberpunk','abstract','space','neon','matrix','nature','minimal','cyberpunk','abstract','space','neon','matrix','nature','minimal','cyberpunk','abstract','space','neon','matrix','nature','minimal','cyberpunk','abstract','space','neon','matrix','nature','minimal','cyberpunk','abstract'][i],
+  downloads: Math.floor(Math.random() * 10000) + 500,
+  seed: Math.random(),
+  isNew: i < 5,
+}));
+
+let currentFilter = 'All';
+let currentSearch = '';
+let modalWall = null;
+const genSeeds = {};
+
+function getFilteredWalls() {
+  return WALLS.filter(w => {
+    const matchCat = currentFilter === 'All' || w.style.toLowerCase() === currentFilter.toLowerCase();
+    const matchSearch = !currentSearch || w.name.toLowerCase().includes(currentSearch.toLowerCase()) || w.style.toLowerCase().includes(currentSearch.toLowerCase());
+    return matchCat && matchSearch;
+  });
+}
+
+function buildCard(w, width, height) {
+  const div = document.createElement('div');
+  div.className = 'wall-card';
+  div.style.aspectRatio = `${width}/${height}`;
+  const cvs = document.createElement('canvas');
+  cvs.width = width; cvs.height = height;
+  drawGenerative(cvs, w.style, w.seed);
+  div.appendChild(cvs);
+  if (w.isNew) {
+    const badge = document.createElement('span');
+    badge.className = 'wall-new'; badge.textContent = 'NEW';
+    div.appendChild(badge);
+  }
+  const res = document.createElement('span');
+  res.className = 'wall-res'; res.textContent = '4K';
+  div.appendChild(res);
+  const ov = document.createElement('div');
+  ov.className = 'wall-ov';
+  ov.innerHTML = `<div class="wall-name">${w.name}</div><div class="wall-tag">${w.style.toUpperCase()} · ${(w.downloads/1000).toFixed(1)}K DL</div><div class="wall-acts"><button class="w-btn dl" onclick="event.stopPropagation();downloadWall(${w.id})">⬇ DL</button><button class="w-btn prev" onclick="event.stopPropagation();openModal(${w.id})">Preview</button></div>`;
+  div.appendChild(ov);
+  div.addEventListener('click', () => openModal(w.id));
+  return div;
+}
+
+function buildBrowseGrid() {
+  const grid = document.getElementById('wallGrid');
+  grid.innerHTML = '';
+  getFilteredWalls().forEach(w => grid.appendChild(buildCard(w, 320, 200)));
+}
+
+function filterWalls(cat, btn) {
+  currentFilter = cat;
+  document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('on'));
+  if (btn) btn.classList.add('on');
+  buildBrowseGrid();
+}
+function searchWalls(v) { currentSearch = v; buildBrowseGrid(); }
+
+// ── Trending & Featured ──
+function buildTrending() {
+  const el = document.getElementById('trendingScroll');
+  WALLS.slice(0, 10).forEach(w => {
+    const div = document.createElement('div');
+    div.className = 'trend-card';
+    const cvs = document.createElement('canvas');
+    cvs.width = 190; cvs.height = 125;
+    drawGenerative(cvs, w.style, w.seed);
+    div.appendChild(cvs);
+    div.innerHTML += `<div class="trend-info"><div class="trend-name">${w.name}</div><div class="trend-count">${(w.downloads/1000).toFixed(1)}K downloads</div></div>`;
+    div.addEventListener('click', () => openModal(w.id));
+    el.appendChild(div);
+  });
+}
+
+function buildFeatured() {
+  const row = document.getElementById('featuredRow');
+  const featured = [WALLS[0], WALLS[3], WALLS[7]];
+  featured.forEach((w, i) => {
+    const div = document.createElement('div');
+    div.className = i === 0 ? 'feat-card feat-big' : 'feat-card';
+    const cvs = document.createElement('canvas');
+    cvs.width = 800; cvs.height = i === 0 ? 480 : 232;
+    drawGenerative(cvs, w.style, w.seed);
+    div.appendChild(cvs);
+    const ov = document.createElement('div');
+    ov.className = 'wall-ov';
+    ov.innerHTML = `<div class="wall-name">${w.name}</div><div class="wall-tag">${w.style.toUpperCase()}</div>`;
+    div.appendChild(ov);
+    div.addEventListener('click', () => openModal(w.id));
+    row.appendChild(div);
+  });
+}
+
+// ── Modal ──
+function openModal(id) {
+  const w = WALLS.find(x => x.id === id);
+  if (!w) return;
+  modalWall = w;
+  const cvs = document.getElementById('modalCanvas');
+  cvs.width = 900; cvs.height = 506;
+  drawGenerative(cvs, w.style, w.seed);
+  document.getElementById('modalTitle').textContent = w.name + ' · ' + w.style.toUpperCase();
+  document.getElementById('modalName').textContent = w.name;
+  document.getElementById('modalTags').innerHTML = [w.style, '4K', 'Free'].map(t => `<span class="modal-tag">${t}</span>`).join('');
+  document.getElementById('modalBg').classList.add('open');
+}
+function closeModal(e) {
+  if (!e || e.target === document.getElementById('modalBg')) {
+    document.getElementById('modalBg').classList.remove('open');
+  }
+}
+function downloadWall(id) {
+  const w = WALLS.find(x => x.id === id);
+  if (!w) return;
+  const cvs = document.createElement('canvas');
+  cvs.width = 3840; cvs.height = 2160;
+  drawGenerative(cvs, w.style, w.seed);
+  const a = document.createElement('a');
+  a.download = `nexus-walls-${w.name.replace(/\s+/g,'-').toLowerCase()}-4k.png`;
+  a.href = cvs.toDataURL('image/png');
+  a.click();
+}
+function downloadModal() {
+  if (modalWall) downloadWall(modalWall.id);
+}
+
+// ── AI Generator ──
+const THINK_STEPS = ['Initializing AI engine','Sampling noise vectors','Applying style transfer','Rendering particles','Compositing layers','Finalizing output'];
+let thinkInterval;
+function generateWallpaper() {
+  const btn = document.getElementById('genBtn');
+  btn.disabled = true;
+  document.getElementById('genResult').classList.remove('show');
+  document.getElementById('aiThinking').classList.add('show');
+  let step = 0;
+  const desc = document.getElementById('thinkingDesc');
+  thinkInterval = setInterval(() => {
+    desc.textContent = THINK_STEPS[step % THINK_STEPS.length];
+    step++;
+  }, 400);
+  setTimeout(() => {
+    clearInterval(thinkInterval);
+    document.getElementById('aiThinking').classList.remove('show');
+    const style = document.getElementById('styleSelect').value;
+    const res = document.getElementById('resSelect').value;
+    const [rw, rh] = res.split('x').map(Number);
+    const cvs = document.getElementById('genCanvas');
+    const aspect = rw / rh;
+    cvs.style.maxHeight = '300px';
+    cvs.width = Math.min(rw, 1200); cvs.height = Math.min(rh, Math.round(1200 / aspect));
+    const seed = Math.random();
+    genSeeds.last = seed;
+    drawGenerative(cvs, style, seed);
+    document.getElementById('resLabel').textContent = `${rw}×${rh}`;
+    document.getElementById('genResult').classList.add('show');
+    btn.disabled = false;
+  }, 2600);
+}
+function downloadWallpaper() {
+  const style = document.getElementById('styleSelect').value;
+  const res = document.getElementById('resSelect').value;
+  const [rw, rh] = res.split('x').map(Number);
+  const cvs = document.createElement('canvas');
+  cvs.width = rw; cvs.height = rh;
+  drawGenerative(cvs, style, genSeeds.last || Math.random());
+  const a = document.createElement('a');
+  a.download = `nexus-walls-${style}-${res}.png`;
+  a.href = cvs.toDataURL('image/png');
+  a.click();
+}
+function saveToCollection() { alert('✅ Saved to your collection! (Login to access saved wallpapers)'); }
+
+function setStyle(s, el) {
+  document.getElementById('styleSelect').value = s;
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+}
+
+// ── Background Canvas ──
+(function() {
+  const cvs = document.getElementById('bgCanvas');
+  const ctx = cvs.getContext('2d');
+  const dots = [];
+  function resize() { cvs.width = window.innerWidth; cvs.height = window.innerHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+  for (let i = 0; i < 80; i++) {
+    dots.push({ x: Math.random(), y: Math.random(), vx: (Math.random()-.5)*.0002, vy: (Math.random()-.5)*.0002, r: Math.random()*1.5+.5 });
+  }
+  function frame() {
+    ctx.clearRect(0, 0, cvs.width, cvs.height);
+    dots.forEach(d => {
+      d.x = (d.x + d.vx + 1) % 1; d.y = (d.y + d.vy + 1) % 1;
+      ctx.beginPath();
+      ctx.arc(d.x * cvs.width, d.y * cvs.height, d.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(0,245,255,0.6)';
+      ctx.fill();
+    });
+    requestAnimationFrame(frame);
+  }
+  frame();
+})();
+
+// ── Init ──
+buildTrending();
+buildFeatured();
+buildBrowseGrid();
+</script>
+</body>
+</html>
