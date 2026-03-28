@@ -1,0 +1,26 @@
+{
+  "github.copilot.enable": {
+    "*": true,
+    "plaintext": false,
+    "markdown": false
+  },
+  "github.copilot.advanced": {
+    "debug.overrideCookieHeader": "",
+    "debug.testOverrideProxyUrl": "",
+    "debug.useTestServer": false,
+    "inlineSuggestCount": 3,
+    "inlineSuggestCommitCharacters": [";", ","],
+    "listTopkSampleCount": 3
+  },
+  "editor.inlineSuggest.enabled": true,
+  "editor.inlineSuggest.showToolbar": "onHover",
+  "extensions.ignoreRecommendations": false,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "eslint.enable": true,
+  "files.exclude": {
+    "node_modules": true,
+    "dist": true,
+    ".env": true
+  }
+}

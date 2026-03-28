@@ -1,0 +1,22 @@
+{
+  "version": "1.0",
+  "language": "javascript",
+  "framework": "node",
+  "patterns": [
+    "middleware",
+    "firebase",
+    "express",
+    "security"
+  ],
+  "suggestions": {
+    "enabled": true,
+    "contextLines": 10,
+    "includeTests": true
+  },
+  "paths": {
+    "middleware": "src/middleware/",
+    "functions": "src/functions/",
+    "tests": "tests/",
+    "docs": "docs/"
+  }
+}

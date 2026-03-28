@@ -1,0 +1,58 @@
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeSecurityPolicy
+metadata:
+  name: nexus-security-policy
+spec:
+  description: "Nexus Ultra Platforms DDoS & Attack Protection"
+  rules:
+    # Allow traffic from specific regions
+    - priority: 100
+      description: "Allow traffic from allowed regions"
+      match:
+        versionedExpr: "EXPR_V1"
+        expr:
+          expression: "origin.region_code in ['US', 'IN', 'GB', 'DE']"
+      action: "allow"
+
+    # Block SQL Injection
+    - priority: 200
+      description: "Block SQL Injection"
+      match:
+        versionedExpr: "EXPR_V1"
+        expr:
+          expression: "evaluatePreconfiguredExpr('sqli-v33-stable')"
+      action: "deny(403)"
+
+    # Block XSS
+    - priority: 300
+      description: "Block XSS attacks"
+      match:
+        versionedExpr: "EXPR_V1"
+        expr:
+          expression: "evaluatePreconfiguredExpr('xss-v33-stable')"
+      action: "deny(403)"
+
+    # Rate limiting
+    - priority: 400
+      description: "Rate limit per IP"
+      match:
+        versionedExpr: "EXPR_V1"
+        expr:
+          expression: "true"
+      action: "throttle"
+      rateLimitOptions:
+        conformAction: "allow"
+        exceedAction: "deny(429)"
+        enforceOnKey: "IP"
+        rateLimitThreshold:
+          count: 100
+          intervalSec: 60
+
+    # Default allow
+    - priority: 65535
+      description: "Default allow"
+      match:
+        versionedExpr: "EXPR_V1"
+        expr:
+          expression: "true"
+      action: "allow"
