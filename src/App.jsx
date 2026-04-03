@@ -64,6 +64,9 @@ export default function App() {
   const [aiOutput, setAiOutput] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
   const [notification, setNotification] = useState(null);
+  const [apiKey, setApiKey] = useState(() => localStorage.getItem("anthropic_key") || "");
+  const [showApiModal, setShowApiModal] = useState(false);
+  const [apiKeyInput, setApiKeyInput] = useState("");
   const [links, setLinks] = useState([
     { id: 1, name: "Echo Dot Review Post", asin: "B09G9FPHY6", url: "https://nisar.llc/go/echo-dot", clicks: 840, active: true },
     { id: 2, name: "Fire TV Comparison", asin: "B08N5WRWNW", url: "https://nisar.llc/go/fire-tv", clicks: 1240, active: true },
@@ -86,6 +89,10 @@ export default function App() {
   );
 
   const generateContent = async () => {
+    if (!apiKey) {
+      setShowApiModal(true);
+      return;
+    }
     setAiLoading(true);
     setAiOutput("");
     try {
@@ -93,7 +100,12 @@ export default function App() {
       const prompt = `You are an expert Amazon affiliate content writer for Nexus Ultra Platforms (Pakistan-based digital company). Write a ${tpl.label} for the product: "${aiProduct}". Keep it engaging, SEO-optimized, and conversion-focused. Include a strong CTA. Max 150 words.`;
       const res = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": apiKey,
+          "anthropic-version": "2023-06-01",
+          "anthropic-dangerous-direct-browser-access": "true",
+        },
         body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1000, messages: [{ role: "user", content: prompt }] })
       });
       const data = await res.json();
@@ -111,6 +123,17 @@ export default function App() {
     setLinks(prev => [newLink, ...prev]);
     setAsinInput("");
     notify("✅ Affiliate link created!");
+  };
+
+  const saveApiKey = () => {
+    const trimmed = apiKeyInput.trim();
+    if (trimmed) {
+      localStorage.setItem("anthropic_key", trimmed);
+      setApiKey(trimmed);
+      notify("🔑 API key saved!");
+    }
+    setShowApiModal(false);
+    setApiKeyInput("");
   };
 
   const s = {
@@ -138,6 +161,28 @@ export default function App() {
     <div style={s.app}>
       {notification && <div style={s.notif(notification.color)}>{notification.msg}</div>}
 
+      {/* API Key Modal */}
+      {showApiModal && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.8)", zIndex: 9998, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }} onClick={() => setShowApiModal(false)}>
+          <div style={{ background: "#0f0c29", border: `1px solid ${clr.border}`, borderRadius: 14, padding: 28, maxWidth: 440, width: "100%" }} onClick={e => e.stopPropagation()}>
+            <div style={{ fontWeight: 800, fontSize: 16, marginBottom: 6 }}>🔑 Anthropic API Key Required</div>
+            <div style={{ fontSize: 13, color: "#94a3b8", marginBottom: 16 }}>Enter your Anthropic API key to enable AI content generation. Your key is stored locally.</div>
+            <input
+              style={{ ...s.input, width: "100%", marginBottom: 12 }}
+              type="password"
+              placeholder="sk-ant-..."
+              value={apiKeyInput}
+              onChange={e => setApiKeyInput(e.target.value)}
+              onKeyDown={e => e.key === "Enter" && saveApiKey()}
+            />
+            <div style={{ display: "flex", gap: 8 }}>
+              <button style={s.btn(clr.purple)} onClick={saveApiKey}>Save Key</button>
+              <button style={s.btn(clr.blue, true)} onClick={() => setShowApiModal(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div style={s.header}>
         <div>
@@ -147,7 +192,7 @@ export default function App() {
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
           <span style={s.badge(clr.green)}>🟢 Live</span>
           <span style={s.badge(clr.purple)}>Amazon Associates</span>
-          <span style={s.badge(clr.blue)}>nisarllc206@gmail.com</span>
+          <span style={{ ...s.badge(apiKey ? clr.green : clr.yellow), cursor: "pointer" }} onClick={() => { setApiKeyInput(""); setShowApiModal(true); }}>{apiKey ? "🔑 API Connected" : "🔑 Set API Key"}</span>
         </div>
       </div>
 
