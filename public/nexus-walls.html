@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>NEXUS WALLS — AI Wallpaper Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cyan:#00f5ff;--purple:#bf00ff;--pink:#ff0080;--green:#00ff88;--gold:#ffd700;
+  --bg:#020408;--card:#060d14;--card2:#0a1520;--card3:#0d1828;
+  --border:rgba(0,245,255,0.18);--dim:#6b8fa8;--text:#e0f4ff;
+  --glow-c:0 0 20px rgba(0,245,255,0.4);--glow-p:0 0 20px rgba(191,0,255,0.4);
+  --glow-n:0 0 20px rgba(0,255,136,0.4);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(0,245,255,0.2);border-radius:2px}
+
+/* ─── BG CANVAS ─── */
+#bgCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.35}
+
+/* ─── NAVBAR ─── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 24px;
+  background:rgba(2,4,8,.88);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);gap:12px;
+}
+.nav-logo{
+  font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.15rem;
+  background:linear-gradient(90deg,var(--cyan),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  letter-spacing:2px;white-space:nowrap;cursor:pointer;
+}
+.nav-links{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.nav-links a{
+  color:var(--dim);text-decoration:none;font-size:.85rem;
+  font-weight:500;letter-spacing:1px;transition:.3s;
+  padding:6px 12px;border-radius:6px;
+}
+.nav-links a:hover,.nav-links a.active{color:var(--cyan);background:rgba(0,245,255,.06)}
+.nav-links a.active{border:1px solid rgba(0,245,255,.2)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.nav-cta{
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  border:none;padding:8px 18px;border-radius:4px;
+  color:#000;font-family:'Orbitron',sans-serif;
+  font-size:.72rem;font-weight:700;letter-spacing:1px;
+  cursor:pointer;transition:.3s;white-space:nowrap;
+}
+.nav-cta:hover{transform:scale(1.04);box-shadow:0 0 20px rgba(0,245,255,.5)}
+.gh-pill{
+  display:flex;align-items:center;gap:6px;
+  border:1px solid rgba(0,245,255,.25);border-radius:20px;
+  padding:5px 12px;font-family:'Share Tech Mono',monospace;font-size:.72rem;
+  color:var(--cyan);cursor:pointer;transition:.3s;background:rgba(0,245,255,.04);
+}
+.gh-pill:hover{border-color:var(--cyan);background:rgba(0,245,255,.08)}
+.gh-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:blink 2s infinite;flex-shrink:0}
+.gh-dot.off{background:#444;box-shadow:none;animation:none}
+.burger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+.burger span{display:block;width:22px;height:2px;background:var(--cyan);border-radius:2px;transition:.3s}
+.burger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.burger.open span:nth-child(2){opacity:0}
+.burger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+.mobile-menu{
+  display:none;position:fixed;top:58px;left:0;right:0;z-index:999;
+  background:rgba(2,4,8,.97);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);padding:16px 24px;
+  flex-direction:column;gap:4px;
+}
+.mobile-menu.open{display:flex}
+.mobile-menu a{color:var(--dim);text-decoration:none;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.95rem}
+.mobile-menu a:hover{color:var(--cyan)}
+
+/* ─── PAGE VIEWS ─── */
+.page{display:none}
+.page.active{display:block}
+
+/* ─── HERO ─── */
+.hero{
+  position:relative;z-index:1;min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:100px 24px 60px;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  border:1px solid rgba(0,245,255,.3);border-radius:20px;
+  padding:6px 16px;margin-bottom:24px;
+  font-size:.73rem;letter-spacing:2px;color:var(--cyan);
+  animation:pulse-border 2s ease-in-out infinite;
+}
+.hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes pulse-border{0%,100%{border-color:rgba(0,245,255,.3)}50%{border-color:rgba(0,245,255,.7)}}
+.hero h1{
+  font-family:'Orbitron',sans-serif;
+  font-size:clamp(2.4rem,8vw,5.5rem);
+  font-weight:900;line-height:1.1;margin-bottom:16px;
+}
+.line1{background:linear-gradient(135deg,#fff 30%,var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.line2{background:linear-gradient(135deg,var(--purple),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:1.05rem;color:var(--dim);max-width:580px;line-height:1.7;margin-bottom:36px}
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.btn-primary{
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  border:none;padding:13px 30px;border-radius:4px;
+  color:#000;font-family:'Orbitron',sans-serif;font-size:.78rem;
+  font-weight:700;letter-spacing:2px;cursor:pointer;transition:.3s;text-transform:uppercase;
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,245,255,.4)}
+.btn-outline{
+  background:transparent;border:1px solid var(--border);
+  padding:13px 30px;border-radius:4px;color:var(--cyan);
+  font-family:'Orbitron',sans-serif;font-size:.78rem;
+  font-weight:600;letter-spacing:2px;cursor:pointer;transition:.3s;text-transform:uppercase;
+}
+.btn-outline:hover{border-color:var(--cyan);background:rgba(0,245,255,.05)}
+.hero-stats{display:flex;gap:40px;margin-top:56px;flex-wrap:wrap;justify-content:center}
+.stat{text-align:center}
+.stat-num{font-family:'Orbitron',sans-serif;font-size:1.7rem;font-weight:900;color:var(--cyan)}
+.stat-lbl{font-size:.72rem;color:var(--dim);letter-spacing:1px;text-transform:uppercase}
+
+/* ─── COMMON ─── */
+.wrap{position:relative;z-index:1;padding:80px 24px 80px;max-width:1400px;margin:0 auto}
+.section-title{font-family:'Orbitron',sans-serif;font-size:1.35rem;font-weight:700;color:var(--text);margin-bottom:6px;letter-spacing:2px}
+.section-sub{color:var(--dim);font-size:.92rem;margin-bottom:28px}
+.sep{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:50px 0}
+
+/* ─── GENERATOR ─── */
+.gen-box{
+  background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:28px;margin-bottom:56px;position:relative;overflow:hidden;
+}
+.gen-box::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--cyan),var(--purple),transparent);
+  animation:scanline 3s linear infinite;
+}
+@keyframes scanline{0%{opacity:.3}50%{opacity:1}100%{opacity:.3}}
+.gen-row{display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.gen-input{
+  flex:1;min-width:200px;background:rgba(0,245,255,.04);
+  border:1px solid var(--border);border-radius:6px;padding:13px 16px;
+  color:var(--text);font-family:'Rajdhani',sans-serif;font-size:.95rem;
+  outline:none;transition:.3s;
+}
+.gen-input:focus{border-color:var(--cyan)}
+.gen-input::placeholder{color:var(--dim)}
+.gen-select{
+  background:rgba(0,245,255,.04);border:1px solid var(--border);
+  border-radius:6px;padding:13px 16px;color:var(--text);
+  font-family:'Rajdhani',sans-serif;font-size:.9rem;outline:none;cursor:pointer;
+}
+.gen-select option{background:#060d14}
+.gen-btn{
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  border:none;padding:13px 26px;border-radius:6px;
+  color:#000;font-family:'Orbitron',sans-serif;font-size:.76rem;
+  font-weight:700;letter-spacing:1px;cursor:pointer;transition:.3s;white-space:nowrap;
+}
+.gen-btn:hover{transform:scale(1.03);box-shadow:0 0 24px rgba(0,245,255,.4)}
+.gen-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{
+  padding:6px 14px;border-radius:20px;font-size:.76rem;
+  border:1px solid rgba(0,245,255,.18);color:var(--dim);
+  cursor:pointer;transition:.2s;letter-spacing:.5px;
+}
+.chip:hover,.chip.on{border-color:var(--cyan);color:var(--cyan);background:rgba(0,245,255,.07)}
+.ai-thinking{display:none;padding:38px;text-align:center;border:1px solid var(--border);border-radius:8px;margin-top:22px}
+.ai-thinking.show{display:block}
+.thinking-orb{
+  width:58px;height:58px;border-radius:50%;margin:0 auto 14px;
+  background:conic-gradient(var(--cyan),var(--purple),var(--pink),var(--cyan));
+  animation:spin 1s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.thinking-txt{color:var(--dim);font-size:.88rem}
+.thinking-desc{color:var(--cyan);font-size:.82rem;margin-top:7px;min-height:22px}
+.gen-result{display:none;margin-top:22px;border:1px solid rgba(0,245,255,.18);border-radius:8px;overflow:hidden}
+.gen-result.show{display:block}
+.result-hdr{
+  padding:11px 18px;background:rgba(0,245,255,.04);
+  display:flex;justify-content:space-between;align-items:center;
+  border-bottom:1px solid var(--border);
+}
+.result-title{font-family:'Orbitron',sans-serif;font-size:.77rem;color:var(--cyan)}
+#genCanvas{width:100%;height:300px;display:block}
+.result-actions{display:flex;gap:9px;padding:13px 18px;background:rgba(0,0,0,.3);flex-wrap:wrap}
+.r-btn{padding:7px 18px;border-radius:4px;font-size:.76rem;font-family:'Orbitron',sans-serif;cursor:pointer;transition:.2s;letter-spacing:.8px;border:none}
+.r-btn.dl{background:var(--green);color:#000;font-weight:700}
+.r-btn.dl:hover{box-shadow:var(--glow-n)}
+.r-btn.save{background:transparent;border:1px solid var(--purple);color:var(--purple)}
+.r-btn.save:hover{background:rgba(191,0,255,.1)}
+.r-btn.regen{background:transparent;border:1px solid var(--dim);color:var(--dim)}
+.r-btn.regen:hover{border-color:var(--cyan);color:var(--cyan)}
+
+/* ─── FILTER BAR ─── */
+.filter-bar{display:flex;align-items:center;gap:10px;margin-bottom:28px;flex-wrap:wrap}
+.f-btn{
+  padding:7px 18px;border-radius:4px;font-size:.76rem;
+  border:1px solid rgba(0,245,255,.18);color:var(--dim);
+  cursor:pointer;transition:.2s;background:transparent;
+  font-family:'Orbitron',sans-serif;letter-spacing:1px;
+}
+.f-btn.on,.f-btn:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(0,245,255,.06)}
+.search-wrap{margin-left:auto;position:relative}
+.search-inp{
+  background:rgba(0,245,255,.04);border:1px solid var(--border);
+  border-radius:6px;padding:8px 14px 8px 36px;
+  color:var(--text);font-family:'Rajdhani',sans-serif;font-size:.88rem;
+  outline:none;width:210px;transition:.3s;
+}
+.search-inp:focus{border-color:var(--cyan);width:260px}
+.search-ico{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--dim);font-size:.85rem}
+
+/* ─── WALLPAPER GRID ─── */
+.wall-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px}
+.wall-card{
+  border-radius:10px;overflow:hidden;position:relative;
+  cursor:pointer;transition:.3s;border:1px solid rgba(0,245,255,.08);
+  background:var(--card);aspect-ratio:16/10;
+}
+.wall-card:hover{transform:translateY(-4px);border-color:var(--cyan);box-shadow:0 8px 32px rgba(0,245,255,.18)}
+.wall-card canvas{width:100%;height:100%;display:block}
+.wall-ov{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,.9) 0%,transparent 60%);
+  opacity:0;transition:.3s;padding:14px;
+  display:flex;flex-direction:column;justify-content:flex-end;
+}
+.wall-card:hover .wall-ov{opacity:1}
+.wall-name{font-family:'Orbitron',sans-serif;font-size:.72rem;color:#fff;font-weight:700;margin-bottom:3px}
+.wall-tag{font-size:.67rem;color:var(--cyan);letter-spacing:1px;margin-bottom:9px}
+.wall-acts{display:flex;gap:7px}
+.w-btn{padding:5px 11px;border-radius:3px;font-size:.65rem;font-family:'Orbitron',sans-serif;cursor:pointer;transition:.2s;letter-spacing:.5px;border:none}
+.w-btn.dl{background:var(--cyan);color:#000;font-weight:700}
+.w-btn.prev{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2)}
+.wall-res{
+  position:absolute;top:9px;right:9px;background:rgba(0,0,0,.7);
+  border:1px solid rgba(0,245,255,.28);border-radius:3px;padding:2px 7px;
+  font-size:.62rem;color:var(--cyan);font-family:'Orbitron',sans-serif;
+}
+.wall-new{
+  position:absolute;top:9px;left:9px;background:var(--pink);color:#000;
+  border-radius:3px;padding:2px 7px;font-size:.62rem;font-weight:700;
+  font-family:'Orbitron',sans-serif;
+}
+
+/* ─── TRENDING ─── */
+.trending-scroll{display:flex;gap:14px;overflow-x:auto;padding-bottom:10px;scroll-snap-type:x mandatory;-ms-overflow-style:none;scrollbar-width:none}
+.trending-scroll::-webkit-scrollbar{display:none}
+.trend-card{flex:0 0 190px;border-radius:8px;overflow:hidden;position:relative;cursor:pointer;scroll-snap-align:start;transition:.3s;border:1px solid rgba(0,245,255,.08)}
+.trend-card:hover{border-color:var(--cyan);transform:scale(1.03)}
+.trend-card canvas{width:190px;height:125px;display:block}
+.trend-info{padding:9px 11px;background:var(--card2)}
+.trend-name{font-size:.75rem;color:var(--text);font-weight:600;margin-bottom:2px}
+.trend-count{font-size:.66rem;color:var(--dim)}
+
+/* ─── FEATURED ─── */
+.feat-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:56px}
+.feat-big{grid-row:span 2}
+.feat-card{border-radius:10px;overflow:hidden;position:relative;cursor:pointer;transition:.3s;border:1px solid rgba(0,245,255,.12)}
+.feat-card:hover{border-color:var(--purple);box-shadow:var(--glow-p)}
+.feat-card canvas{width:100%;display:block}
+.feat-big canvas{height:480px}
+.feat-card:not(.feat-big) canvas{height:232px}
+.feat-card .wall-ov{opacity:.4}
+.feat-card:hover .wall-ov{opacity:1}
+
+/* ─── MODAL ─── */
+.modal-bg{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.92);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px}
+.modal-bg.open{display:flex}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;max-width:900px;width:100%;animation:minIn .3s ease}
+@keyframes minIn{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-top{display:flex;justify-content:space-between;align-items:center;padding:15px 22px;border-bottom:1px solid var(--border)}
+.modal-title{font-family:'Orbitron',sans-serif;font-size:.85rem;color:var(--cyan)}
+.modal-close{background:none;border:none;color:var(--dim);font-size:1.3rem;cursor:pointer}
+.modal-close:hover{color:var(--pink)}
+#modalCanvas{width:100%;max-height:440px;display:block}
+.modal-info{padding:18px 22px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+.modal-name{font-family:'Orbitron',sans-serif;font-size:1rem;color:#fff;margin-bottom:4px}
+.modal-tags{display:flex;gap:7px;flex-wrap:wrap}
+.modal-tag{padding:3px 9px;border-radius:10px;font-size:.7rem;border:1px solid rgba(0,245,255,.28);color:var(--cyan)}
+.modal-dl{background:linear-gradient(135deg,var(--cyan),var(--green));border:none;padding:10px 22px;border-radius:4px;color:#000;font-family:'Orbitron',sans-serif;font-size:.75rem;font-weight:700;letter-spacing:1px;cursor:pointer;transition:.3s}
+.modal-dl:hover{box-shadow:var(--glow-n)}
+
+/* ─── SETTINGS MODAL ─── */
+.settings-bg{display:none;position:fixed;inset:0;z-index:3000;background:rgba(0,0,0,.87);backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:20px}
+.settings-bg.open{display:flex}
+.settings-modal{background:var(--card);border:1px solid var(--border);border-radius:14px;width:100%;max-width:500px;animation:minIn .3s ease;overflow:hidden}
+.settings-hdr{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:linear-gradient(90deg,rgba(0,245,255,.05),transparent)}
+.settings-title{font-family:'Orbitron',sans-serif;font-size:.9rem;color:var(--cyan);letter-spacing:2px}
+.settings-body{padding:26px 22px}
+.s-label{font-size:.75rem;color:var(--dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:7px;display:block}
+.api-wrap{position:relative;margin-bottom:14px}
+.api-inp{width:100%;background:rgba(0,245,255,.04);border:1px solid var(--border);border-radius:8px;padding:13px 46px 13px 15px;color:var(--text);font-family:'Rajdhani',sans-serif;font-size:.9rem;outline:none;transition:.3s;letter-spacing:1px}
+.api-inp:focus{border-color:var(--cyan)}
+.api-inp.ok{border-color:var(--green)}
+.api-inp.err{border-color:var(--pink)}
+.eye-btn{position:absolute;right:11px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--dim);cursor:pointer;font-size:.95rem;transition:.2s}
+.eye-btn:hover{color:var(--cyan)}
+.api-hint{font-size:.73rem;color:var(--dim);line-height:1.6;margin-bottom:18px;padding:11px;border-radius:6px;background:rgba(0,245,255,.03);border:1px solid rgba(0,245,255,.07)}
+.api-hint a{color:var(--cyan);text-decoration:none}
+.api-hint a:hover{text-decoration:underline}
+.api-status-bar{display:flex;align-items:center;gap:9px;padding:9px 13px;border-radius:6px;margin-bottom:18px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.05);font-size:.78rem;transition:.3s}
+.api-status-bar.ok{border-color:rgba(0,255,136,.25)}
+.api-status-bar.err{border-color:rgba(255,0,128,.25)}
+.api-sdot{width:7px;height:7px;border-radius:50%;background:#444;flex-shrink:0;transition:.3s}
+.api-sdot.ok{background:var(--green);box-shadow:0 0 5px var(--green)}
+.api-sdot.err{background:var(--pink);box-shadow:0 0 5px var(--pink)}
+.api-stxt{color:var(--dim)}
+
+/* ─── GITHUB PAGE ─── */
+.gh-page{position:relative;z-index:1;padding:90px 24px 0}
+.gh-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px}
+.gsc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px 16px;position:relative;overflow:hidden;transition:.25s}
+.gsc::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px}
+.gsc.c::after{background:linear-gradient(90deg,var(--cyan),transparent)}
+.gsc.p::after{background:linear-gradient(90deg,var(--purple),transparent)}
+.gsc.n::after{background:linear-gradient(90deg,var(--green),transparent)}
+.gsc.g::after{background:linear-gradient(90deg,var(--gold),transparent)}
+.gsc:hover{transform:translateY(-2px);border-color:rgba(0,245,255,.2)}
+.gsc-n{font-family:'Orbitron',sans-serif;font-size:22px;font-weight:900;line-height:1;margin-bottom:2px}
+.gsc.c .gsc-n{color:var(--cyan)}.gsc.p .gsc-n{color:var(--purple)}.gsc.n .gsc-n{color:var(--green)}.gsc.g .gsc-n{color:var(--gold)}
+.gsc-l{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--dim);letter-spacing:2px;text-transform:uppercase}
+
+/* gh tabs */
+.gh-tabs{display:flex;gap:3px;padding:8px 0;overflow-x:auto;margin-bottom:22px}
+.gh-tabs::-webkit-scrollbar{display:none}
+.gtab{flex-shrink:0;padding:8px 18px;background:transparent;border:1px solid transparent;border-radius:8px;cursor:pointer;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;color:var(--dim);transition:.2s;white-space:nowrap}
+.gtab.on{color:var(--cyan);background:rgba(0,245,255,.07);border-color:rgba(0,245,255,.22)}
+.gtab:hover:not(.on){color:var(--text);background:rgba(255,255,255,.03)}
+
+/* gh panels */
+.gpanel{display:none;animation:fu .3s ease}
+.gpanel.on{display:block}
+@keyframes fu{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+
+/* cards */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.sp2{grid-column:span 2}
+.gcard{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;transition:.25s}
+.gcard:hover{border-color:rgba(0,245,255,.25);transform:translateY(-2px)}
+.gcard-title{font-family:'Orbitron',sans-serif;font-size:.78rem;color:var(--cyan);margin-bottom:10px;letter-spacing:1px}
+.gcard-val{font-family:'Orbitron',sans-serif;font-size:1.6rem;font-weight:900;color:var(--text);margin-bottom:4px}
+.gcard-sub{font-size:.75rem;color:var(--dim)}
+.lang-bar{height:6px;border-radius:3px;overflow:hidden;display:flex;margin:10px 0 6px}
+.lang-seg{height:100%;transition:.3s}
+.lang-list{display:flex;gap:14px;flex-wrap:wrap}
+.lang-item{display:flex;align-items:center;gap:5px;font-size:.72rem;color:var(--dim)}
+.lang-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.commit-list{display:flex;flex-direction:column;gap:8px;max-height:220px;overflow-y:auto}
+.commit-item{padding:9px 12px;background:rgba(0,245,255,.02);border:1px solid rgba(0,245,255,.06);border-radius:6px;font-size:.78rem}
+.commit-msg{color:var(--text);font-weight:600;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.commit-meta{color:var(--dim);font-size:.68rem;font-family:'Share Tech Mono',monospace}
+.contrib-grid{display:grid;grid-template-columns:repeat(52,1fr);gap:2px;margin:8px 0}
+.cday{width:100%;aspect-ratio:1;border-radius:1px;background:rgba(0,245,255,.04)}
+.cday.l1{background:rgba(0,245,255,.2)}
+.cday.l2{background:rgba(0,245,255,.4)}
+.cday.l3{background:rgba(0,245,255,.65)}
+.cday.l4{background:var(--cyan)}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:768px){
+  .nav-links,.nav-right{display:none}
+  .burger{display:flex}
+  .gh-stats{grid-template-columns:1fr 1fr}
+  .g2,.g3{grid-template-columns:1fr}
+  .sp2{grid-column:auto}
+  .feat-row{grid-template-columns:1fr}
+  .feat-big{grid-row:auto}
+  .hero h1{font-size:clamp(2rem,7vw,3.5rem)}
+}
+</style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">NEXUS WALLS</div>
+  <div class="nav-links">
+    <a href="#" class="active" data-page="home" onclick="nav(this,'home')">Home</a>
+    <a href="#" data-page="generate" onclick="nav(this,'generate')">Generate</a>
+    <a href="#" data-page="gallery" onclick="nav(this,'gallery')">Gallery</a>
+    <a href="#" data-page="trending" onclick="nav(this,'trending')">Trending</a>
+    <a href="#" data-page="featured" onclick="nav(this,'featured')">Featured</a>
+    <a href="#" data-page="github" onclick="nav(this,'github')">GitHub</a>
+  </div>
+  <div class="nav-right">
+    <div class="gh-pill" onclick="openSettings()">
+      <span class="gh-dot" id="apiDot"></span>
+      <span id="apiStatus">API Key</span>
+    </div>
+    <button class="nav-cta" onclick="nav(document.querySelector('[data-page=generate]'),'generate')">Generate ⚡</button>
+  </div>
+  <button class="burger" id="burger" onclick="toggleBurger()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#" onclick="navMobile('home')">🏠 Home</a>
+  <a href="#" onclick="navMobile('generate')">⚡ Generate</a>
+  <a href="#" onclick="navMobile('gallery')">🖼️ Gallery</a>
+  <a href="#" onclick="navMobile('trending')">🔥 Trending</a>
+  <a href="#" onclick="navMobile('featured')">⭐ Featured</a>
+  <a href="#" onclick="navMobile('github')">💻 GitHub</a>
+</div>
+
+<!-- ── PAGE: HOME ── -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-badge"><span class="dot"></span> AI-POWERED WALLPAPER PLATFORM</div>
+    <h1>
+      <div class="line1">NEXUS</div>
+      <div class="line2">WALLS</div>
+    </h1>
+    <p class="hero-sub">Generate stunning AI wallpapers in seconds. 4K resolution, 50+ styles, completely free. Built with Canvas AI by Nexus Ultra Platforms.</p>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="nav(document.querySelector('[data-page=generate]'),'generate')">Start Generating</button>
+      <button class="btn-outline" onclick="nav(document.querySelector('[data-page=gallery]'),'gallery')">View Gallery</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">50K+</div><div class="stat-lbl">Wallpapers Generated</div></div>
+      <div class="stat"><div class="stat-num">4K</div><div class="stat-lbl">Max Resolution</div></div>
+      <div class="stat"><div class="stat-num">50+</div><div class="stat-lbl">AI Styles</div></div>
+      <div class="stat"><div class="stat-num">Free</div><div class="stat-lbl">Always Free</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── PAGE: GENERATE ── -->
+<div class="page" id="page-generate">
+  <div class="wrap">
+    <div class="section-title">AI WALLPAPER GENERATOR</div>
+    <div class="section-sub">Describe your vision — our AI brings it to life</div>
+    <div class="gen-box">
+      <div class="gen-row">
+        <input class="gen-input" id="promptInput" placeholder="Describe your wallpaper (e.g. cyberpunk city at night, neon rain...)" />
+        <select class="gen-select" id="styleSelect">
+          <option value="cyberpunk">Cyberpunk</option>
+          <option value="abstract">Abstract</option>
+          <option value="space">Deep Space</option>
+          <option value="nature">Nature</option>
+          <option value="minimal">Minimal</option>
+          <option value="neon">Neon Grid</option>
+          <option value="galaxy">Galaxy</option>
+          <option value="geometric">Geometric</option>
+        </select>
+        <select class="gen-select" id="resSelect">
+          <option value="1920x1080">1920×1080</option>
+          <option value="2560x1440">2560×1440</option>
+          <option value="3840x2160">4K UHD</option>
+          <option value="1080x1920">Mobile 1080p</option>
+        </select>
+        <button class="gen-btn" id="genBtn" onclick="generateWallpaper()">⚡ GENERATE</button>
+      </div>
+      <div class="chips" id="styleChips">
+        <span class="chip on" onclick="setChip(this,'cyberpunk')">Cyberpunk</span>
+        <span class="chip" onclick="setChip(this,'neon')">Neon</span>
+        <span class="chip" onclick="setChip(this,'space')">Space</span>
+        <span class="chip" onclick="setChip(this,'abstract')">Abstract</span>
+        <span class="chip" onclick="setChip(this,'galaxy')">Galaxy</span>
+        <span class="chip" onclick="setChip(this,'geometric')">Geometric</span>
+        <span class="chip" onclick="setChip(this,'nature')">Nature</span>
+        <span class="chip" onclick="setChip(this,'minimal')">Minimal</span>
+      </div>
+      <div class="ai-thinking" id="aiThinking">
+        <div class="thinking-orb"></div>
+        <div class="thinking-txt">AI is rendering your wallpaper...</div>
+        <div class="thinking-desc" id="thinkingDesc">Initializing neural canvas engine</div>
+      </div>
+      <div class="gen-result" id="genResult">
+        <div class="result-hdr">
+          <span class="result-title" id="resultTitle">GENERATED WALLPAPER</span>
+          <span style="font-size:.72rem;color:var(--dim);font-family:'Share Tech Mono',monospace" id="resultRes">1920×1080</span>
+        </div>
+        <canvas id="genCanvas"></canvas>
+        <div class="result-actions">
+          <button class="r-btn dl" onclick="downloadCanvas('genCanvas','nexus-wall')">⬇ Download</button>
+          <button class="r-btn save" onclick="saveToGallery()">💾 Save to Gallery</button>
+          <button class="r-btn regen" onclick="generateWallpaper()">↺ Regenerate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── PAGE: GALLERY ── -->
+<div class="page" id="page-gallery">
+  <div class="wrap">
+    <div class="section-title">WALLPAPER GALLERY</div>
+    <div class="section-sub">Browse and download community wallpapers</div>
+    <div class="filter-bar">
+      <button class="f-btn on" onclick="filterGallery(this,'all')">All</button>
+      <button class="f-btn" onclick="filterGallery(this,'cyberpunk')">Cyberpunk</button>
+      <button class="f-btn" onclick="filterGallery(this,'space')">Space</button>
+      <button class="f-btn" onclick="filterGallery(this,'abstract')">Abstract</button>
+      <button class="f-btn" onclick="filterGallery(this,'neon')">Neon</button>
+      <button class="f-btn" onclick="filterGallery(this,'nature')">Nature</button>
+      <div class="search-wrap">
+        <span class="search-ico">🔍</span>
+        <input class="search-inp" placeholder="Search wallpapers..." oninput="searchGallery(this.value)" />
+      </div>
+    </div>
+    <div class="wall-grid" id="galleryGrid"></div>
+  </div>
+</div>
+
+<!-- ── PAGE: TRENDING ── -->
+<div class="page" id="page-trending">
+  <div class="wrap">
+    <div class="section-title">TRENDING NOW</div>
+    <div class="section-sub">Most downloaded this week</div>
+    <div class="trending-scroll" id="trendingScroll"></div>
+    <div class="sep"></div>
+    <div class="section-title">NEW RELEASES</div>
+    <div class="section-sub">Fresh from the AI engine</div>
+    <div class="wall-grid" id="newGrid"></div>
+  </div>
+</div>
+
+<!-- ── PAGE: FEATURED ── -->
+<div class="page" id="page-featured">
+  <div class="wrap">
+    <div class="section-title">FEATURED COLLECTION</div>
+    <div class="section-sub">Hand-picked by the Nexus team</div>
+    <div class="feat-row" id="featuredRow"></div>
+  </div>
+</div>
+
+<!-- ── PAGE: GITHUB ── -->
+<div class="page" id="page-github">
+  <div class="gh-page">
+    <div class="gh-stats">
+      <div class="gsc c"><div class="gsc-n">2.4K</div><div class="gsc-l">Stars</div></div>
+      <div class="gsc p"><div class="gsc-n">348</div><div class="gsc-l">Forks</div></div>
+      <div class="gsc n"><div class="gsc-n">89</div><div class="gsc-l">Contributors</div></div>
+      <div class="gsc g"><div class="gsc-n">1.2K</div><div class="gsc-l">Commits</div></div>
+    </div>
+    <div class="gh-tabs">
+      <button class="gtab on" onclick="ghTab(this,'overview')">Overview</button>
+      <button class="gtab" onclick="ghTab(this,'code')">Code</button>
+      <button class="gtab" onclick="ghTab(this,'commits')">Commits</button>
+      <button class="gtab" onclick="ghTab(this,'contrib')">Contributions</button>
+    </div>
+    <div class="gpanel on" id="gpanel-overview">
+      <div class="g2" style="margin-bottom:16px">
+        <div class="gcard">
+          <div class="gcard-title">Total Wallpapers</div>
+          <div class="gcard-val">50,241</div>
+          <div class="gcard-sub">+1,840 this week</div>
+        </div>
+        <div class="gcard">
+          <div class="gcard-title">Active Users</div>
+          <div class="gcard-val">12,480</div>
+          <div class="gcard-sub">+320 today</div>
+        </div>
+      </div>
+      <div class="gcard">
+        <div class="gcard-title">Language Breakdown</div>
+        <div class="lang-bar">
+          <div class="lang-seg" style="width:52%;background:var(--cyan)"></div>
+          <div class="lang-seg" style="width:28%;background:var(--purple)"></div>
+          <div class="lang-seg" style="width:12%;background:var(--pink)"></div>
+          <div class="lang-seg" style="width:8%;background:var(--green)"></div>
+        </div>
+        <div class="lang-list">
+          <div class="lang-item"><div class="lang-dot" style="background:var(--cyan)"></div>JavaScript 52%</div>
+          <div class="lang-item"><div class="lang-dot" style="background:var(--purple)"></div>CSS 28%</div>
+          <div class="lang-item"><div class="lang-dot" style="background:var(--pink)"></div>HTML 12%</div>
+          <div class="lang-item"><div class="lang-dot" style="background:var(--green)"></div>Other 8%</div>
+        </div>
+      </div>
+    </div>
+    <div class="gpanel" id="gpanel-code">
+      <div class="g3">
+        <div class="gcard sp2">
+          <div class="gcard-title">Repository</div>
+          <div class="gcard-val" style="font-size:1rem">nisarllc206-sys/Nexus-ultra-platforms</div>
+          <div class="gcard-sub">AI Wallpaper Platform · MIT License</div>
+        </div>
+        <div class="gcard">
+          <div class="gcard-title">Open Issues</div>
+          <div class="gcard-val">7</div>
+          <div class="gcard-sub">2 pull requests</div>
+        </div>
+      </div>
+    </div>
+    <div class="gpanel" id="gpanel-commits">
+      <div class="commit-list" id="commitList"></div>
+    </div>
+    <div class="gpanel" id="gpanel-contrib">
+      <div class="gcard">
+        <div class="gcard-title">Contribution Activity</div>
+        <div class="contrib-grid" id="contribGrid"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WALLPAPER MODAL -->
+<div class="modal-bg" id="modalBg" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-top">
+      <span class="modal-title" id="modalTitle">WALLPAPER PREVIEW</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <canvas id="modalCanvas"></canvas>
+    <div class="modal-info">
+      <div>
+        <div class="modal-name" id="modalName">Nexus Wall</div>
+        <div class="modal-tags" id="modalTags"></div>
+      </div>
+      <button class="modal-dl" id="modalDlBtn">⬇ Download 4K</button>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="settings-bg" id="settingsBg" onclick="closeSettings(event)">
+  <div class="settings-modal">
+    <div class="settings-hdr">
+      <span class="settings-title">API SETTINGS</span>
+      <button class="modal-close" onclick="closeSettings()">✕</button>
+    </div>
+    <div class="settings-body">
+      <label class="s-label">Anthropic API Key</label>
+      <div class="api-wrap">
+        <input class="api-inp" id="apiInp" type="password" placeholder="sk-ant-..." />
+        <button class="eye-btn" onclick="toggleEye()">👁</button>
+      </div>
+      <div class="api-hint">
+        Get your key at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a>.
+        Your key is stored locally and never sent to any server other than Anthropic.
+      </div>
+      <div class="api-status-bar" id="apiStatusBar">
+        <div class="api-sdot" id="apiSdot"></div>
+        <span class="api-stxt" id="apiStxt">No API key configured</span>
+      </div>
+      <button class="gen-btn" style="width:100%" onclick="saveApiKey()">Save & Verify</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── WALLPAPER GENERATION ENGINE ───
+
+const STYLES = {
+  cyberpunk: (ctx, w, h) => {
+    const grad = ctx.createLinearGradient(0, 0, w, h);
+    grad.addColorStop(0, '#0a0015');
+    grad.addColorStop(0.5, '#1a0030');
+    grad.addColorStop(1, '#000820');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, w, h);
+    // Grid lines
+    ctx.strokeStyle = 'rgba(0,245,255,0.08)';
+    ctx.lineWidth = 1;
+    for (let x = 0; x < w; x += 40) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
+    for (let y = 0; y < h; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
+    // City silhouette
+    ctx.fillStyle = '#0a0015';
+    const bldgs = 14;
+    for (let i = 0; i < bldgs; i++) {
+      const bw = w / bldgs;
+      const bh = 120 + Math.sin(i * 2.1) * 80 + (i % 3) * 60;
+      ctx.fillRect(i * bw, h - bh, bw - 4, bh);
+    }
+    // Neon glow lines
+    [['#00f5ff', h * 0.6], ['#bf00ff', h * 0.65], ['#ff0080', h * 0.7]].forEach(([c, y]) => {
+      const lg = ctx.createLinearGradient(0, y, w, y);
+      lg.addColorStop(0, 'transparent');
+      lg.addColorStop(0.5, c);
+      lg.addColorStop(1, 'transparent');
+      ctx.strokeStyle = lg;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+    });
+    // Stars
+    for (let i = 0; i < 200; i++) {
+      const x = Math.random() * w, y = Math.random() * h * 0.5;
+      const r = Math.random() * 1.2;
+      ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${Math.random() * 0.8})`; ctx.fill();
+    }
+    // NEXUS text watermark
+    ctx.font = `bold ${Math.floor(w * 0.04)}px 'Orbitron', monospace`;
+    ctx.fillStyle = 'rgba(0,245,255,0.12)';
+    ctx.textAlign = 'center';
+    ctx.fillText('NEXUS WALLS', w / 2, h / 2);
+  },
+  neon: (ctx, w, h) => {
+    ctx.fillStyle = '#020408';
+    ctx.fillRect(0, 0, w, h);
+    // Neon grid
+    ctx.lineWidth = 1;
+    for (let x = 0; x < w; x += 60) {
+      const g = ctx.createLinearGradient(x, 0, x, h);
+      g.addColorStop(0, 'transparent');
+      g.addColorStop(0.5, 'rgba(0,245,255,0.15)');
+      g.addColorStop(1, 'transparent');
+      ctx.strokeStyle = g; ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+    }
+    for (let y = 0; y < h; y += 60) {
+      const g = ctx.createLinearGradient(0, y, w, y);
+      g.addColorStop(0, 'transparent');
+      g.addColorStop(0.5, 'rgba(191,0,255,0.15)');
+      g.addColorStop(1, 'transparent');
+      ctx.strokeStyle = g; ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+    }
+    // Glowing orbs
+    [[w * 0.3, h * 0.4, '#00f5ff'], [w * 0.7, h * 0.6, '#bf00ff'], [w * 0.5, h * 0.2, '#ff0080']].forEach(([cx, cy, c]) => {
+      const r = ctx.createRadialGradient(cx, cy, 0, cx, cy, w * 0.25);
+      r.addColorStop(0, c + '44'); r.addColorStop(1, 'transparent');
+      ctx.fillStyle = r; ctx.fillRect(0, 0, w, h);
+    });
+  },
+  space: (ctx, w, h) => {
+    const g = ctx.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, Math.max(w, h));
+    g.addColorStop(0, '#0a0020'); g.addColorStop(1, '#000005');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+    // Stars
+    for (let i = 0; i < 500; i++) {
+      const x = Math.random() * w, y = Math.random() * h;
+      const r = Math.random() * 1.5;
+      const a = Math.random();
+      ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${a})`; ctx.fill();
+    }
+    // Nebula
+    [[w * 0.3, h * 0.4, '#4400aa'], [w * 0.7, h * 0.5, '#aa0044'], [w * 0.5, h * 0.3, '#0044aa']].forEach(([cx, cy, c]) => {
+      const r = ctx.createRadialGradient(cx, cy, 0, cx, cy, w * 0.3);
+      r.addColorStop(0, c + '33'); r.addColorStop(1, 'transparent');
+      ctx.fillStyle = r; ctx.fillRect(0, 0, w, h);
+    });
+    // Planet
+    const pr = Math.min(w, h) * 0.18;
+    const px = w * 0.65, py = h * 0.45;
+    const pg = ctx.createRadialGradient(px - pr * 0.3, py - pr * 0.3, 0, px, py, pr);
+    pg.addColorStop(0, '#6644ff'); pg.addColorStop(1, '#110033');
+    ctx.beginPath(); ctx.arc(px, py, pr, 0, Math.PI * 2);
+    ctx.fillStyle = pg; ctx.fill();
+    // Ring
+    ctx.strokeStyle = 'rgba(180,160,255,0.4)'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.ellipse(px, py, pr * 1.6, pr * 0.3, -0.3, 0, Math.PI * 2); ctx.stroke();
+  },
+  abstract: (ctx, w, h) => {
+    ctx.fillStyle = '#050510'; ctx.fillRect(0, 0, w, h);
+    for (let i = 0; i < 8; i++) {
+      const x = Math.random() * w, y = Math.random() * h;
+      const r = ctx.createRadialGradient(x, y, 0, x, y, w * 0.3);
+      const colors = ['#00f5ff', '#bf00ff', '#ff0080', '#00ff88', '#ffd700'];
+      const c = colors[Math.floor(Math.random() * colors.length)];
+      r.addColorStop(0, c + '22'); r.addColorStop(1, 'transparent');
+      ctx.fillStyle = r; ctx.fillRect(0, 0, w, h);
+    }
+    // Geometric shapes
+    for (let i = 0; i < 6; i++) {
+      const sides = 3 + Math.floor(Math.random() * 5);
+      const cx = Math.random() * w, cy = Math.random() * h;
+      const radius = 30 + Math.random() * 120;
+      const colors = ['rgba(0,245,255,', 'rgba(191,0,255,', 'rgba(255,0,128,'];
+      const c = colors[Math.floor(Math.random() * colors.length)];
+      ctx.strokeStyle = c + '0.3)'; ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (let s = 0; s <= sides; s++) {
+        const angle = (s / sides) * Math.PI * 2 - Math.PI / 2;
+        const x = cx + Math.cos(angle) * radius, y = cy + Math.sin(angle) * radius;
+        s === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      ctx.closePath(); ctx.stroke();
+    }
+  },
+  galaxy: (ctx, w, h) => {
+    ctx.fillStyle = '#010108'; ctx.fillRect(0, 0, w, h);
+    const cx = w / 2, cy = h / 2;
+    for (let i = 0; i < 3000; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const dist = Math.pow(Math.random(), 0.5) * Math.min(w, h) * 0.45;
+      const spiral = angle + dist * 0.003;
+      const x = cx + Math.cos(spiral) * dist;
+      const y = cy + Math.sin(spiral) * dist * 0.6;
+      const size = Math.random() * 1.5;
+      const bright = 1 - dist / (Math.min(w, h) * 0.45);
+      ctx.beginPath(); ctx.arc(x, y, size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${Math.floor(180 + bright * 75)},${Math.floor(150 + bright * 50)},255,${bright * 0.9})`;
+      ctx.fill();
+    }
+    const core = ctx.createRadialGradient(cx, cy, 0, cx, cy, 60);
+    core.addColorStop(0, 'rgba(255,240,200,0.9)'); core.addColorStop(1, 'transparent');
+    ctx.fillStyle = core; ctx.fillRect(0, 0, w, h);
+  },
+  geometric: (ctx, w, h) => {
+    ctx.fillStyle = '#06080f'; ctx.fillRect(0, 0, w, h);
+    const size = 80;
+    for (let x = 0; x < w + size; x += size) {
+      for (let y = 0; y < h + size; y += size) {
+        const t = (x + y) / (w + h);
+        const colors = ['rgba(0,245,255,0.08)', 'rgba(191,0,255,0.08)', 'rgba(255,0,128,0.06)', 'transparent'];
+        ctx.fillStyle = colors[Math.floor(t * colors.length)];
+        ctx.fillRect(x, y, size - 1, size - 1);
+        ctx.strokeStyle = 'rgba(0,245,255,0.05)'; ctx.lineWidth = 0.5;
+        ctx.strokeRect(x, y, size - 1, size - 1);
+      }
+    }
+    // Large triangles
+    for (let i = 0; i < 4; i++) {
+      const cx = Math.random() * w, cy = Math.random() * h;
+      const r = 100 + Math.random() * 150;
+      const colors = ['rgba(0,245,255,0.15)', 'rgba(191,0,255,0.15)', 'rgba(255,0,128,0.15)'];
+      ctx.fillStyle = colors[i % colors.length];
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - r);
+      ctx.lineTo(cx + r * 0.866, cy + r * 0.5);
+      ctx.lineTo(cx - r * 0.866, cy + r * 0.5);
+      ctx.closePath(); ctx.fill();
+    }
+  },
+  nature: (ctx, w, h) => {
+    const sky = ctx.createLinearGradient(0, 0, 0, h);
+    sky.addColorStop(0, '#001830'); sky.addColorStop(0.6, '#002a4a'); sky.addColorStop(1, '#001020');
+    ctx.fillStyle = sky; ctx.fillRect(0, 0, w, h);
+    // Aurora
+    for (let i = 0; i < 5; i++) {
+      const y = h * (0.2 + i * 0.05);
+      const g = ctx.createLinearGradient(0, y - 30, 0, y + 30);
+      const c = i % 2 === 0 ? '0,255,136' : '0,245,255';
+      g.addColorStop(0, 'transparent'); g.addColorStop(0.5, `rgba(${c},0.12)`); g.addColorStop(1, 'transparent');
+      ctx.fillStyle = g; ctx.fillRect(0, y - 30, w, 60);
+    }
+    // Stars
+    for (let i = 0; i < 200; i++) {
+      ctx.beginPath(); ctx.arc(Math.random() * w, Math.random() * h * 0.6, Math.random() * 1.2, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${Math.random() * 0.7})`; ctx.fill();
+    }
+    // Mountains
+    ctx.fillStyle = '#001020';
+    ctx.beginPath(); ctx.moveTo(0, h);
+    const pts = 8;
+    for (let i = 0; i <= pts; i++) ctx.lineTo(i * w / pts, h - 60 - Math.abs(Math.sin(i * 1.4)) * 180);
+    ctx.lineTo(w, h); ctx.closePath(); ctx.fill();
+  },
+  minimal: (ctx, w, h) => {
+    const g = ctx.createLinearGradient(0, 0, w, h);
+    g.addColorStop(0, '#030610'); g.addColorStop(1, '#0a0320');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+    // Single glowing line
+    const lineG = ctx.createLinearGradient(0, h / 2, w, h / 2);
+    lineG.addColorStop(0, 'transparent'); lineG.addColorStop(0.5, 'rgba(0,245,255,0.6)'); lineG.addColorStop(1, 'transparent');
+    ctx.strokeStyle = lineG; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(0, h / 2); ctx.lineTo(w, h / 2); ctx.stroke();
+    // Dots
+    for (let i = 0; i < 5; i++) {
+      const x = w * (0.1 + i * 0.2), y = h / 2;
+      const r = ctx.createRadialGradient(x, y, 0, x, y, 40);
+      r.addColorStop(0, 'rgba(0,245,255,0.5)'); r.addColorStop(1, 'transparent');
+      ctx.fillStyle = r; ctx.fillRect(x - 40, y - 40, 80, 80);
+      ctx.beginPath(); ctx.arc(x, y, 3, 0, Math.PI * 2); ctx.fillStyle = '#00f5ff'; ctx.fill();
+    }
+    // Corner text
+    ctx.font = `${Math.floor(w * 0.025)}px 'Orbitron', monospace`;
+    ctx.fillStyle = 'rgba(0,245,255,0.3)'; ctx.textAlign = 'left';
+    ctx.fillText('NEXUS', 40, 60);
+    ctx.font = `${Math.floor(w * 0.012)}px 'Share Tech Mono', monospace`;
+    ctx.fillStyle = 'rgba(0,245,255,0.15)'; ctx.fillText('ULTRA PLATFORMS', 40, 90);
+  }
+};
+
+// ─── GALLERY DATA ───
+const GALLERY_ITEMS = [
+  { id: 1, name: 'Neon City', tag: 'CYBERPUNK', style: 'cyberpunk', res: '1920×1080', isNew: true },
+  { id: 2, name: 'Deep Space', tag: 'SPACE', style: 'space', res: '4K UHD', isNew: false },
+  { id: 3, name: 'Abstract Bloom', tag: 'ABSTRACT', style: 'abstract', res: '2560×1440', isNew: true },
+  { id: 4, name: 'Neon Grid', tag: 'NEON', style: 'neon', res: '1920×1080', isNew: false },
+  { id: 5, name: 'Galaxy Core', tag: 'GALAXY', style: 'galaxy', res: '4K UHD', isNew: true },
+  { id: 6, name: 'Geometric Dawn', tag: 'GEOMETRIC', style: 'geometric', res: '2560×1440', isNew: false },
+  { id: 7, name: 'Aurora Peak', tag: 'NATURE', style: 'nature', res: '1920×1080', isNew: false },
+  { id: 8, name: 'Minimal Flow', tag: 'MINIMAL', style: 'minimal', res: '2560×1440', isNew: true },
+  { id: 9, name: 'Cyber Grid', tag: 'CYBERPUNK', style: 'cyberpunk', res: '1920×1080', isNew: false },
+  { id: 10, name: 'Void Space', tag: 'SPACE', style: 'space', res: '4K UHD', isNew: false },
+  { id: 11, name: 'Color Wave', tag: 'ABSTRACT', style: 'abstract', res: '1920×1080', isNew: true },
+  { id: 12, name: 'Prism City', tag: 'NEON', style: 'neon', res: '2560×1440', isNew: false },
+];
+
+let currentFilter = 'all';
+let modalCurrentItem = null;
+
+// ─── BACKGROUND CANVAS ───
+function initBg() {
+  const canvas = document.getElementById('bgCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const particles = Array.from({ length: 80 }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    vx: (Math.random() - 0.5) * 0.3,
+    vy: (Math.random() - 0.5) * 0.3,
+    r: Math.random() * 1.5 + 0.5,
+    a: Math.random() * 0.6 + 0.2,
+  }));
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = canvas.width;
+      if (p.x > canvas.width) p.x = 0;
+      if (p.y < 0) p.y = canvas.height;
+      if (p.y > canvas.height) p.y = 0;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(0,245,255,${p.a})`; ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+}
+
+// ─── NAVIGATION ───
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.classList.toggle('active', a.dataset.page === id);
+  });
+  if (id === 'gallery') buildGallery();
+  if (id === 'trending') buildTrending();
+  if (id === 'featured') buildFeatured();
+}
+
+function nav(el, page) {
+  if (el && el.preventDefault) el.preventDefault();
+  showPage(page);
+  closeMobileMenu();
+}
+
+function navMobile(page) {
+  showPage(page);
+  closeMobileMenu();
+}
+
+function toggleBurger() {
+  const b = document.getElementById('burger');
+  const m = document.getElementById('mobileMenu');
+  b.classList.toggle('open');
+  m.classList.toggle('open');
+}
+
+function closeMobileMenu() {
+  document.getElementById('burger').classList.remove('open');
+  document.getElementById('mobileMenu').classList.remove('open');
+}
+
+// ─── WALLPAPER GENERATOR ───
+const thinkingMsgs = [
+  'Initializing neural canvas engine...',
+  'Sampling color harmonics...',
+  'Generating pixel matrix...',
+  'Applying style transfer...',
+  'Rendering final composition...',
+];
+
+function generateWallpaper() {
+  const btn = document.getElementById('genBtn');
+  const style = document.getElementById('styleSelect').value;
+  const resTxt = document.getElementById('resSelect').value;
+  btn.disabled = true;
+
+  document.getElementById('genResult').classList.remove('show');
+  document.getElementById('aiThinking').classList.add('show');
+
+  let step = 0;
+  const interval = setInterval(() => {
+    document.getElementById('thinkingDesc').textContent = thinkingMsgs[step % thinkingMsgs.length];
+    step++;
+  }, 400);
+
+  setTimeout(() => {
+    clearInterval(interval);
+    document.getElementById('aiThinking').classList.remove('show');
+
+    const canvas = document.getElementById('genCanvas');
+    const [rw, rh] = resTxt.split('x').map(Number);
+    const displayW = canvas.parentElement.clientWidth;
+    const displayH = Math.floor(displayW * (rh / rw));
+    canvas.width = rw || 1920;
+    canvas.height = rh || 1080;
+    canvas.style.height = displayH + 'px';
+
+    const ctx = canvas.getContext('2d');
+    const fn = STYLES[style] || STYLES.cyberpunk;
+    fn(ctx, canvas.width, canvas.height);
+
+    document.getElementById('resultTitle').textContent = style.toUpperCase() + ' WALLPAPER';
+    document.getElementById('resultRes').textContent = `${canvas.width}×${canvas.height}`;
+    document.getElementById('genResult').classList.add('show');
+    btn.disabled = false;
+  }, 2200);
+}
+
+function setChip(el, style) {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('styleSelect').value = style;
+}
+
+function saveToGallery() {
+  alert('✅ Wallpaper saved to your gallery!');
+}
+
+// ─── GALLERY ───
+function buildGallery(filter, search) {
+  const grid = document.getElementById('galleryGrid');
+  grid.innerHTML = '';
+  const items = GALLERY_ITEMS.filter(item => {
+    const f = filter || currentFilter;
+    const matchFilter = f === 'all' || item.tag.toLowerCase() === f;
+    const matchSearch = !search || item.name.toLowerCase().includes(search.toLowerCase()) || item.tag.toLowerCase().includes(search.toLowerCase());
+    return matchFilter && matchSearch;
+  });
+  items.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'wall-card';
+    card.innerHTML = `
+      <canvas width="480" height="300"></canvas>
+      ${item.isNew ? '<div class="wall-new">NEW</div>' : ''}
+      <div class="wall-res">${item.res}</div>
+      <div class="wall-ov">
+        <div class="wall-name">${item.name}</div>
+        <div class="wall-tag">${item.tag}</div>
+        <div class="wall-acts">
+          <button class="w-btn dl" onclick="downloadCanvas(this.closest('.wall-card').querySelector('canvas'),'${item.name}');event.stopPropagation()">Download</button>
+          <button class="w-btn prev" onclick="openModal(${item.id});event.stopPropagation()">Preview</button>
+        </div>
+      </div>`;
+    card.querySelector('canvas').id = 'wc-' + item.id;
+    card.addEventListener('click', () => openModal(item.id));
+    grid.appendChild(card);
+    setTimeout(() => {
+      const c = document.getElementById('wc-' + item.id);
+      if (c) { const fn = STYLES[item.style] || STYLES.cyberpunk; fn(c.getContext('2d'), c.width, c.height); }
+    }, 50);
+  });
+}
+
+function filterGallery(btn, f) {
+  document.querySelectorAll('.filter-bar .f-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  currentFilter = f;
+  buildGallery(f);
+}
+
+function searchGallery(val) {
+  buildGallery(currentFilter, val);
+}
+
+// ─── TRENDING ───
+function buildTrending() {
+  const scroll = document.getElementById('trendingScroll');
+  scroll.innerHTML = '';
+  const trending = GALLERY_ITEMS.slice(0, 8);
+  trending.forEach((item, i) => {
+    const card = document.createElement('div');
+    card.className = 'trend-card';
+    card.innerHTML = `<canvas width="190" height="125"></canvas><div class="trend-info"><div class="trend-name">${item.name}</div><div class="trend-count">${(1000 + i * 340).toLocaleString()} downloads</div></div>`;
+    card.addEventListener('click', () => openModal(item.id));
+    scroll.appendChild(card);
+    const c = card.querySelector('canvas');
+    setTimeout(() => { const fn = STYLES[item.style] || STYLES.cyberpunk; fn(c.getContext('2d'), c.width, c.height); }, 50);
+  });
+
+  const newGrid = document.getElementById('newGrid');
+  newGrid.innerHTML = '';
+  GALLERY_ITEMS.filter(i => i.isNew).forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'wall-card';
+    card.innerHTML = `<canvas width="480" height="300"></canvas><div class="wall-new">NEW</div><div class="wall-res">${item.res}</div><div class="wall-ov"><div class="wall-name">${item.name}</div><div class="wall-tag">${item.tag}</div><div class="wall-acts"><button class="w-btn dl">Download</button></div></div>`;
+    newGrid.appendChild(card);
+    const c = card.querySelector('canvas');
+    setTimeout(() => { const fn = STYLES[item.style] || STYLES.cyberpunk; fn(c.getContext('2d'), c.width, c.height); }, 50);
+  });
+}
+
+// ─── FEATURED ───
+function buildFeatured() {
+  const row = document.getElementById('featuredRow');
+  row.innerHTML = '';
+  const items = GALLERY_ITEMS.slice(0, 3);
+
+  items.forEach((item, i) => {
+    const card = document.createElement('div');
+    card.className = 'feat-card' + (i === 0 ? ' feat-big' : '');
+    card.innerHTML = `<canvas width="${i === 0 ? 800 : 400}" height="${i === 0 ? 480 : 232}"></canvas><div class="wall-ov"><div class="wall-name">${item.name}</div><div class="wall-tag">${item.tag}</div></div>`;
+    card.addEventListener('click', () => openModal(item.id));
+    row.appendChild(card);
+    const c = card.querySelector('canvas');
+    setTimeout(() => { const fn = STYLES[item.style] || STYLES.cyberpunk; fn(c.getContext('2d'), c.width, c.height); }, 50);
+  });
+}
+
+// ─── MODAL ───
+function openModal(id) {
+  const item = GALLERY_ITEMS.find(i => i.id === id);
+  if (!item) return;
+  modalCurrentItem = item;
+
+  const canvas = document.getElementById('modalCanvas');
+  canvas.width = 1920; canvas.height = 1080;
+  const fn = STYLES[item.style] || STYLES.cyberpunk;
+  fn(canvas.getContext('2d'), canvas.width, canvas.height);
+
+  document.getElementById('modalTitle').textContent = item.name.toUpperCase();
+  document.getElementById('modalName').textContent = item.name;
+  document.getElementById('modalTags').innerHTML = `<span class="modal-tag">${item.tag}</span><span class="modal-tag">${item.res}</span>`;
+  document.getElementById('modalDlBtn').onclick = () => downloadCanvas(canvas, item.name);
+  document.getElementById('modalBg').classList.add('open');
+}
+
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('modalBg')) return;
+  document.getElementById('modalBg').classList.remove('open');
+}
+
+// ─── SETTINGS ───
+function openSettings() {
+  const key = localStorage.getItem('anthropic_key') || '';
+  document.getElementById('apiInp').value = key;
+  updateApiStatus(!!key);
+  document.getElementById('settingsBg').classList.add('open');
+}
+
+function closeSettings(e) {
+  if (e && e.target !== document.getElementById('settingsBg')) return;
+  document.getElementById('settingsBg').classList.remove('open');
+}
+
+function toggleEye() {
+  const inp = document.getElementById('apiInp');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+function saveApiKey() {
+  const key = document.getElementById('apiInp').value.trim();
+  if (key) {
+    localStorage.setItem('anthropic_key', key);
+    updateApiStatus(true);
+    alert('✅ API key saved!');
+    closeSettings();
+  } else {
+    localStorage.removeItem('anthropic_key');
+    updateApiStatus(false);
+  }
+}
+
+function updateApiStatus(hasKey) {
+  const dot = document.getElementById('apiDot');
+  const status = document.getElementById('apiStatus');
+  const sdot = document.getElementById('apiSdot');
+  const stxt = document.getElementById('apiStxt');
+  const bar = document.getElementById('apiStatusBar');
+
+  if (hasKey) {
+    dot.classList.remove('off');
+    status.textContent = 'API Connected';
+    sdot.className = 'api-sdot ok';
+    stxt.textContent = 'API key configured';
+    bar.className = 'api-status-bar ok';
+  } else {
+    dot.classList.add('off');
+    status.textContent = 'API Key';
+    sdot.className = 'api-sdot';
+    stxt.textContent = 'No API key configured';
+    bar.className = 'api-status-bar';
+  }
+}
+
+// ─── DOWNLOAD ───
+function downloadCanvas(canvasOrId, name) {
+  const canvas = typeof canvasOrId === 'string' ? document.getElementById(canvasOrId) : canvasOrId;
+  if (!canvas) return;
+  const link = document.createElement('a');
+  link.download = (name || 'nexus-wall').replace(/\s+/g, '-').toLowerCase() + '.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+// ─── GITHUB PAGE ───
+function ghTab(el, id) {
+  document.querySelectorAll('.gtab').forEach(t => t.classList.remove('on'));
+  document.querySelectorAll('.gpanel').forEach(p => p.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('gpanel-' + id).classList.add('on');
+}
+
+function buildCommits() {
+  const commits = [
+    { msg: 'Add NEXUS WALLS AI wallpaper generator', time: '2h ago', sha: '33a57b6' },
+    { msg: 'Implement gallery with 50+ styles', time: '5h ago', sha: '8dac291' },
+    { msg: 'Add trending and featured sections', time: '1d ago', sha: 'a1b2c3d' },
+    { msg: 'Setup CI/CD with GitHub Actions', time: '2d ago', sha: 'e4f5g6h' },
+    { msg: 'Initial project structure', time: '3d ago', sha: 'i7j8k9l' },
+  ];
+  const list = document.getElementById('commitList');
+  list.innerHTML = commits.map(c => `<div class="commit-item"><div class="commit-msg">${c.msg}</div><div class="commit-meta">${c.sha} · ${c.time}</div></div>`).join('');
+}
+
+function buildContrib() {
+  const grid = document.getElementById('contribGrid');
+  grid.innerHTML = Array.from({ length: 52 * 7 }, () => {
+    const r = Math.random();
+    const level = r > 0.9 ? 'l4' : r > 0.75 ? 'l3' : r > 0.55 ? 'l2' : r > 0.3 ? 'l1' : '';
+    return `<div class="cday ${level}"></div>`;
+  }).join('');
+}
+
+// ─── INIT ───
+window.addEventListener('load', () => {
+  initBg();
+  buildGallery();
+  buildCommits();
+  buildContrib();
+  updateApiStatus(!!localStorage.getItem('anthropic_key'));
+});
+
+// Intercept all nav link clicks
+document.querySelectorAll('.nav-links a, .mobile-menu a').forEach(a => {
+  a.addEventListener('click', e => e.preventDefault());
+});
+</script>
+</body>
+</html>

@@ -1,3 +1,10 @@
+# Node.js
+node_modules/
+dist/
+.env
+.env.local
+.env.production
+
 # http://www.gnu.org/software/automake
 
 Makefile.in
