@@ -723,7 +723,8 @@ nav{
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .sp2{grid-column:span 2}
-.gcard{background:var(--card);border:1pxhttps://github.com/nisarllc206-sys/bookish-octo-succotash.gitsoftware that offers a range of features for creating and managing websites. It's built with modern technologies like Flutter Web, Firebase, and Clean Architecture, ensuring a scalable and maintainable solution.
+.gcard{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px}
+[Nexus Ultra Platforms](https://github.com/nisarllc206-sys/Nexus-ultra-platforms) software that offers a range of features for creating and managing websites. It's built with modern technologies like Flutter Web, Firebase, and Clean Architecture, ensuring a scalable and maintainable solution.
 ‎
 ‎Some key features of Nexus Ultra Platforms include
 ‎Drag-and-drop builderCreate stunning websites without coding
