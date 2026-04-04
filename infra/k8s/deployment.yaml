@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nexus-ultra-backend
+  labels:
+    app: nexus-ultra-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nexus-ultra-backend
+  template:
+    metadata:
+      labels:
+        app: nexus-ultra-backend
+    spec:
+      containers:
+        - name: backend
+          image: nexus-ultra-backend:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
+            - name: STORE_ADAPTER
+              value: "memory"
+            - name: API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: nexus-ultra-secrets
+                  key: api-key
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"

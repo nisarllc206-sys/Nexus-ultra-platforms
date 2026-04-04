@@ -52,3 +52,32 @@ m4/lt~obsolete.m4
 # can automatically generate from config.status script
 # (which is called by configure script))
 Makefile
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# TypeScript build output
+dist/
+build/
+
+# Environment files (never commit secrets)
+.env
+.env.local
+.env.*.local
+
+# Test coverage
+coverage/
+*.lcov
+
+# Editor directories
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
