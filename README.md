@@ -1,4 +1,6 @@
-https://nexus-ultra-platforms-indol.vercel.app/#  Nexus-ultra-platforms-  
+Live deployment: [https://nexus-ultra-platforms-indol.vercel.app/](https://nexus-ultra-platforms-indol.vercel.app/)
+
+# Nexus-ultra-platforms-
 BBuild a “Singularity AI System” under Nexus Ultra Platforms: create a unified, self-aware AI ecosystem that continuously builds, evolves, and scales digital products, infrastructure, and business systems autonomously. This system must integrate Android super apps (Material 3, 100+ AI tools), Web SaaS platforms (multi-product dashboards, admin control centers), and a distributed backend (Node.js, Supabase, MongoDB/Postgres, microservices architecture).
 
 🧠 Core AGI Layer:
