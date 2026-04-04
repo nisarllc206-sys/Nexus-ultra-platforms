@@ -1,0 +1,16 @@
+{
+  "name": "nexus-ultra-platforms",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "agents"
+  ],
+  "scripts": {
+    "install:all": "npm install",
+    "build": "npm run build --workspaces",
+    "lint": "npm run lint --workspaces",
+    "test": "npm run test --workspaces",
+    "typecheck": "npm run typecheck --workspaces"
+  }
+}
