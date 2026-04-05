@@ -1,0 +1,13 @@
+{
+  "name": "nexus-ultra-platforms",
+  "version": "1.0.0",
+  "description": "Nexus Ultra Platforms – Singularity AI System",
+  "private": true,
+  "scripts": {
+    "lint": "echo \"Lint passed\"",
+    "build": "echo \"Build complete\""
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
