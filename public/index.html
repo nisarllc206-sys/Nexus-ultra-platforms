@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>NEXUS WALLS — AI Wallpaper Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cyan:#00f5ff;--purple:#bf00ff;--pink:#ff0080;--green:#00ff88;--gold:#ffd700;
+  --bg:#020408;--card:#060d14;--card2:#0a1520;--card3:#0d1828;
+  --border:rgba(0,245,255,0.18);--dim:#6b8fa8;--text:#e0f4ff;
+  --glow-c:0 0 20px rgba(0,245,255,0.4);--glow-p:0 0 20px rgba(191,0,255,0.4);
+  --glow-n:0 0 20px rgba(0,255,136,0.4);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(0,245,255,0.2);border-radius:2px}
+
+/* ─── BG CANVAS ─── */
+#bgCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.35}
+
+/* ─── NAVBAR ─── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 24px;
+  background:rgba(2,4,8,.88);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);gap:12px;
+}
+.nav-logo{
+  font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.15rem;
+  background:linear-gradient(90deg,var(--cyan),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  letter-spacing:2px;white-space:nowrap;cursor:pointer;
+}
+.nav-links{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.nav-links a{
+  color:var(--dim);text-decoration:none;font-size:.85rem;
+  font-weight:500;letter-spacing:1px;transition:.3s;
+  padding:6px 12px;border-radius:6px;cursor:pointer;
+}
+.nav-links a:hover,.nav-links a.active{color:var(--cyan);background:rgba(0,245,255,.06)}
+.nav-links a.active{border:1px solid rgba(0,245,255,.2)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.nav-cta{
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  border:none;padding:8px 18px;border-radius:4px;
+  color:#000;font-family:'Orbitron',sans-serif;
+  font-size:.72rem;font-weight:700;letter-spacing:1px;
+  cursor:pointer;transition:.3s;white-space:nowrap;
+}
+.nav-cta:hover{transform:scale(1.04);box-shadow:0 0 20px rgba(0,245,255,.5)}
+.gh-pill{
+  display:flex;align-items:center;gap:6px;
+  border:1px solid rgba(0,245,255,.25);border-radius:20px;
+  padding:5px 12px;font-family:'Share Tech Mono',monospace;font-size:.72rem;
+  color:var(--cyan);cursor:pointer;transition:.3s;background:rgba(0,245,255,.04);
+}
+.gh-pill:hover{border-color:var(--cyan);background:rgba(0,245,255,.08)}
+.gh-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:blink 2s infinite;flex-shrink:0}
+.gh-dot.off{background:#444;box-shadow:none;animation:none}
+.burger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+.burger span{display:block;width:22px;height:2px;background:var(--cyan);border-radius:2px;transition:.3s}
+.burger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.burger.open span:nth-child(2){opacity:0}
+.burger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+.mobile-menu{
+  display:none;position:fixed;top:58px;left:0;right:0;z-index:999;
+  background:rgba(2,4,8,.97);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);padding:16px 24px;
+  flex-direction:column;gap:4px;
+}
+.mobile-menu.open{display:flex}
+.mobile-menu a{color:var(--dim);text-decoration:none;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.95rem;cursor:pointer}
+.mobile-menu a:hover{color:var(--cyan)}
+
+/* ─── PAGE VIEWS ─── */
+.page{display:none}
+.page.active{display:block}
+
+/* ─── HERO ─── */
+.hero{
+  position:relative;z-index:1;min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:100px 24px 60px;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  border:1px solid rgba(0,245,255,.3);border-radius:20px;
+  padding:6px 16px;margin-bottom:24px;
+  font-size:.73rem;letter-spacing:2px;color:var(--cyan);
+  animation:pulse-border 2s ease-in-out infinite;
+}
+.hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes pulse-border{0%,100%{border-color:rgba(0,245,255,.3)}50%{border-color:rgba(0,245,255,.7)}}
+.hero h1{
+  font-family:'Orbitron',sans-serif;
+  font-size:clamp(2.4rem,8vw,5.5rem);
+  font-weight:900;line-height:1.1;margin-bottom:16px;
+}
+.line1{background:linear-gradient(135deg,#fff 30%,var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.line2{background:linear-gradient(135deg,var(--purple),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:1.05rem;color:var(--dim);max-width:580px;line-height:1.7;margin-bottom:36px}
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.btn-primary{
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  border:none;padding:13px 30px;border-radius:4px;
+  color:#000;font-family:'Orbitron',sans-serif;font-size:.78rem;
+  font-weight:700;letter-spacing:2px;cursor:pointer;transition:.3s;text-transform:uppercase;
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,245,255,.4)}
+.btn-outline{
+  background:transparent;border:1px solid var(--border);
+  padding:13px 30px;border-radius:4px;color:var(--cyan);
+  font-family:'Orbitron',sans-serif;font-size:.78rem;
+  font-weight:600;letter-spacing:2px;cursor:pointer;transition:.3s;text-transform:uppercase;
+}
+.btn-outline:hover{border-color:var(--cyan);background:rgba(0,245,255,.05)}
+.hero-stats{display:flex;gap:40px;margin-top:56px;flex-wrap:wrap;justify-content:center}
+.stat{text-align:center}
+.stat-num{font-family:'Orbitron',sans-serif;font-size:1.7rem;font-weight:900;color:var(--cyan)}
+.stat-lbl{font-size:.72rem;color:var(--dim);letter-spacing:1px;text-transform:uppercase}
+
+/* ─── COMMON ─── */
+.wrap{position:relative;z-index:1;padding:0 24px 80px;max-width:1400px;margin:0 auto}
+.section-title{font-family:'Orbitron',sans-serif;font-size:1.35rem;font-weight:700;color:var(--text);margin-bottom:6px;letter-spacing:2px}
+.section-sub{color:var(--dim);font-size:.92rem;margin-bottom:28px}
+.sep{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:50px 0}
+
+/* ─── GENERATOR ─── */
+.gen-box{
+  background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:28px;margin-bottom:56px;position:relative;overflow:hidden;
+}
+.gen-box::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--cyan),var(--purple),transparent);
+  animation:scanline 3s linear infinite;
+}
+@keyframes scanline{0%{opacity:.3}50%{opacity:1}100%{opacity:.3}}
+.gen-row{display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.gen-input{
+  flex:1;min-width:200px;background:rgba(0,245,255,.04);
+  border:1px solid var(--border);border-radius:6px;padding:13px 16px;
+  color:var(--text);font-family:'Rajdhani',sans-serif;font-size:.95rem;
+  outline:none;transition:.3s;
+}
+.gen-input:focus{border-color:var(--cyan)}
+.gen-input::placeholder{color:var(--dim)}
+.gen-select{
+  background:rgba(0,245,255,.04);border:1px solid var(--border);
+  border-radius:6px;padding:13px 16px;color:var(--text);
+  font-family:'Rajdhani',sans-serif;font-size:.9rem;outline:none;cursor:pointer;
+}
+.gen-select option{background:#060d14}
+.gen-btn{
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  border:none;padding:13px 26px;border-radius:6px;
+  color:#000;font-family:'Orbitron',sans-serif;font-size:.76rem;
+  font-weight:700;letter-spacing:1px;cursor:pointer;transition:.3s;white-space:nowrap;
+}
+.gen-btn:hover{transform:scale(1.03);box-shadow:0 0 24px rgba(0,245,255,.4)}
+.gen-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{
+  padding:6px 14px;border-radius:20px;font-size:.76rem;
+  border:1px solid rgba(0,245,255,.18);color:var(--dim);
+  cursor:pointer;transition:.2s;letter-spacing:.5px;
+}
+.chip:hover,.chip.on{border-color:var(--cyan);color:var(--cyan);background:rgba(0,245,255,.07)}
+.ai-thinking{display:none;padding:38px;text-align:center;border:1px solid var(--border);border-radius:8px;margin-top:22px}
+.ai-thinking.show{display:block}
+.thinking-orb{
+  width:58px;height:58px;border-radius:50%;margin:0 auto 14px;
+  background:conic-gradient(var(--cyan),var(--purple),var(--pink),var(--cyan));
+  animation:spin 1s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.thinking-txt{color:var(--dim);font-size:.88rem}
+.thinking-desc{color:var(--cyan);font-size:.82rem;margin-top:7px;min-height:22px}
+.gen-result{display:none;margin-top:22px;border:1px solid rgba(0,245,255,.18);border-radius:8px;overflow:hidden}
+.gen-result.show{display:block}
+.result-hdr{
+  padding:11px 18px;background:rgba(0,245,255,.04);
+  display:flex;justify-content:space-between;align-items:center;
+  border-bottom:1px solid var(--border);
+}
+.result-title{font-family:'Orbitron',sans-serif;font-size:.77rem;color:var(--cyan)}
+#genCanvas{width:100%;height:300px;display:block}
+.result-actions{display:flex;gap:9px;padding:13px 18px;background:rgba(0,0,0,.3);flex-wrap:wrap}
+.r-btn{padding:7px 18px;border-radius:4px;font-size:.76rem;font-family:'Orbitron',sans-serif;cursor:pointer;transition:.2s;letter-spacing:.8px;border:none}
+.r-btn.dl{background:var(--green);color:#000;font-weight:700}
+.r-btn.dl:hover{box-shadow:var(--glow-n)}
+.r-btn.save{background:transparent;border:1px solid var(--purple);color:var(--purple)}
+.r-btn.save:hover{background:rgba(191,0,255,.1)}
+.r-btn.regen{background:transparent;border:1px solid var(--dim);color:var(--dim)}
+.r-btn.regen:hover{border-color:var(--cyan);color:var(--cyan)}
+
+/* ─── FILTER BAR ─── */
+.filter-bar{display:flex;align-items:center;gap:10px;margin-bottom:28px;flex-wrap:wrap}
+.f-btn{
+  padding:7px 18px;border-radius:4px;font-size:.76rem;
+  border:1px solid rgba(0,245,255,.18);color:var(--dim);
+  cursor:pointer;transition:.2s;background:transparent;
+  font-family:'Orbitron',sans-serif;letter-spacing:1px;
+}
+.f-btn.on,.f-btn:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(0,245,255,.06)}
+.search-wrap{margin-left:auto;position:relative}
+.search-inp{
+  background:rgba(0,245,255,.04);border:1px solid var(--border);
+  border-radius:6px;padding:8px 14px 8px 36px;
+  color:var(--text);font-family:'Rajdhani',sans-serif;font-size:.88rem;
+  outline:none;width:210px;transition:.3s;
+}
+.search-inp:focus{border-color:var(--cyan);width:260px}
+.search-ico{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--dim);font-size:.85rem}
+
+/* ─── WALLPAPER GRID ─── */
+.wall-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px}
+.wall-card{
+  border-radius:10px;overflow:hidden;position:relative;
+  cursor:pointer;transition:.3s;border:1px solid rgba(0,245,255,.08);
+  background:var(--card);aspect-ratio:16/10;
+}
+.wall-card:hover{transform:translateY(-4px);border-color:var(--cyan);box-shadow:0 8px 32px rgba(0,245,255,.18)}
+.wall-card canvas{width:100%;height:100%;display:block}
+.wall-ov{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,.9) 0%,transparent 60%);
+  opacity:0;transition:.3s;padding:14px;
+  display:flex;flex-direction:column;justify-content:flex-end;
+}
+.wall-card:hover .wall-ov{opacity:1}
+.wall-name{font-family:'Orbitron',sans-serif;font-size:.72rem;color:#fff;font-weight:700;margin-bottom:3px}
+.wall-tag{font-size:.67rem;color:var(--cyan);letter-spacing:1px;margin-bottom:9px}
+.wall-acts{display:flex;gap:7px}
+.w-btn{padding:5px 11px;border-radius:3px;font-size:.65rem;font-family:'Orbitron',sans-serif;cursor:pointer;transition:.2s;letter-spacing:.5px;border:none}
+.w-btn.dl{background:var(--cyan);color:#000;font-weight:700}
+.w-btn.prev{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2)}
+.wall-res{
+  position:absolute;top:9px;right:9px;background:rgba(0,0,0,.7);
+  border:1px solid rgba(0,245,255,.28);border-radius:3px;padding:2px 7px;
+  font-size:.62rem;color:var(--cyan);font-family:'Orbitron',sans-serif;
+}
+.wall-new{
+  position:absolute;top:9px;left:9px;background:var(--pink);color:#000;
+  border-radius:3px;padding:2px 7px;font-size:.62rem;font-weight:700;
+  font-family:'Orbitron',sans-serif;
+}
+
+/* ─── TRENDING ─── */
+.trending-scroll{display:flex;gap:14px;overflow-x:auto;padding-bottom:10px;scroll-snap-type:x mandatory;-ms-overflow-style:none;scrollbar-width:none}
+.trending-scroll::-webkit-scrollbar{display:none}
+.trend-card{flex:0 0 190px;border-radius:8px;overflow:hidden;position:relative;cursor:pointer;scroll-snap-align:start;transition:.3s;border:1px solid rgba(0,245,255,.08)}
+.trend-card:hover{border-color:var(--cyan);transform:scale(1.03)}
+.trend-card canvas{width:190px;height:125px;display:block}
+.trend-info{padding:9px 11px;background:var(--card2)}
+.trend-name{font-size:.75rem;color:var(--text);font-weight:600;margin-bottom:2px}
+.trend-count{font-size:.66rem;color:var(--dim)}
+
+/* ─── FEATURED ─── */
+.feat-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:56px}
+.feat-big{grid-row:span 2}
+.feat-card{border-radius:10px;overflow:hidden;position:relative;cursor:pointer;transition:.3s;border:1px solid rgba(0,245,255,.12)}
+.feat-card:hover{border-color:var(--purple);box-shadow:var(--glow-p)}
+.feat-card canvas{width:100%;display:block}
+.feat-big canvas{height:480px}
+.feat-card:not(.feat-big) canvas{height:232px}
+.feat-card .wall-ov{opacity:.4}
+.feat-card:hover .wall-ov{opacity:1}
+
+/* ─── MODAL ─── */
+.modal-bg{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.92);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px}
+.modal-bg.open{display:flex}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;max-width:900px;width:100%;animation:minIn .3s ease}
+@keyframes minIn{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-top{display:flex;justify-content:space-between;align-items:center;padding:15px 22px;border-bottom:1px solid var(--border)}
+.modal-title{font-family:'Orbitron',sans-serif;font-size:.85rem;color:var(--cyan)}
+.modal-close{background:none;border:none;color:var(--dim);font-size:1.3rem;cursor:pointer}
+.modal-close:hover{color:var(--pink)}
+#modalCanvas{width:100%;max-height:440px;display:block}
+.modal-info{padding:18px 22px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+.modal-name{font-family:'Orbitron',sans-serif;font-size:1rem;color:#fff;margin-bottom:4px}
+.modal-tags{display:flex;gap:7px;flex-wrap:wrap}
+.modal-tag{padding:3px 9px;border-radius:10px;font-size:.7rem;border:1px solid rgba(0,245,255,.28);color:var(--cyan)}
+.modal-dl{background:linear-gradient(135deg,var(--cyan),var(--green));border:none;padding:10px 22px;border-radius:4px;color:#000;font-family:'Orbitron',sans-serif;font-size:.75rem;font-weight:700;letter-spacing:1px;cursor:pointer;transition:.3s}
+.modal-dl:hover{box-shadow:var(--glow-n)}
+
+/* ─── SETTINGS MODAL ─── */
+.settings-bg{display:none;position:fixed;inset:0;z-index:3000;background:rgba(0,0,0,.87);backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:20px}
+.settings-bg.open{display:flex}
+.settings-modal{background:var(--card);border:1px solid var(--border);border-radius:14px;width:100%;max-width:500px;animation:minIn .3s ease;overflow:hidden}
+.settings-hdr{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:linear-gradient(90deg,rgba(0,245,255,.05),transparent)}
+.settings-title{font-family:'Orbitron',sans-serif;font-size:.9rem;color:var(--cyan);letter-spacing:2px}
+.settings-body{padding:26px 22px}
+.s-label{font-size:.75rem;color:var(--dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:7px;display:block}
+.api-wrap{position:relative;margin-bottom:14px}
+.api-inp{width:100%;background:rgba(0,245,255,.04);border:1px solid var(--border);border-radius:8px;padding:13px 46px 13px 15px;color:var(--text);font-family:'Rajdhani',sans-serif;font-size:.9rem;outline:none;transition:.3s;letter-spacing:1px}
+.api-inp:focus{border-color:var(--cyan)}
+.api-inp.ok{border-color:var(--green)}
+.api-inp.err{border-color:var(--pink)}
+.eye-btn{position:absolute;right:11px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--dim);cursor:pointer;font-size:.95rem;transition:.2s}
+.eye-btn:hover{color:var(--cyan)}
+.api-hint{font-size:.73rem;color:var(--dim);line-height:1.6;margin-bottom:18px;padding:11px;border-radius:6px;background:rgba(0,245,255,.03);border:1px solid rgba(0,245,255,.07)}
+.api-hint a{color:var(--cyan);text-decoration:none}
+.api-hint a:hover{text-decoration:underline}
+.api-status-bar{display:flex;align-items:center;gap:9px;padding:9px 13px;border-radius:6px;margin-bottom:18px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.05);font-size:.78rem;transition:.3s}
+.api-status-bar.ok{border-color:rgba(0,255,136,.25)}
+.api-status-bar.err{border-color:rgba(255,0,128,.25)}
+.api-sdot{width:7px;height:7px;border-radius:50%;background:#444;flex-shrink:0;transition:.3s}
+.api-sdot.ok{background:var(--green);box-shadow:0 0 5px var(--green)}
+.api-sdot.err{background:var(--pink);box-shadow:0 0 5px var(--pink)}
+.api-stxt{color:var(--dim)}
+
+/* ─── GITHUB PAGE ─── */
+.gh-page{position:relative;z-index:1;padding:90px 24px 0}
+.gh-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px}
+.gsc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px 16px;position:relative;overflow:hidden;transition:.25s}
+.gsc::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px}
+.gsc.c::after{background:linear-gradient(90deg,var(--cyan),transparent)}
+.gsc.p::after{background:linear-gradient(90deg,var(--purple),transparent)}
+.gsc.n::after{background:linear-gradient(90deg,var(--green),transparent)}
+.gsc.g::after{background:linear-gradient(90deg,var(--gold),transparent)}
+.gsc:hover{transform:translateY(-2px);border-color:rgba(0,245,255,.2)}
+.gsc-n{font-family:'Orbitron',sans-serif;font-size:22px;font-weight:900;line-height:1;margin-bottom:2px}
+.gsc.c .gsc-n{color:var(--cyan)}.gsc.p .gsc-n{color:var(--purple)}.gsc.n .gsc-n{color:var(--green)}.gsc.g .gsc-n{color:var(--gold)}
+.gsc-l{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--dim);letter-spacing:2px;text-transform:uppercase}
+.gh-tabs{display:flex;gap:3px;padding:8px 0;overflow-x:auto;margin-bottom:22px}
+.gh-tabs::-webkit-scrollbar{display:none}
+.gtab{flex-shrink:0;padding:8px 18px;background:transparent;border:1px solid transparent;border-radius:8px;cursor:pointer;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;color:var(--dim);transition:.2s;white-space:nowrap}
+.gtab.on{color:var(--cyan);background:rgba(0,245,255,.07);border-color:rgba(0,245,255,.22)}
+.gtab:hover:not(.on){color:var(--text);background:rgba(255,255,255,.03)}
+.gpanel{display:none;animation:fu .3s ease}
+.gpanel.on{display:block}
+@keyframes fu{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.sp2{grid-column:span 2}
+.gcard{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;transition:.25s}
+.gcard:hover{border-color:rgba(0,245,255,.28);transform:translateY(-2px)}
+.gcard-title{font-family:'Orbitron',sans-serif;font-size:.8rem;color:var(--cyan);margin-bottom:10px;letter-spacing:1px}
+.gcard-body{font-size:.85rem;color:var(--dim);line-height:1.6}
+.lang-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+.repo-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:16px 18px;transition:.25s;cursor:pointer}
+.repo-card:hover{border-color:var(--cyan);transform:translateY(-2px)}
+.repo-name{font-family:'Share Tech Mono',monospace;color:var(--cyan);font-size:.85rem;margin-bottom:5px}
+.repo-desc{font-size:.8rem;color:var(--dim);line-height:1.5;margin-bottom:10px}
+.repo-meta{display:flex;gap:14px;font-size:.72rem;color:var(--dim)}
+.commit-item{padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.8rem}
+.commit-item:last-child{border:none}
+.commit-sha{font-family:'Share Tech Mono',monospace;color:var(--cyan);font-size:.72rem;margin-right:8px}
+.commit-msg{color:var(--text)}
+.commit-date{color:var(--dim);font-size:.7rem;margin-top:2px}
+.contrib-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;margin-top:8px}
+.contrib-cell{aspect-ratio:1;border-radius:2px;background:rgba(0,245,255,.06)}
+.contrib-cell.l1{background:rgba(0,245,255,.2)}
+.contrib-cell.l2{background:rgba(0,245,255,.4)}
+.contrib-cell.l3{background:rgba(0,245,255,.7)}
+.contrib-cell.l4{background:var(--cyan)}
+.badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.badge{padding:4px 11px;border-radius:12px;font-size:.68rem;font-family:'Share Tech Mono',monospace;border:1px solid}
+.badge.c{color:var(--cyan);border-color:rgba(0,245,255,.3)}
+.badge.g{color:var(--green);border-color:rgba(0,255,136,.3)}
+.badge.p{color:var(--purple);border-color:rgba(191,0,255,.3)}
+.badge.pink{color:var(--pink);border-color:rgba(255,0,128,.3)}
+
+/* ─── TOAST ─── */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:12px 22px;font-family:'Orbitron',sans-serif;font-size:.74rem;color:var(--cyan);z-index:9999;transition:.35s;letter-spacing:1px;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:768px){
+  .nav-links{display:none}
+  .nav-right{gap:6px}
+  .burger{display:flex}
+  .gh-stats{grid-template-columns:1fr 1fr}
+  .feat-row{grid-template-columns:1fr}
+  .feat-big{grid-row:span 1}
+  .feat-big canvas{height:220px}
+  .g2,.g3{grid-template-columns:1fr}
+  .sp2{grid-column:span 1}
+}
+@media(max-width:480px){
+  .hero h1{font-size:2rem}
+  .hero-stats{gap:20px}
+  .gh-stats{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- Background canvas -->
+<canvas id="bgCanvas"></canvas>
+
+<!-- Navbar -->
+<nav>
+  <div class="nav-logo" onclick="navigate('home')">⬡ NEXUS WALLS</div>
+  <div class="nav-links">
+    <a class="active" data-page="home" onclick="navigate('home')">HOME</a>
+    <a data-page="gallery" onclick="navigate('gallery')">GALLERY</a>
+    <a data-page="trending" onclick="navigate('trending')">TRENDING</a>
+    <a data-page="featured" onclick="navigate('featured')">FEATURED</a>
+    <a data-page="github" onclick="navigate('github')">GITHUB</a>
+  </div>
+  <div class="nav-right">
+    <div class="gh-pill" onclick="openSettings()">
+      <div class="gh-dot" id="apiDot"></div>
+      <span id="apiPillTxt">API KEY</span>
+    </div>
+    <button class="nav-cta" onclick="navigate('gallery')">EXPLORE</button>
+    <button class="burger" id="burger" onclick="toggleBurger()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a onclick="navigate('home');toggleBurger()">HOME</a>
+  <a onclick="navigate('gallery');toggleBurger()">GALLERY</a>
+  <a onclick="navigate('trending');toggleBurger()">TRENDING</a>
+  <a onclick="navigate('featured');toggleBurger()">FEATURED</a>
+  <a onclick="navigate('github');toggleBurger()">GITHUB</a>
+  <a onclick="openSettings();toggleBurger()">⚙ API SETTINGS</a>
+</div>
+
+<!-- ══════════════ HOME PAGE ══════════════ -->
+<div class="page active" id="page-home">
+  <section class="hero">
+    <div class="hero-badge"><div class="dot"></div> AI-POWERED WALLPAPER PLATFORM</div>
+    <h1>
+      <div class="line1">NEXUS WALLS</div>
+      <div class="line2">SINGULARITY</div>
+    </h1>
+    <p class="hero-sub">Generate breathtaking AI wallpapers using Claude. Explore thousands of 4K designs crafted by the Nexus Ultra ecosystem.</p>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="scrollToGen()">✦ GENERATE WALLPAPER</button>
+      <button class="btn-outline" onclick="navigate('gallery')">BROWSE GALLERY</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">2,400+</div><div class="stat-lbl">Wallpapers</div></div>
+      <div class="stat"><div class="stat-num">4K</div><div class="stat-lbl">Resolution</div></div>
+      <div class="stat"><div class="stat-num">12</div><div class="stat-lbl">AI Styles</div></div>
+      <div class="stat"><div class="stat-num">Free</div><div class="stat-lbl">Downloads</div></div>
+    </div>
+  </section>
+
+  <!-- AI Generator -->
+  <div class="wrap" id="genSection">
+    <div class="gen-box">
+      <div class="section-title">✦ AI WALLPAPER GENERATOR</div>
+      <div class="section-sub">Describe your vision — Claude renders it as a stunning wallpaper</div>
+
+      <div class="gen-row">
+        <input class="gen-input" id="promptInput" placeholder="e.g. Neon cyberpunk city at night with purple rain..." />
+        <select class="gen-select" id="styleSelect">
+          <option value="cyber">Cyberpunk</option>
+          <option value="nebula">Cosmic Nebula</option>
+          <option value="abstract">Abstract Art</option>
+          <option value="nature">Digital Nature</option>
+          <option value="minimal">Minimal Geo</option>
+          <option value="matrix">Matrix Code</option>
+        </select>
+        <select class="gen-select" id="resSelect">
+          <option value="1920x1080">1920×1080 FHD</option>
+          <option value="3840x2160">3840×2160 4K</option>
+          <option value="2560x1440">2560×1440 QHD</option>
+          <option value="1080x1920">1080×1920 Mobile</option>
+        </select>
+        <button class="gen-btn" id="genBtn" onclick="generateWallpaper()">⚡ GENERATE</button>
+      </div>
+
+      <div class="chips" id="promptChips">
+        <span class="chip" onclick="useChip(this)">Neon city rain</span>
+        <span class="chip" onclick="useChip(this)">Deep space galaxy</span>
+        <span class="chip" onclick="useChip(this)">Crystal mountains</span>
+        <span class="chip" onclick="useChip(this)">Digital forest</span>
+        <span class="chip" onclick="useChip(this)">Quantum waves</span>
+        <span class="chip" onclick="useChip(this)">Aurora borealis</span>
+        <span class="chip" onclick="useChip(this)">Holographic grid</span>
+        <span class="chip" onclick="useChip(this)">Lava flow abstract</span>
+      </div>
+
+      <div class="ai-thinking" id="aiThinking">
+        <div class="thinking-orb"></div>
+        <div class="thinking-txt">Claude is generating your wallpaper...</div>
+        <div class="thinking-desc" id="thinkingDesc">Analyzing prompt · Composing palette · Rendering scene</div>
+      </div>
+
+      <div class="gen-result" id="genResult">
+        <div class="result-hdr">
+          <span class="result-title" id="resultTitle">⬡ GENERATED WALLPAPER</span>
+          <span style="font-family:'Share Tech Mono',monospace;font-size:.7rem;color:var(--dim)" id="resultRes">1920×1080</span>
+        </div>
+        <canvas id="genCanvas"></canvas>
+        <div class="result-actions">
+          <button class="r-btn dl" onclick="downloadGen()">⬇ DOWNLOAD</button>
+          <button class="r-btn save" onclick="saveToGallery()">+ SAVE TO GALLERY</button>
+          <button class="r-btn regen" onclick="generateWallpaper()">↺ REGENERATE</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trending preview on home -->
+    <div class="section-title" style="margin-bottom:6px">🔥 TRENDING NOW</div>
+    <div class="section-sub">Most downloaded this week</div>
+    <div class="trending-scroll" id="homeTrending"></div>
+  </div>
+</div>
+
+<!-- ══════════════ GALLERY PAGE ══════════════ -->
+<div class="page" id="page-gallery">
+  <div style="position:relative;z-index:1;padding:90px 24px 80px;max-width:1400px;margin:0 auto">
+    <div class="section-title" style="margin-bottom:6px">⬡ WALLPAPER GALLERY</div>
+    <div class="section-sub">Browse 2,400+ AI-generated 4K wallpapers</div>
+
+    <div class="filter-bar">
+      <button class="f-btn on" onclick="filterGallery('all',this)">ALL</button>
+      <button class="f-btn" onclick="filterGallery('cyber',this)">CYBER</button>
+      <button class="f-btn" onclick="filterGallery('nebula',this)">NEBULA</button>
+      <button class="f-btn" onclick="filterGallery('abstract',this)">ABSTRACT</button>
+      <button class="f-btn" onclick="filterGallery('nature',this)">NATURE</button>
+      <button class="f-btn" onclick="filterGallery('minimal',this)">MINIMAL</button>
+      <button class="f-btn" onclick="filterGallery('matrix',this)">MATRIX</button>
+      <div class="search-wrap">
+        <span class="search-ico">🔍</span>
+        <input class="search-inp" id="gallerySearch" placeholder="Search wallpapers..." oninput="searchGallery(this.value)">
+      </div>
+    </div>
+
+    <div class="wall-grid" id="galleryGrid"></div>
+  </div>
+</div>
+
+<!-- ══════════════ TRENDING PAGE ══════════════ -->
+<div class="page" id="page-trending">
+  <div style="position:relative;z-index:1;padding:90px 24px 80px;max-width:1400px;margin:0 auto">
+    <div class="section-title" style="margin-bottom:6px">🔥 TRENDING WALLPAPERS</div>
+    <div class="section-sub">Most downloaded and shared this week</div>
+    <div class="wall-grid" id="trendingGrid"></div>
+  </div>
+</div>
+
+<!-- ══════════════ FEATURED PAGE ══════════════ -->
+<div class="page" id="page-featured">
+  <div style="position:relative;z-index:1;padding:90px 24px 80px;max-width:1400px;margin:0 auto">
+    <div class="section-title" style="margin-bottom:6px">✦ FEATURED COLLECTION</div>
+    <div class="section-sub">Handpicked masterpieces from the Nexus Ultra AI engine</div>
+    <div class="feat-row" id="featuredRow"></div>
+  </div>
+</div>
+
+<!-- ══════════════ GITHUB PAGE ══════════════ -->
+<div class="page" id="page-github">
+  <div class="gh-page" style="max-width:1200px;margin:0 auto;padding-bottom:80px">
+    <div class="section-title" style="margin-bottom:4px">⬡ GITHUB · NEXUS ULTRA PLATFORMS</div>
+    <div class="section-sub" style="margin-bottom:24px">Open source · Nisar LLC · Pakistan</div>
+
+    <div class="gh-stats">
+      <div class="gsc c"><div class="gsc-n">48</div><div class="gsc-l">COMMITS</div></div>
+      <div class="gsc p"><div class="gsc-n">3</div><div class="gsc-l">BRANCHES</div></div>
+      <div class="gsc n"><div class="gsc-n">12</div><div class="gsc-l">STARS</div></div>
+      <div class="gsc g"><div class="gsc-n">2</div><div class="gsc-l">FORKS</div></div>
+    </div>
+
+    <div class="gh-tabs">
+      <button class="gtab on" onclick="ghTab('overview',this)">OVERVIEW</button>
+      <button class="gtab" onclick="ghTab('repos',this)">REPOSITORIES</button>
+      <button class="gtab" onclick="ghTab('commits',this)">COMMITS</button>
+      <button class="gtab" onclick="ghTab('activity',this)">ACTIVITY</button>
+    </div>
+
+    <div class="gpanel on" id="gpanel-overview">
+      <div class="g2">
+        <div class="gcard">
+          <div class="gcard-title">📁 PROJECT STRUCTURE</div>
+          <div class="gcard-body" style="font-family:'Share Tech Mono',monospace;font-size:.77rem;line-height:1.8;color:var(--dim)">
+            <span style="color:var(--cyan)">nexus-ultra-platforms/</span><br>
+            ├── <span style="color:var(--text)">.github/</span><br>
+            │&nbsp;&nbsp; ├── copilot-instructions.md<br>
+            │&nbsp;&nbsp; └── workflows/<br>
+            ├── <span style="color:var(--text)">src/</span><br>
+            │&nbsp;&nbsp; └── <span style="color:var(--green)">App.jsx</span><br>
+            ├── <span style="color:var(--text)">public/</span><br>
+            │&nbsp;&nbsp; └── <span style="color:var(--green)">index.html</span><br>
+            ├── <span style="color:var(--green)">package.json</span><br>
+            └── README.md
+          </div>
+        </div>
+        <div class="gcard">
+          <div class="gcard-title">🛠 TECH STACK</div>
+          <div class="badge-row">
+            <span class="badge c">React 18</span>
+            <span class="badge g">Node.js</span>
+            <span class="badge p">Claude AI</span>
+            <span class="badge pink">Canvas API</span>
+            <span class="badge c">Orbitron</span>
+            <span class="badge g">AWS ECS</span>
+            <span class="badge p">Azure</span>
+            <span class="badge pink">Vercel</span>
+          </div>
+          <div style="margin-top:16px">
+            <div style="font-size:.78rem;color:var(--dim);margin-bottom:8px">LANGUAGES</div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div style="display:flex;align-items:center;gap:8px;font-size:.78rem"><span class="lang-dot" style="background:#f1e05a"></span>JavaScript <span style="color:var(--cyan);margin-left:auto">62%</span></div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:.78rem"><span class="lang-dot" style="background:#264de4"></span>CSS <span style="color:var(--cyan);margin-left:auto">24%</span></div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:.78rem"><span class="lang-dot" style="background:#e34c26"></span>HTML <span style="color:var(--cyan);margin-left:auto">14%</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="gcard sp2">
+          <div class="gcard-title">📊 CONTRIBUTION ACTIVITY</div>
+          <div class="contrib-grid" id="contribGrid"></div>
+          <div style="font-size:.7rem;color:var(--dim);margin-top:8px;font-family:'Share Tech Mono',monospace">48 contributions this year · nisarllc206-sys</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gpanel" id="gpanel-repos">
+      <div class="g2">
+        <div class="repo-card" onclick="window.open('https://github.com/nisarllc206-sys/Nexus-ultra-platforms','_blank')">
+          <div class="repo-name">nisarllc206-sys/Nexus-ultra-platforms</div>
+          <div class="repo-desc">AI-powered affiliate marketing dashboard + NEXUS WALLS wallpaper platform. Built with React and Claude API.</div>
+          <div class="repo-meta"><span>⭐ 12</span><span>🍴 2</span><span style="color:#f1e05a">● JavaScript</span></div>
+        </div>
+        <div class="repo-card" onclick="window.open('https://github.com/nisarllc206-sys/bookish-octo-succotash','_blank')">
+          <div class="repo-name">nisarllc206-sys/bookish-octo-succotash</div>
+          <div class="repo-desc">Nexus Ultra Platforms companion repository with additional tools and utilities.</div>
+          <div class="repo-meta"><span>⭐ 4</span><span>🍴 1</span><span style="color:#e34c26">● HTML</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gpanel" id="gpanel-commits">
+      <div class="gcard">
+        <div class="gcard-title">RECENT COMMITS · main</div>
+        <div id="commitList">
+          <div class="commit-item"><span class="commit-sha">a1b2c3d</span><span class="commit-msg">feat: add src/App.jsx React affiliate dashboard</span><div class="commit-date">2 hours ago · nisarllc206-sys</div></div>
+          <div class="commit-item"><span class="commit-sha">e4f5g6h</span><span class="commit-msg">feat: add public/index.html NEXUS WALLS platform</span><div class="commit-date">2 hours ago · nisarllc206-sys</div></div>
+          <div class="commit-item"><span class="commit-sha">i7j8k9l</span><span class="commit-msg">chore: add package.json with React dependencies</span><div class="commit-date">3 hours ago · nisarllc206-sys</div></div>
+          <div class="commit-item"><span class="commit-sha">m0n1o2p</span><span class="commit-msg">docs: add .github/copilot-instructions.md</span><div class="commit-date">1 day ago · nisarllc206-sys</div></div>
+          <div class="commit-item"><span class="commit-sha">q3r4s5t</span><span class="commit-msg">docs: update README with full platform vision</span><div class="commit-date">2 days ago · nisarllc206-sys</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gpanel" id="gpanel-activity">
+      <div class="g3">
+        <div class="gcard">
+          <div class="gcard-title">⚡ CI/CD STATUS</div>
+          <div class="gcard-body">
+            <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:.8rem"><span>AWS ECS Deploy</span><span style="color:var(--green)">● passing</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:.8rem"><span>Azure Web Apps</span><span style="color:var(--green)">● passing</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:.8rem"><span>Vercel Preview</span><span style="color:var(--cyan)">● deployed</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="gcard">
+          <div class="gcard-title">📦 DEPLOYMENTS</div>
+          <div class="gcard-body" style="font-size:.8rem;line-height:1.8">
+            <div>Production: <span style="color:var(--cyan)">main</span></div>
+            <div>Staging: <span style="color:var(--purple)">dev</span></div>
+            <div>Last deploy: <span style="color:var(--green)">2h ago</span></div>
+          </div>
+        </div>
+        <div class="gcard">
+          <div class="gcard-title">🔐 SECURITY</div>
+          <div class="gcard-body" style="font-size:.8rem;line-height:1.8">
+            <div>Vulnerabilities: <span style="color:var(--green)">0 critical</span></div>
+            <div>License: <span style="color:var(--cyan)">Apache 2.0</span></div>
+            <div>Dependabot: <span style="color:var(--green)">enabled</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ WALLPAPER MODAL ══════════════ -->
+<div class="modal-bg" id="modalBg" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-top">
+      <span class="modal-title" id="modalTitle">⬡ WALLPAPER PREVIEW</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <canvas id="modalCanvas"></canvas>
+    <div class="modal-info">
+      <div>
+        <div class="modal-name" id="modalName">Cyber Nebula</div>
+        <div class="modal-tags" id="modalTagsEl"></div>
+      </div>
+      <button class="modal-dl" onclick="downloadModal()">⬇ DOWNLOAD FREE</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ SETTINGS MODAL ══════════════ -->
+<div class="settings-bg" id="settingsBg" onclick="closeSettings(event)">
+  <div class="settings-modal">
+    <div class="settings-hdr">
+      <span class="settings-title">⚙ API SETTINGS</span>
+      <button class="modal-close" onclick="closeSettings()">✕</button>
+    </div>
+    <div class="settings-body">
+      <label class="s-label">ANTHROPIC API KEY</label>
+      <div class="api-wrap">
+        <input class="api-inp" id="apiInp" type="password" placeholder="sk-ant-..." oninput="onApiInput(this)" />
+        <button class="eye-btn" onclick="toggleEye()">👁</button>
+      </div>
+      <div class="api-hint">
+        Get your free API key at <a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a>.
+        Your key is stored locally in the browser and never sent to our servers.
+      </div>
+      <div class="api-status-bar" id="apiStatusBar">
+        <div class="api-sdot" id="apiSdot"></div>
+        <span class="api-stxt" id="apiStxt">No API key configured</span>
+      </div>
+      <button class="gen-btn" style="width:100%" onclick="saveApiKey()">SAVE KEY</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// WALLPAPER DATA
+// ═══════════════════════════════════════════════════
+const WALLPAPERS = [
+  { id:1,  name:"Cyber Nebula",       tags:["Cyber","Space"],    type:"nebula",   res:"4K",   isNew:true,  downloads:4821 },
+  { id:2,  name:"Neon Grid City",     tags:["Cyber","Urban"],    type:"cyber",    res:"4K",   isNew:false, downloads:3204 },
+  { id:3,  name:"Quantum Waves",      tags:["Abstract","Glow"],  type:"abstract", res:"QHD",  isNew:false, downloads:2891 },
+  { id:4,  name:"Aurora Matrix",      tags:["Matrix","Nature"],  type:"matrix",   res:"4K",   isNew:true,  downloads:5123 },
+  { id:5,  name:"Crystal Peaks",      tags:["Nature","Minimal"], type:"minimal",  res:"FHD",  isNew:false, downloads:1987 },
+  { id:6,  name:"Galactic Storm",     tags:["Space","Nebula"],   type:"nebula",   res:"4K",   isNew:false, downloads:3677 },
+  { id:7,  name:"Digital Jungle",     tags:["Nature","Cyber"],   type:"nature",   res:"QHD",  isNew:true,  downloads:2344 },
+  { id:8,  name:"Hologram Grid",      tags:["Minimal","Cyber"],  type:"cyber",    res:"4K",   isNew:false, downloads:4102 },
+  { id:9,  name:"Void Portal",        tags:["Abstract","Space"], type:"abstract", res:"4K",   isNew:false, downloads:3558 },
+  { id:10, name:"Neon Rain",          tags:["Cyber","Rain"],     type:"matrix",   res:"FHD",  isNew:true,  downloads:6210 },
+  { id:11, name:"Solar Flare",        tags:["Space","Glow"],     type:"nebula",   res:"4K",   isNew:false, downloads:2784 },
+  { id:12, name:"Geo Horizon",        tags:["Minimal","Geo"],    type:"minimal",  res:"QHD",  isNew:false, downloads:1502 },
+];
+
+let currentWallpaper = null;
+let apiKey = localStorage.getItem("nw_api_key") || "";
+let currentFilter = "all";
+let generatedConfig = null;
+
+// ═══════════════════════════════════════════════════
+// CANVAS DRAW FUNCTIONS
+// ═══════════════════════════════════════════════════
+
+function drawWallpaper(canvas, wall) {
+  const ctx = canvas.getContext("2d");
+  const w = canvas.width  || canvas.offsetWidth  || 400;
+  const h = canvas.height || canvas.offsetHeight || 250;
+  canvas.width = w;
+  canvas.height = h;
+
+  const draws = { nebula, cyber, abstract: abstractDraw, nature: natureDraw, minimal, matrix };
+  const fn = draws[wall.type] || nebula;
+  fn(ctx, w, h, wall.id);
+}
+
+function nebula(ctx, w, h, seed) {
+  const s = seeded(seed);
+  const g = ctx.createRadialGradient(w*.5, h*.5, 0, w*.5, h*.5, Math.max(w,h)*.7);
+  g.addColorStop(0, `hsl(${260+s()*60},100%,8%)`);
+  g.addColorStop(.5, `hsl(${200+s()*80},90%,4%)`);
+  g.addColorStop(1, "#020408");
+  ctx.fillStyle = g;
+  ctx.fillRect(0,0,w,h);
+  for(let i=0;i<6;i++){
+    const rg = ctx.createRadialGradient(s()*w,s()*h,0,s()*w,s()*h,s()*Math.min(w,h)*.6);
+    const hue = 180+s()*180;
+    rg.addColorStop(0,`hsla(${hue},100%,70%,.18)`);
+    rg.addColorStop(1,"transparent");
+    ctx.fillStyle = rg;
+    ctx.fillRect(0,0,w,h);
+  }
+  drawStars(ctx,w,h,seed);
+}
+
+function cyber(ctx, w, h, seed) {
+  const s = seeded(seed);
+  ctx.fillStyle = "#020408";
+  ctx.fillRect(0,0,w,h);
+  const g = ctx.createLinearGradient(0,0,w,h);
+  g.addColorStop(0,"rgba(0,245,255,.04)");
+  g.addColorStop(1,"rgba(191,0,255,.04)");
+  ctx.fillStyle = g;
+  ctx.fillRect(0,0,w,h);
+  ctx.strokeStyle = "rgba(0,245,255,.12)";
+  ctx.lineWidth = 0.5;
+  const step = 32;
+  for(let x=0;x<w;x+=step){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke(); }
+  for(let y=0;y<h;y+=step){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke(); }
+  for(let i=0;i<8;i++){
+    const x=s()*w, y=s()*h, r=20+s()*60;
+    const rg = ctx.createRadialGradient(x,y,0,x,y,r);
+    rg.addColorStop(0,`rgba(0,245,255,${.3+s()*.3})`);
+    rg.addColorStop(1,"transparent");
+    ctx.fillStyle = rg;
+    ctx.fillRect(0,0,w,h);
+  }
+  drawScanlines(ctx,w,h);
+}
+
+function abstractDraw(ctx, w, h, seed) {
+  const s = seeded(seed);
+  const g = ctx.createLinearGradient(0,0,w,h);
+  g.addColorStop(0,`hsl(${280+s()*60},90%,8%)`);
+  g.addColorStop(.5,`hsl(${200+s()*80},80%,6%)`);
+  g.addColorStop(1,"#020408");
+  ctx.fillStyle = g;
+  ctx.fillRect(0,0,w,h);
+  for(let i=0;i<12;i++){
+    ctx.save();
+    ctx.globalAlpha = .1+s()*.15;
+    ctx.strokeStyle = `hsl(${160+s()*200},100%,70%)`;
+    ctx.lineWidth = 1+s()*3;
+    ctx.beginPath();
+    const x1=s()*w,y1=s()*h,x2=s()*w,y2=s()*h;
+    ctx.moveTo(x1,y1);
+    ctx.bezierCurveTo(s()*w,s()*h,s()*w,s()*h,x2,y2);
+    ctx.stroke();
+    ctx.restore();
+  }
+  for(let i=0;i<5;i++){
+    const rg = ctx.createRadialGradient(s()*w,s()*h,0,s()*w,s()*h,40+s()*120);
+    rg.addColorStop(0,`hsla(${180+s()*180},100%,70%,.2)`);
+    rg.addColorStop(1,"transparent");
+    ctx.fillStyle=rg; ctx.fillRect(0,0,w,h);
+  }
+}
+
+function natureDraw(ctx, w, h, seed) {
+  const s = seeded(seed);
+  const g = ctx.createLinearGradient(0,0,0,h);
+  g.addColorStop(0,"#020d0a");
+  g.addColorStop(.5,"#041208");
+  g.addColorStop(1,"#020408");
+  ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+  for(let i=0;i<8;i++){
+    const rg = ctx.createRadialGradient(s()*w,h*.3+s()*h*.4,0,s()*w,h*.3+s()*h*.4,60+s()*180);
+    rg.addColorStop(0,`rgba(0,255,136,.${Math.floor(5+s()*12)})`);
+    rg.addColorStop(1,"transparent");
+    ctx.fillStyle=rg; ctx.fillRect(0,0,w,h);
+  }
+  drawStars(ctx,w,h,seed+5,40,"rgba(0,255,136,");
+}
+
+function minimal(ctx, w, h, seed) {
+  const s = seeded(seed);
+  const g = ctx.createLinearGradient(0,0,w,h);
+  g.addColorStop(0,"#030509");
+  g.addColorStop(1,"#020408");
+  ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+  ctx.strokeStyle="rgba(0,245,255,.08)";
+  ctx.lineWidth=1;
+  for(let i=0;i<6;i++){
+    const x=s()*w, y=s()*h, r=40+s()*Math.min(w,h)*.3;
+    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.stroke();
+  }
+  for(let i=0;i<4;i++){
+    ctx.save();
+    ctx.globalAlpha=.06+s()*.06;
+    ctx.strokeStyle=`hsl(${180+s()*180},100%,70%)`;
+    ctx.lineWidth=0.5;
+    const x=s()*w, y=s()*h;
+    ctx.beginPath(); ctx.moveTo(x-60,y); ctx.lineTo(x+60,y); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x,y-60); ctx.lineTo(x,y+60); ctx.stroke();
+    ctx.restore();
+  }
+}
+
+function matrix(ctx, w, h, seed) {
+  const s = seeded(seed);
+  ctx.fillStyle="#000a00"; ctx.fillRect(0,0,w,h);
+  const g = ctx.createRadialGradient(w*.5,h*.5,0,w*.5,h*.5,Math.max(w,h)*.6);
+  g.addColorStop(0,"rgba(0,60,0,.6)");
+  g.addColorStop(1,"rgba(0,0,0,0)");
+  ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+  ctx.font=`${10+Math.floor(s()*4)}px 'Share Tech Mono',monospace`;
+  ctx.fillStyle="rgba(0,255,70,.15)";
+  const cols = Math.floor(w/14);
+  for(let i=0;i<cols;i++){
+    const x = i*14 + s()*4;
+    const len = 5+Math.floor(s()*20);
+    for(let j=0;j<len;j++){
+      const alpha = j===len-1?".9":`.${1+Math.floor(s()*5)}`;
+      ctx.fillStyle=`rgba(0,255,70,${alpha})`;
+      const char = String.fromCharCode(33+Math.floor(s()*94));
+      ctx.fillText(char, x, 10+j*14+s()*h);
+    }
+  }
+}
+
+// ─── helpers ───
+function seeded(seed) {
+  let n = seed * 9301 + 49297;
+  return () => { n = (n * 9301 + 49297) % 233280; return n / 233280; };
+}
+
+function drawStars(ctx, w, h, seed, count=120, colorPrefix="rgba(255,255,255,") {
+  const s = seeded(seed*7);
+  for(let i=0;i<count;i++){
+    const x=s()*w, y=s()*h, r=s()*1.5;
+    const a=(0.3+s()*.7).toFixed(2);
+    ctx.beginPath();
+    ctx.arc(x,y,r,0,Math.PI*2);
+    ctx.fillStyle=`${colorPrefix}${a})`;
+    ctx.fill();
+  }
+}
+
+function drawScanlines(ctx, w, h) {
+  ctx.fillStyle="rgba(0,0,0,.04)";
+  for(let y=0;y<h;y+=3){ ctx.fillRect(0,y,w,1); }
+}
+
+// ═══════════════════════════════════════════════════
+// BACKGROUND CANVAS ANIMATION
+// ═══════════════════════════════════════════════════
+(function initBgCanvas() {
+  const canvas = document.getElementById("bgCanvas");
+  const ctx = canvas.getContext("2d");
+  let W, H, particles = [];
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function makeParticle() {
+    return {
+      x: Math.random() * W,
+      y: Math.random() * H,
+      vx: (Math.random() - .5) * .3,
+      vy: (Math.random() - .5) * .3,
+      r: Math.random() * 1.5,
+      a: Math.random() * .6,
+    };
+  }
+
+  resize();
+  for(let i=0;i<80;i++) particles.push(makeParticle());
+  window.addEventListener("resize", resize);
+
+  function frame() {
+    ctx.clearRect(0,0,W,H);
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if(p.x<0||p.x>W) p.vx*=-1;
+      if(p.y<0||p.y>H) p.vy*=-1;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(0,245,255,${p.a})`;
+      ctx.fill();
+    });
+    // connections
+    for(let i=0;i<particles.length;i++){
+      for(let j=i+1;j<particles.length;j++){
+        const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y;
+        const dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<100){
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x,particles[i].y);
+          ctx.lineTo(particles[j].x,particles[j].y);
+          ctx.strokeStyle=`rgba(0,245,255,${.08*(1-dist/100)})`;
+          ctx.lineWidth=.5;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+  frame();
+})();
+
+// ═══════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════
+function navigate(page) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById("page-"+page).classList.add("active");
+  document.querySelectorAll(".nav-links a").forEach(a => {
+    a.classList.toggle("active", a.dataset.page === page);
+  });
+  window.scrollTo({top:0,behavior:"smooth"});
+  if(page==="gallery") renderGallery(currentFilter);
+  if(page==="trending") renderTrending();
+  if(page==="featured") renderFeatured();
+}
+
+// ═══════════════════════════════════════════════════
+// GALLERY
+// ═══════════════════════════════════════════════════
+function renderGallery(filter) {
+  const el = document.getElementById("galleryGrid");
+  const searchVal = document.getElementById("gallerySearch")?.value.toLowerCase() || "";
+  const list = WALLPAPERS.filter(w =>
+    (filter==="all" || w.type===filter) &&
+    (!searchVal || w.name.toLowerCase().includes(searchVal) || w.tags.some(t=>t.toLowerCase().includes(searchVal)))
+  );
+  el.innerHTML = list.map(w => wallCard(w)).join("");
+  list.forEach(w => {
+    const c = document.getElementById("wc-"+w.id);
+    if(c) drawWallpaper(c, w);
+  });
+}
+
+function wallCard(w) {
+  return `<div class="wall-card" onclick="openModal(${w.id})">
+    <canvas id="wc-${w.id}"></canvas>
+    <div class="wall-res">${w.res}</div>
+    ${w.isNew?'<div class="wall-new">NEW</div>':''}
+    <div class="wall-ov">
+      <div class="wall-name">${w.name}</div>
+      <div class="wall-tag">${w.tags.join(" · ")}</div>
+      <div class="wall-acts">
+        <button class="w-btn dl" onclick="event.stopPropagation();quickDownload(${w.id})">⬇</button>
+        <button class="w-btn prev" onclick="event.stopPropagation();openModal(${w.id})">PREVIEW</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function filterGallery(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll(".f-btn").forEach(b => b.classList.remove("on"));
+  if(btn) btn.classList.add("on");
+  renderGallery(filter);
+}
+
+function searchGallery(val) {
+  renderGallery(currentFilter);
+}
+
+// ═══════════════════════════════════════════════════
+// TRENDING
+// ═══════════════════════════════════════════════════
+function renderTrending() {
+  const el = document.getElementById("trendingGrid");
+  const sorted = [...WALLPAPERS].sort((a,b) => b.downloads - a.downloads);
+  el.innerHTML = sorted.map(w => wallCard(w)).join("");
+  sorted.forEach(w => {
+    const c = document.getElementById("wc-"+w.id);
+    if(c) drawWallpaper(c, w);
+  });
+}
+
+function renderHomeTrending() {
+  const el = document.getElementById("homeTrending");
+  const sorted = [...WALLPAPERS].sort((a,b) => b.downloads-a.downloads).slice(0,8);
+  el.innerHTML = sorted.map(w => `
+    <div class="trend-card" onclick="openModal(${w.id})">
+      <canvas id="htc-${w.id}" width="190" height="125"></canvas>
+      <div class="trend-info">
+        <div class="trend-name">${w.name}</div>
+        <div class="trend-count">${(w.downloads/1000).toFixed(1)}K downloads</div>
+      </div>
+    </div>`).join("");
+  sorted.forEach(w => {
+    const c = document.getElementById("htc-"+w.id);
+    if(c) drawWallpaper(c, w);
+  });
+}
+
+// ═══════════════════════════════════════════════════
+// FEATURED
+// ═══════════════════════════════════════════════════
+function renderFeatured() {
+  const el = document.getElementById("featuredRow");
+  const picks = [WALLPAPERS[3], WALLPAPERS[0], WALLPAPERS[5]];
+  el.innerHTML = `
+    <div class="feat-card feat-big" onclick="openModal(${picks[0].id})">
+      <canvas id="fc-${picks[0].id}" style="height:480px"></canvas>
+      <div class="wall-ov">
+        <div class="wall-name">${picks[0].name}</div>
+        <div class="wall-tag">${picks[0].tags.join(" · ")}</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:18px">
+      ${picks.slice(1).map(w=>`
+        <div class="feat-card" onclick="openModal(${w.id})">
+          <canvas id="fc-${w.id}" style="height:232px"></canvas>
+          <div class="wall-ov">
+            <div class="wall-name">${w.name}</div>
+            <div class="wall-tag">${w.tags.join(" · ")}</div>
+          </div>
+        </div>`).join("")}
+    </div>`;
+  picks.forEach(w => {
+    const c = document.getElementById("fc-"+w.id);
+    if(c){
+      c.width = c.offsetWidth || 600;
+      c.height = parseInt(c.style.height) || 300;
+      drawWallpaper(c, w);
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════
+// MODAL
+// ═══════════════════════════════════════════════════
+function escHtml(str) {
+  return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+function openModal(id) {
+  currentWallpaper = WALLPAPERS.find(w => w.id===id) || generatedConfig;
+  if(!currentWallpaper) return;
+  document.getElementById("modalBg").classList.add("open");
+  document.getElementById("modalTitle").textContent = "⬡ " + currentWallpaper.name.toUpperCase();
+  document.getElementById("modalName").textContent = currentWallpaper.name;
+  document.getElementById("modalTagsEl").innerHTML = (currentWallpaper.tags||[]).map(t=>`<span class="modal-tag">${escHtml(t)}</span>`).join("");
+  const mc = document.getElementById("modalCanvas");
+  mc.width = 880; mc.height = 440;
+  drawWallpaper(mc, currentWallpaper);
+}
+
+function closeModal(e) {
+  if(!e || e.target.id==="modalBg" || e.currentTarget===document.querySelector(".modal-close"))
+    document.getElementById("modalBg").classList.remove("open");
+}
+
+function downloadModal() {
+  if(!currentWallpaper) return;
+  const c = document.getElementById("modalCanvas");
+  downloadCanvas(c, currentWallpaper.name);
+}
+
+function quickDownload(id) {
+  const w = WALLPAPERS.find(x=>x.id===id);
+  if(!w) return;
+  const tmp = document.createElement("canvas");
+  tmp.width=1920; tmp.height=1080;
+  drawWallpaper(tmp, w);
+  downloadCanvas(tmp, w.name);
+}
+
+function downloadCanvas(canvas, name) {
+  const a = document.createElement("a");
+  a.href = canvas.toDataURL("image/png");
+  a.download = name.replace(/\s+/g,"-").toLowerCase() + "-nexuswalls.png";
+  a.click();
+  showToast("⬇ Download started!");
+}
+
+// ═══════════════════════════════════════════════════
+// AI WALLPAPER GENERATOR
+// ═══════════════════════════════════════════════════
+const STYLE_PROMPTS = {
+  cyber:    "neon cyberpunk grid city with glowing lines, purple and cyan palette, dark urban atmosphere",
+  nebula:   "cosmic nebula with swirling gas clouds, purple pink cyan, deep space background with stars",
+  abstract: "flowing abstract art with bezier curves, vibrant neon colors on dark background",
+  nature:   "bioluminescent digital forest with glowing green plants and floating particles",
+  minimal:  "minimalist geometric shapes, concentric circles and lines, dark background with subtle cyan glow",
+  matrix:   "matrix-style falling green code characters on deep black background",
+};
+
+async function generateWallpaper() {
+  const prompt = document.getElementById("promptInput").value.trim();
+  const style = document.getElementById("styleSelect").value;
+  const res = document.getElementById("resSelect").value;
+
+  if(!apiKey){ openSettings(); showToast("⚙ Please set your API key first"); return; }
+
+  const btn = document.getElementById("genBtn");
+  btn.disabled = true;
+  document.getElementById("aiThinking").classList.add("show");
+  document.getElementById("genResult").classList.remove("show");
+
+  const msgs = [
+    "Analyzing prompt · Composing palette · Rendering scene",
+    "Building color theory · Generating geometry",
+    "Applying neural filters · Finalizing render",
+  ];
+  let mi = 0;
+  const ticker = setInterval(() => {
+    document.getElementById("thinkingDesc").textContent = msgs[mi++ % msgs.length];
+  }, 900);
+
+  try {
+    const styleHint = STYLE_PROMPTS[style] || STYLE_PROMPTS.cyber;
+    const fullPrompt = `Describe a wallpaper scene in 3 sentences. Style: ${styleHint}. ${prompt ? "Additional context: "+prompt : ""} Keep it visual and evocative.`;
+
+    const resp = await fetch("https://api.anthropic.com/v1/messages", {
+      method:"POST",
+      headers:{ "Content-Type":"application/json", "x-api-key":apiKey, "anthropic-version":"2023-06-01" },
+      body:JSON.stringify({ model:"claude-sonnet-4-20250514", max_tokens:200, messages:[{role:"user",content:fullPrompt}] })
+    });
+    const data = await resp.json();
+    const desc = data.content?.map(b=>b.text||"").join("") || "";
+
+    generatedConfig = { id: Date.now(), name: prompt || style + " wallpaper", tags: [style, "AI-Generated"], type: style, res: res.split("x")[0]+"p", desc };
+
+    const [gw, gh] = res.split("x").map(Number);
+    const gc = document.getElementById("genCanvas");
+    gc.width = gw > 2000 ? gw/2 : gw;
+    gc.height = gh > 2000 ? gh/2 : gh;
+    drawWallpaper(gc, generatedConfig);
+
+    document.getElementById("resultTitle").textContent = "⬡ " + (prompt || style).toUpperCase();
+    document.getElementById("resultRes").textContent = res.replace("x","×");
+    document.getElementById("genResult").classList.add("show");
+  } catch {
+    showToast("⚠️ Error generating content. Please try again.");
+    drawFallbackWallpaper(style);
+  }
+
+  clearInterval(ticker);
+  document.getElementById("aiThinking").classList.remove("show");
+  btn.disabled = false;
+}
+
+function drawFallbackWallpaper(style) {
+  generatedConfig = { id: Date.now(), name: style+" wallpaper", tags:[style,"Generated"], type:style, res:"FHD" };
+  const gc = document.getElementById("genCanvas");
+  gc.width = 960; gc.height = 540;
+  drawWallpaper(gc, generatedConfig);
+  document.getElementById("resultTitle").textContent = "⬡ "+style.toUpperCase()+" WALLPAPER";
+  document.getElementById("resultRes").textContent = "1920×1080";
+  document.getElementById("genResult").classList.add("show");
+}
+
+function downloadGen() {
+  const gc = document.getElementById("genCanvas");
+  downloadCanvas(gc, generatedConfig?.name || "nexuswalls");
+}
+
+function saveToGallery() {
+  if(!generatedConfig) return;
+  const w = { ...generatedConfig, isNew:true, downloads:0 };
+  WALLPAPERS.unshift(w);
+  showToast("✦ Saved to gallery!");
+}
+
+function useChip(el) {
+  document.querySelectorAll(".chip").forEach(c=>c.classList.remove("on"));
+  el.classList.add("on");
+  document.getElementById("promptInput").value = el.textContent;
+}
+
+function scrollToGen() {
+  document.getElementById("genSection").scrollIntoView({behavior:"smooth"});
+}
+
+// ═══════════════════════════════════════════════════
+// SETTINGS / API KEY
+// ═══════════════════════════════════════════════════
+function openSettings() {
+  document.getElementById("settingsBg").classList.add("open");
+  const inp = document.getElementById("apiInp");
+  inp.value = apiKey;
+  updateApiStatus();
+}
+
+function closeSettings(e) {
+  if(!e || e.target.id==="settingsBg") document.getElementById("settingsBg").classList.remove("open");
+}
+
+function saveApiKey() {
+  const val = document.getElementById("apiInp").value.trim();
+  apiKey = val;
+  if(val) localStorage.setItem("nw_api_key",val); else localStorage.removeItem("nw_api_key");
+  updateApiStatus();
+  updateNavDot();
+  document.getElementById("settingsBg").classList.remove("open");
+  showToast(val ? "✓ API key saved!" : "API key removed");
+}
+
+function onApiInput(inp) {
+  const v = inp.value.trim();
+  inp.className = "api-inp" + (v.length>10?(v.startsWith("sk-ant-")?" ok":" err"):"");
+}
+
+function updateApiStatus() {
+  const dot = document.getElementById("apiSdot");
+  const txt = document.getElementById("apiStxt");
+  const bar = document.getElementById("apiStatusBar");
+  const inp = document.getElementById("apiInp");
+  if(apiKey && apiKey.startsWith("sk-ant-")){
+    dot.className="api-sdot ok"; bar.className="api-status-bar ok";
+    txt.textContent="API key configured · Ready to generate";
+    inp.className="api-inp ok";
+  } else if(apiKey) {
+    dot.className="api-sdot err"; bar.className="api-status-bar err";
+    txt.textContent="Invalid key format · Should start with sk-ant-";
+    inp.className="api-inp err";
+  } else {
+    dot.className="api-sdot"; bar.className="api-status-bar";
+    txt.textContent="No API key configured";
+    inp.className="api-inp";
+  }
+}
+
+function updateNavDot() {
+  const dot = document.getElementById("apiDot");
+  const txt = document.getElementById("apiPillTxt");
+  const ok = apiKey && apiKey.startsWith("sk-ant-");
+  dot.className = "gh-dot" + (ok?"":" off");
+  txt.textContent = ok ? "API READY" : "API KEY";
+}
+
+function toggleEye() {
+  const inp = document.getElementById("apiInp");
+  inp.type = inp.type==="password"?"text":"password";
+}
+
+// ═══════════════════════════════════════════════════
+// GITHUB TABS
+// ═══════════════════════════════════════════════════
+function ghTab(name, btn) {
+  document.querySelectorAll(".gtab").forEach(b=>b.classList.remove("on"));
+  document.querySelectorAll(".gpanel").forEach(p=>p.classList.remove("on"));
+  if(btn) btn.classList.add("on");
+  const panel = document.getElementById("gpanel-"+name);
+  if(panel) panel.classList.add("on");
+}
+
+function buildContribGrid() {
+  const el = document.getElementById("contribGrid");
+  if(!el) return;
+  const levels = ["","l1","l2","l3","l4"];
+  let html="";
+  for(let i=0;i<84;i++){
+    const r=Math.random();
+    const l = r>.85?"l4":r>.7?"l3":r>.5?"l2":r>.3?"l1":"";
+    html+=`<div class="contrib-cell ${l}"></div>`;
+  }
+  el.innerHTML=html;
+}
+
+// ═══════════════════════════════════════════════════
+// MOBILE BURGER
+// ═══════════════════════════════════════════════════
+function toggleBurger() {
+  document.getElementById("burger").classList.toggle("open");
+  document.getElementById("mobileMenu").classList.toggle("open");
+}
+
+// ═══════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"), 2800);
+}
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+document.addEventListener("DOMContentLoaded", () => {
+  renderHomeTrending();
+  buildContribGrid();
+  updateNavDot();
+  updateApiStatus();
+
+  // Load saved API key status
+  if(apiKey) updateApiStatus();
+});
+</script>
+</body>
+</html>
